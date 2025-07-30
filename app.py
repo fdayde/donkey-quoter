@@ -43,14 +43,14 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
         st.markdown(
             f"""
             <div style="padding: 2rem;">
-                <div style="text-align: center;">
+                <div style="text-align: center; margin-bottom: -1.5rem;">
                     <span style="font-size: 4rem; color: #d97706; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 0.5;">"</span>
                 </div>
-                <div style="font-size: 1.25rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; text-align: center; margin: 1rem 2rem; white-space: pre-line;">
+                <div style="font-size: 1.25rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; text-align: center; margin: 0 2rem; white-space: pre-line;">
                     {quote_text}
                 </div>
                 <div style="text-align: right; margin-right: 2rem; margin-top: 1rem;">
-                    <span style="color: #b45309; font-size: 1.125rem; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
+                    <span style="color: #b45309; font-size: 0.75rem; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
                 </div>
             </div>
             """,
