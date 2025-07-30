@@ -1,11 +1,11 @@
-# 🫏 Donkey Quoter
+# Donkey Quoter
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-red.svg)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
 ![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 
-> *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
+🫏 *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
 
 ## ✨ Overview
 
@@ -15,6 +15,14 @@ Donkey Quoter is a minimalist web application that allows you to:
 - 💾 Save your favorite quotes and haikus
 - 📥 Export your collection in JSON format
 - 🌐 Switch between French and English
+
+## 📸 Screenshots
+
+<div align="center">
+
+![App](docs/app.png)
+
+</div>
 
 ## 🎯 Features
 
@@ -82,7 +90,7 @@ donkey-quoter/
 ## 🎨 Customization
 
 ### Adding Quotes
-Modify the `data/quotes.json` file to add your own quotes:
+Modify the `data/quotes.json` file to add your own quotes for the current session:
 
 ```json
 {
@@ -99,16 +107,13 @@ Modify the `data/quotes.json` file to add your own quotes:
 }
 ```
 
-### Modifying the Theme
-Adjust colors in `.streamlit/config.toml` to customize the appearance.
-
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Add quotes
-- 🌍 Improve translations
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+- Development setup
+- Code style and quality standards
+- Submitting pull requests
+- Running tests
 
 ## 📄 License
 
@@ -116,7 +121,7 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 
 ## 🙏 Acknowledgments
 
-Inspired by popular wisdom and the love of simple poetry.
+Inspired by popular wisdom and the love of simple 🫏 poetry.
 
 ---
 
