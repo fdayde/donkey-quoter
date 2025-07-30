@@ -81,9 +81,9 @@ def render_header(title: str, subtitle: str, lang: str, on_language_change: Call
         # Titre et sous-titre centrés
         st.markdown(
             f'''
-            <div style="text-align: center;">
-                <h1 style="font-size: 2.5rem; font-weight: 400; color: #78350f; margin: 0.5rem 0 0 0;">{title}</h1>
-                <p style="color: #f59e0b; font-size: 1.125rem; font-weight: 300; margin-top: 0.5rem;">{subtitle}</p>
+            <div style="text-align: center; margin-top: -0.5rem;">
+                <h1 style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 2.5rem; font-weight: 300; color: #78350f; margin: 0;">{title}</h1>
+                <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #f59e0b; font-size: 1.125rem; font-weight: 300; margin-top: 0.5rem;">{subtitle}</p>
             </div>
             ''',
             unsafe_allow_html=True,
@@ -104,9 +104,9 @@ def render_quote_list_item(
     with col1:
         render_category_badge(quote.category, lang)
         st.markdown(
-            f'<p style="margin: 0.5rem 0; color: rgba(120, 53, 15, 0.7); font-size: 0.875rem;">'
+            f'<p style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; font-weight: 300; margin: 0.5rem 0; color: rgba(120, 53, 15, 0.7); font-size: 0.875rem;">'
             f'"{quote_text}"</p>'
-            f'<p style="margin: 0; color: rgba(180, 83, 9, 0.6); font-size: 0.75rem;">— {quote_author}</p>',
+            f'<p style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; font-weight: 500; margin: 0; color: rgba(180, 83, 9, 0.6); font-size: 0.75rem;">— {quote_author}</p>',
             unsafe_allow_html=True,
         )
     

@@ -44,13 +44,13 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
             f"""
             <div style="padding: 2rem;">
                 <div style="text-align: center;">
-                    <span style="font-size: 4rem; color: #f59e0b; font-family: Georgia, serif; line-height: 0.5;">"</span>
+                    <span style="font-size: 4rem; color: #f59e0b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 0.5;">"</span>
                 </div>
-                <div style="font-size: 1.75rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: Georgia, serif; text-align: center; margin: 1rem 2rem;">
+                <div style="font-size: 1.75rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; text-align: center; margin: 1rem 2rem;">
                     {quote_text}
                 </div>
                 <div style="text-align: right; margin-right: 2rem; margin-top: 1rem;">
-                    <span style="color: #92400e; font-size: 1.125rem; font-style: italic;">— {quote_author}</span>
+                    <span style="color: #92400e; font-size: 1.125rem; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
                 </div>
             </div>
             """,

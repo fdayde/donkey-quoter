@@ -2,6 +2,8 @@
 
 /* ===== Variables CSS ===== */
 :root {
+    /* Police principale */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     /* Couleurs Amber */
     --amber-50: #fffbeb;
     --amber-100: #fef3c7;
@@ -66,6 +68,7 @@
 .stApp > .main {
     background: #fef3e2; /* Fond beige/crème clair */
     min-height: 100vh;
+    font-family: var(--font-family);
 }
 
 .main .block-container {
@@ -122,6 +125,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .stats-number {
+    font-family: var(--font-family);
     font-size: 1.5rem;
     font-weight: 300;
     color: var(--amber-800);
@@ -132,7 +136,9 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .stats-label {
+    font-family: var(--font-family);
     font-size: 0.875rem;
+    font-weight: 500;
     color: rgba(180, 83, 9, 0.7);
 }
 
@@ -154,6 +160,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .quote-text {
+    font-family: var(--font-family);
     font-size: 1.5rem;
     color: rgba(120, 53, 15, 0.9);
     line-height: 1.8;
@@ -163,6 +170,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .quote-author {
+    font-family: var(--font-family);
     color: rgba(180, 83, 9, 0.7);
     font-size: 1rem;
     font-weight: 500;
@@ -171,6 +179,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 /* ===== Boutons ===== */
 .stButton > button,
 .stDownloadButton > button {
+    font-family: var(--font-family) !important;
     border-radius: var(--radius-full) !important;
     padding: 0.75rem 1.5rem !important;
     font-size: 0.875rem !important;
@@ -291,6 +300,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 .stTextInput > label,
 .stTextArea > label,
 .stSelectbox > label {
+    font-family: var(--font-family) !important;
     color: rgba(180, 83, 9, 0.8) !important;
     font-size: 0.875rem !important;
     font-weight: 500 !important;
@@ -331,6 +341,13 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--amber-400);
+}
+
+/* ===== Badges/Tags ===== */
+div[data-testid="stBadge"] > div {
+    font-family: var(--font-family) !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
 }
 
 /* ===== Animations ===== */
