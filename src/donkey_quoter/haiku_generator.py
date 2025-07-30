@@ -5,7 +5,7 @@ Module de génération de haïkus.
 import random
 import time
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Optional
 
 import streamlit as st
 
@@ -33,7 +33,9 @@ class HaikuGenerator:
                 "Labeur quotidien\nÂne fidèle compagnon\nTravail noble",
             ],
             "life": [
-                "Vivant dans l'instant\nPhilosophe mort dans l'ombre\nVie l'emporte tout",
+                "Vivant dans l'instant\n"
+                "Philosophe mort dans l'ombre\n"
+                "Vie l'emporte tout",
                 "Souffle de l'âne\nContre silence du sage\nExistence vraie",
                 "Cœur qui bat encore\nVaut mieux qu'esprit éteint\nVie précieuse",
             ],
@@ -50,34 +52,70 @@ class HaikuGenerator:
         },
         "en": {
             "wisdom": [
-                "Wise donkey reflects\nAncient words echo softly\nSimple truth endures",
-                "Patient beast carries\nHeavy wisdom on his back\nSlow but steady steps",
-                "Ears raised high, listening\nTo the old voice of knowledge\nAncestral learning",
+                "Wise donkey reflects\n"
+                "Ancient words echo softly\n"
+                "Simple truth endures",
+                "Patient beast carries\n"
+                "Heavy wisdom on his back\n"
+                "Slow but steady steps",
+                "Ears raised high, listening\n"
+                "To the old voice of knowledge\n"
+                "Ancestral learning",
             ],
             "humor": [
-                "Smiling donkey\nEars dancing in morning breeze\nJoy without pretense",
-                "Funny mule braying\nLaughter echoes through the farm\nSimple happiness",
-                "Morning donkey fart\nBurst of laughter in green fields\nPure honest humor",
+                "Smiling donkey\n"
+                "Ears dancing in morning breeze\n"
+                "Joy without pretense",
+                "Funny mule braying\n"
+                "Laughter echoes through the farm\n"
+                "Simple happiness",
+                "Morning donkey fart\n"
+                "Burst of laughter in green fields\n"
+                "Pure honest humor",
             ],
             "work": [
-                "Under heavy yoke\nDonkey moves with quiet strength\nDuty faithfully done",
-                "Burden on the back\nRocky path climbed with courage\nPeaceful dedication",
-                "Daily honest work\nFaithful donkey companion\nNoble simple labor",
+                "Under heavy yoke\n"
+                "Donkey moves with quiet strength\n"
+                "Duty faithfully done",
+                "Burden on the back\n"
+                "Rocky path climbed with courage\n"
+                "Peaceful dedication",
+                "Daily honest work\n"
+                "Faithful donkey companion\n"
+                "Noble simple labor",
             ],
             "life": [
-                "Living in the now\nDead philosopher in shadow\nLife conquers all thought",
-                "Donkey's warm breath\nAgainst wise man's cold silence\nExistence triumphs",
-                "Heart that beats today\nBeats louder than silent mind\nLife's precious rhythm",
+                "Living in the now\n"
+                "Dead philosopher in shadow\n"
+                "Life conquers all thought",
+                "Donkey's warm breath\n"
+                "Against wise man's cold silence\n"
+                "Existence triumphs",
+                "Heart that beats today\n"
+                "Beats louder than silent mind\n"
+                "Life's precious rhythm",
             ],
             "pride": [
-                "Donkey's head held high\nHorse's tail dragging in shame\nBetter to be whole",
-                "Small but complete soul\nLarge but broken spirit falls\nIntegrity wins",
-                "Crown-less but noble\nDonkey with quiet dignity\nTrue worth comes from within",
+                "Donkey's head held high\n"
+                "Horse's tail dragging in shame\n"
+                "Better to be whole",
+                "Small but complete soul\n"
+                "Large but broken spirit falls\n"
+                "Integrity wins",
+                "Crown-less but noble\n"
+                "Donkey with quiet dignity\n"
+                "True worth comes from within",
             ],
             "patience": [
-                "Water before donkey\nNo force can make him drink deep\nChoice belongs to him",
-                "Only thirst decides\nWhen the donkey comes to drink\nWisdom waits in patience",
-                "Force always fails\nFree will alone lasts forever\nPatience teaches all",
+                "Water before donkey\n"
+                "No force can make him drink deep\n"
+                "Choice belongs to him",
+                "Only thirst decides\n"
+                "When the donkey comes to drink\n"
+                "Wisdom waits in patience",
+                "Force always fails\n"
+                "Free will alone lasts forever\n"
+                "Patience teaches all",
             ],
         },
     }

@@ -3,16 +3,15 @@ Donkey Quoter - Application Streamlit principale (version refactorisée).
 """
 
 from datetime import datetime
-from pathlib import Path
 
 import streamlit as st
 
 from src.donkey_quoter.config import (
-    PAGE_CONFIG,
-    STYLES_CSS_PATH,
-    QUOTE_LIST_HEIGHT,
     EXPORT_DATE_FORMAT,
     EXPORT_FILE_PREFIX,
+    PAGE_CONFIG,
+    QUOTE_LIST_HEIGHT,
+    STYLES_CSS_PATH,
 )
 from src.donkey_quoter.haiku_generator import HaikuGenerator
 from src.donkey_quoter.models import QuoteInput
@@ -20,10 +19,10 @@ from src.donkey_quoter.quote_manager import QuoteManager
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
 from src.donkey_quoter.ui_components import (
-    render_header,
     render_category_badge,
-    render_stats_card,
+    render_header,
     render_quote_list_item,
+    render_stats_card,
 )
 
 
@@ -50,13 +49,22 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
             f"""
             <div style="padding: 2rem;">
                 <div style="text-align: center; margin-bottom: -1.5rem;">
-                    <span style="font-size: 4rem; color: #d97706; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 0.5;">"</span>
+                    <span style="font-size: 4rem; color: #d97706;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                        Roboto, 'Helvetica Neue', Arial, sans-serif;
+                        line-height: 0.5;">"</span>
                 </div>
-                <div style="font-size: 1.25rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; text-align: center; margin: 0 2rem; white-space: pre-line;">
+                <div style="font-size: 1.25rem; color: #78350f; line-height: 1.8;
+                    font-weight: 300; font-family: -apple-system, BlinkMacSystemFont,
+                    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                    text-align: center; margin: 0 2rem; white-space: pre-line;">
                     {quote_text}
                 </div>
                 <div style="text-align: right; margin-right: 2rem; margin-top: 1rem;">
-                    <span style="color: #b45309; font-size: 0.75rem; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
+                    <span style="color: #b45309; font-size: 0.75rem;
+                        font-weight: 500; font-family: -apple-system,
+                        BlinkMacSystemFont, 'Segoe UI', Roboto,
+                        'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
                 </div>
             </div>
             """,
@@ -83,7 +91,8 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
                 if st.button(
                     f"{t['saved'] if is_saved else t['save']}",
                     disabled=is_saved,
-                    key=f"save_{'poem' if current_quote.category == 'poem' else 'quote'}",
+                    key=f"save_"
+                    f"{'poem' if current_quote.category == 'poem' else 'quote'}",
                     use_container_width=True,
                 ):
                     if current_quote.category == "poem":
@@ -134,7 +143,8 @@ def render_action_buttons(
     with col3:
         show_all = StateManager.get_show_all_quotes()
         if st.button(
-            f"📋 {t['hide'] if show_all else t['show_all']} ({len(quote_manager.quotes)})",
+            f"📋 {t['hide'] if show_all else t['show_all']} "
+            f"({len(quote_manager.quotes)})",
             key="show_all_btn",
             use_container_width=True,
         ):
@@ -198,9 +208,9 @@ def render_all_quotes_list(quote_manager: QuoteManager, lang: str, t: dict):
                         StateManager.hide_all_quotes(),
                         st.rerun(),
                     ),
-                    on_delete=lambda qid: (
+                    on_delete=lambda qid, q=quote: (
                         (quote_manager.delete_quote(qid), st.rerun())
-                        if quote.type == "user"
+                        if q.type == "user"
                         else None
                     ),
                 )
@@ -217,7 +227,8 @@ def render_saved_stats(quote_manager: QuoteManager, t: dict):
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="quote-card">', unsafe_allow_html=True)
     st.markdown(
-        f'<h3 style="text-align: center; font-weight: 300; color: rgba(120, 53, 15, 0.9);">{t["my_saves"]}</h3>',
+        f'<h3 style="text-align: center; font-weight: 300; '
+        f'color: rgba(120, 53, 15, 0.9);">{t["my_saves"]}</h3>',
         unsafe_allow_html=True,
     )
 
@@ -329,10 +340,25 @@ def main():
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown(
         """
-        <div style="text-align: center; padding: 2rem 0 1rem 0; border-top: 1px solid rgba(254, 243, 199, 0.5); margin-top: 3rem;">
-            <a href="https://github.com/fdayde/donkey-quoter" target="_blank" style="color: #d97706; text-decoration: none; font-size: 0.875rem;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 0.5rem;">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        <div style="text-align: center; padding: 2rem 0 1rem 0;
+            border-top: 1px solid rgba(254, 243, 199, 0.5); margin-top: 3rem;">
+            <a href="https://github.com/fdayde/donkey-quoter" target="_blank"
+                style="color: #d97706; text-decoration: none; font-size: 0.875rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24"
+                     fill="currentColor" style="vertical-align: middle;
+                     margin-right: 0.5rem;">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207
+                        11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416
+                        -4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083
+                        -.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834
+                        2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305
+                        -5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124
+                        -.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266
+                        1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552
+                        3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235
+                        1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823
+                        1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199
+                        -6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
                 GitHub
             </a>

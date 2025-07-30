@@ -2,10 +2,10 @@
 Gestionnaire d'état centralisé pour l'application.
 """
 
-from typing import Optional
 import streamlit as st
-from .models import Quote
+
 from .data import CLASSIC_QUOTES
+from .models import Quote
 
 
 class StateManager:

@@ -5,8 +5,7 @@ Module de gestion des citations.
 import json
 import random
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import streamlit as st
 
@@ -29,7 +28,7 @@ class QuoteManager:
             st.session_state.saved_poems = []
 
     @property
-    def quotes(self) -> List[Quote]:
+    def quotes(self) -> list[Quote]:
         """Retourne la liste des citations."""
         return st.session_state.quotes
 
@@ -44,16 +43,16 @@ class QuoteManager:
         st.session_state.current_quote = quote
 
     @property
-    def saved_quotes(self) -> List[Quote]:
+    def saved_quotes(self) -> list[Quote]:
         """Retourne les citations sauvegardées."""
         return st.session_state.saved_quotes
 
     @property
-    def saved_poems(self) -> List[Quote]:
+    def saved_poems(self) -> list[Quote]:
         """Retourne les poèmes sauvegardés."""
         return st.session_state.saved_poems
 
-    def get_text(self, text_dict: Dict[str, str], language: str) -> str:
+    def get_text(self, text_dict: dict[str, str], language: str) -> str:
         """Obtient le texte dans la langue spécifiée."""
         if isinstance(text_dict, dict):
             return text_dict.get(language, text_dict.get("fr", ""))
