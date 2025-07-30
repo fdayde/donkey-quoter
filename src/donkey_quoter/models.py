@@ -2,8 +2,6 @@
 Modèles de données pour l'application.
 """
 
-from typing import Dict, Optional
-
 from pydantic import BaseModel, Field
 
 
@@ -11,8 +9,8 @@ class Quote(BaseModel):
     """Modèle pour une citation."""
 
     id: str
-    text: Dict[str, str]
-    author: Dict[str, str]
+    text: dict[str, str]
+    author: dict[str, str]
     category: str = Field(pattern="^(classic|personal|humor|poem)$")
     type: str = Field(pattern="^(preset|user|generated)$")
 
