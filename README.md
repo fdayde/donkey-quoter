@@ -90,21 +90,29 @@ donkey-quoter/
 ## 🎨 Customization
 
 ### Adding Quotes
-Modify the `data/quotes.json` file to add your own quotes for the current session:
 
-```json
-{
-  "id": "custom_001",
-  "text": {
+#### Submit via GitHub Issue
+The easiest way to contribute quotes is through our GitHub issue template:
+1. Go to [Submit a Quote](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
+2. Fill in the form with your quote in both languages
+3. Submit and wait for review
+
+#### Local Development
+For testing, you can modify the `src/donkey_quoter/data/quotes.py` file directly:
+
+```python
+Quote(
+  id="custom_001",
+  text={
     "fr": "Votre citation en français",
     "en": "Your quote in English"
   },
-  "author": {
+  author={
     "fr": "Auteur",
     "en": "Author"
   },
-  "category": "personal"
-}
+  category="personal"
+)
 ```
 
 ## 🤝 Contributing

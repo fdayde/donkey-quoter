@@ -62,7 +62,7 @@ isort src/
 - Bug fixes with clear explanations
 - Performance improvements
 - Translation updates
-- Add quotes
+- Add quotes via [Quote Submission Form](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
 
 ### 💬 Questions?
 Open an issue and we'll help!
