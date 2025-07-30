@@ -1,7 +1,7 @@
 # Donkey Quoter
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-red.svg)
+![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-red.svg)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
 ![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 
