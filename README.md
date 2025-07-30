@@ -58,7 +58,7 @@ pip install -r requirements.txt
 
 - **streamlit** >= 1.32.0: Web application framework
 - **pydantic** >= 2.0.0: Data validation
-- **python** >= 3.10: Required Python version
+- **python** >= 3.9: Required Python version
 
 ## 🎮 Usage
 
