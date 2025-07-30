@@ -1,10 +1,11 @@
 # 🫏 Donkey Quoter
 
-> *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
-
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-red.svg)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
+![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
+
+> *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
 
 ## ✨ Overview
 
