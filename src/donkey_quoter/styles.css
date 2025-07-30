@@ -64,7 +64,7 @@
 
 /* ===== Base et Layout ===== */
 .stApp > .main {
-    background: linear-gradient(to bottom right, var(--stone-50), rgba(255, 251, 235, 0.3), rgba(255, 247, 237, 0.4));
+    background: #fef3e2; /* Fond beige/crème clair */
     min-height: 100vh;
 }
 
@@ -183,33 +183,42 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 
 /* Boutons par type */
 .stButton:has(button[key="new_quote"]) > button {
-    background-color: var(--amber-600) !important;
+    background-color: #fb923c !important; /* Orange */
     color: white !important;
 }
 
 .stButton:has(button[key="new_quote"]) > button:hover {
-    background-color: var(--amber-700) !important;
+    background-color: #f97316 !important;
     box-shadow: var(--shadow-md) !important;
 }
 
 .stButton:has(button[key="create_poem"]) > button {
-    background-color: var(--rose-500) !important;
+    background-color: #ec4899 !important; /* Rose/Magenta */
     color: white !important;
 }
 
 .stButton:has(button[key="create_poem"]) > button:hover {
-    background-color: var(--rose-600) !important;
-    box-shadow: 0 4px 6px -1px rgba(244, 63, 94, 0.25) !important;
+    background-color: #db2777 !important;
+    box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.25) !important;
 }
 
 .stButton:has(button[key="show_all_btn"]) > button {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    border: 1px solid var(--amber-200) !important;
-    color: var(--amber-800) !important;
+    background-color: transparent !important;
+    border: 2px solid #92400e !important; /* Style outline */
+    color: #92400e !important;
 }
 
 .stButton:has(button[key="show_all_btn"]) > button:hover {
-    background-color: var(--amber-50) !important;
+    background-color: rgba(146, 64, 14, 0.1) !important;
+}
+
+.stButton:has(button[key="add_quote_btn"]) > button {
+    background-color: #fb923c !important; /* Orange comme nouvelle citation */
+    color: white !important;
+}
+
+.stButton:has(button[key="add_quote_btn"]) > button:hover {
+    background-color: #f97316 !important;
 }
 
 .stDownloadButton > button {
@@ -226,10 +235,25 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     background-color: rgba(254, 243, 199, 0.8) !important;
     color: var(--amber-800) !important;
     border: 1px solid rgba(254, 230, 138, 0.6) !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.5rem 1rem !important;
 }
 
 .stButton:has(button[key="lang_switch"]) > button:hover {
     background-color: rgba(254, 230, 138, 0.8) !important;
+}
+
+/* Bouton Sauvegarder avec fond jaune/doré */
+.stButton:has(button[key*="save_"]) > button {
+    background-color: #fbbf24 !important; /* Jaune doré */
+    color: #78350f !important;
+    border: 1px solid #f59e0b !important;
+}
+
+.stButton:has(button[key*="save_"]) > button:hover:not(:disabled) {
+    background-color: #f59e0b !important;
 }
 
 /* Boutons désactivés */

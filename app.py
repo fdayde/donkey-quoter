@@ -39,24 +39,27 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
     
     # Utiliser un conteneur Streamlit avec bordure
     with st.container(border=True):
-        # Citation avec style centré
+        # Citation avec guillemet stylisé (seulement ouvrant)
         st.markdown(
             f"""
-            <div style="text-align: center; padding: 1.5rem 0;">
-                <div style="font-size: 3rem; color: #fcd34d; margin-bottom: 0.75rem;">"</div>
-                <div style="font-size: 1.5rem; color: rgba(120, 53, 15, 0.9); line-height: 1.8; font-weight: 300; white-space: pre-line; margin-bottom: 1rem;">
+            <div style="padding: 2rem;">
+                <div style="text-align: center;">
+                    <span style="font-size: 4rem; color: #f59e0b; font-family: Georgia, serif; line-height: 0.5;">"</span>
+                </div>
+                <div style="font-size: 1.75rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: Georgia, serif; text-align: center; margin: 1rem 2rem;">
                     {quote_text}
                 </div>
-                <div style="color: rgba(180, 83, 9, 0.7); font-size: 1rem; font-weight: 500;">
-                    — {quote_author}
+                <div style="text-align: right; margin-right: 2rem; margin-top: 1rem;">
+                    <span style="color: #92400e; font-size: 1.125rem; font-style: italic;">— {quote_author}</span>
                 </div>
             </div>
             """,
             unsafe_allow_html=True
         )
         
-        # Badge de catégorie et bouton sauvegarde
-        col1, col2, col3 = st.columns([1, 2, 1])
+        # Tags/Catégories sous l'attribution
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
             subcol1, subcol2 = st.columns(2)
             with subcol1:
@@ -67,8 +70,9 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
                             else quote_manager.saved_quotes)
                 is_saved = current_quote in save_list
                 
+                # Bouton Sauvegarder avec style jaune/doré
                 if st.button(
-                    f"💾 {t['saved'] if is_saved else t['save']}",
+                    f"{t['saved'] if is_saved else t['save']}",
                     disabled=is_saved,
                     key=f"save_{'poem' if current_quote.category == 'poem' else 'quote'}",
                     use_container_width=True,
@@ -83,7 +87,9 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
 def render_action_buttons(quote_manager: QuoteManager, haiku_generator: HaikuGenerator, lang: str, t: dict):
     """Affiche les boutons d'action principaux."""
     st.markdown("<br>", unsafe_allow_html=True)
-    col1, col2, col3, col4 = st.columns(4, gap="small")
+    
+    # Boutons principaux en ligne horizontale (3 colonnes)
+    col1, col2, col3 = st.columns(3, gap="medium")
     
     # Nouvelle citation
     with col1:
@@ -118,10 +124,22 @@ def render_action_buttons(quote_manager: QuoteManager, haiku_generator: HaikuGen
             StateManager.toggle_show_all_quotes()
             st.rerun()
     
-    # Exporter
-    with col4:
-        total_saved = len(quote_manager.saved_quotes) + len(quote_manager.saved_poems)
-        if total_saved > 0:
+    # Bouton secondaire centré (Ajouter une citation)
+    st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button(f"➕ {t['add_quote']}", key="add_quote_btn", use_container_width=True):
+            if "show_add_form" not in st.session_state:
+                st.session_state.show_add_form = False
+            st.session_state.show_add_form = not st.session_state.show_add_form
+            st.rerun()
+    
+    # Bouton Export (si des citations sont sauvegardées)
+    total_saved = len(quote_manager.saved_quotes) + len(quote_manager.saved_poems)
+    if total_saved > 0:
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
             export_data = quote_manager.export_saved_data()
             st.download_button(
                 label=f"📥 {t['export']} ({total_saved})",
@@ -200,37 +218,47 @@ def render_add_quote_form(quote_manager: QuoteManager, lang: str, t: dict):
     """Affiche le formulaire d'ajout de citation."""
     from src.donkey_quoter.translations import CATEGORY_LABELS
     
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    with st.expander(f"➕ {t['add_quote']}", expanded=False):
-        with st.form("add_quote_form", clear_on_submit=True):
-            text = st.text_area(
-                t["citation"],
-                placeholder=t["placeholder_quote"],
-                height=100,
-            )
-            author = st.text_input(
-                t["author"],
-                placeholder=t["placeholder_author"],
-            )
-            category = st.selectbox(
-                t["category"],
-                options=["personal", "humor", "classic"],
-                format_func=lambda x: CATEGORY_LABELS[x][lang],
-            )
-            
-            submitted = st.form_submit_button(t["add"], use_container_width=True)
-            if submitted:
-                if text and author:
-                    quote_input = QuoteInput(
-                        text=text.strip(),
-                        author=author.strip(),
-                        category=category,
-                    )
-                    quote_manager.add_quote(quote_input, lang)
-                    st.success("✅")
-                    st.rerun()
-                else:
-                    st.error("❌")
+    if st.session_state.get("show_add_form", False):
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown(f"### {t['add_quote']}")
+            with st.form("add_quote_form", clear_on_submit=True):
+                text = st.text_area(
+                    t["citation"],
+                    placeholder=t["placeholder_quote"],
+                    height=100,
+                )
+                author = st.text_input(
+                    t["author"],
+                    placeholder=t["placeholder_author"],
+                )
+                category = st.selectbox(
+                    t["category"],
+                    options=["personal", "humor", "classic"],
+                    format_func=lambda x: CATEGORY_LABELS[x][lang],
+                )
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    submitted = st.form_submit_button(t["add"], use_container_width=True, type="primary")
+                with col2:
+                    if st.form_submit_button(t.get("cancel", "Annuler"), use_container_width=True):
+                        st.session_state.show_add_form = False
+                        st.rerun()
+                
+                if submitted:
+                    if text and author:
+                        quote_input = QuoteInput(
+                            text=text.strip(),
+                            author=author.strip(),
+                            category=category,
+                        )
+                        quote_manager.add_quote(quote_input, lang)
+                        st.success("✅")
+                        st.session_state.show_add_form = False
+                        st.rerun()
+                    else:
+                        st.error("❌")
 
 
 def main():
@@ -266,14 +294,14 @@ def main():
     # Boutons d'action
     render_action_buttons(quote_manager, haiku_generator, lang, t)
     
+    # Formulaire d'ajout (affiché sous le bouton Ajouter)
+    render_add_quote_form(quote_manager, lang, t)
+    
     # Liste des citations
     render_all_quotes_list(quote_manager, lang, t)
     
     # Statistiques
     render_saved_stats(quote_manager, t)
-    
-    # Formulaire d'ajout
-    render_add_quote_form(quote_manager, lang, t)
 
 
 if __name__ == "__main__":

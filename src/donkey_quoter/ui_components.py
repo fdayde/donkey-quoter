@@ -54,36 +54,40 @@ def render_action_button(
 
 def render_header(title: str, subtitle: str, lang: str, on_language_change: Callable):
     """Affiche l'en-tête de l'application."""
-    # Bouton langue
-    col1, col2 = st.columns([5, 1])
-    with col2:
-        st.markdown(
-            """
-            <style>
-            div[data-testid="column"]:last-child {
-                text-align: right;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-        if st.button(
-            f"🌐 {'EN' if lang == 'fr' else 'FR'}",
-            key="lang_switch",
-            help=TRANSLATIONS[lang]["language"],
-            use_container_width=True,
-        ):
-            on_language_change()
+    # Créer un conteneur pour le header complet
+    header_container = st.container()
     
-    # Header centré
-    st.markdown(
-        '<div class="main-header">'
-        '<div class="donkey-emoji">🫏</div>'
-        f'<h1 style="font-size: 1.875rem; font-weight: 300; color: rgba(120, 53, 15, 0.9); letter-spacing: 0.05em;">{title}</h1>'
-        f'<p style="color: rgba(180, 83, 9, 0.7); font-size: 0.875rem; font-weight: 300;">{subtitle}</p>'
-        "</div>",
-        unsafe_allow_html=True,
-    )
+    with header_container:
+        # Ligne avec emoji âne au centre et bouton langue à droite
+        col1, col2, col3 = st.columns([2, 6, 2])
+        
+        # Colonne centrale avec l'emoji âne
+        with col2:
+            st.markdown(
+                '<div style="text-align: center; font-size: 3.75rem;">🫏</div>',
+                unsafe_allow_html=True
+            )
+        
+        # Colonne de droite avec le bouton langue (aligné verticalement avec l'âne)
+        with col3:
+            st.markdown('<div style="margin-top: 1rem;"></div>', unsafe_allow_html=True)
+            if st.button(
+                f"🌐 {'EN' if lang == 'fr' else 'FR'}",
+                key="lang_switch",
+                use_container_width=False,
+            ):
+                on_language_change()
+        
+        # Titre et sous-titre centrés
+        st.markdown(
+            f'''
+            <div style="text-align: center;">
+                <h1 style="font-size: 2.5rem; font-weight: 400; color: #78350f; margin: 0.5rem 0 0 0;">{title}</h1>
+                <p style="color: #f59e0b; font-size: 1.125rem; font-weight: 300; margin-top: 0.5rem;">{subtitle}</p>
+            </div>
+            ''',
+            unsafe_allow_html=True,
+        )
 
 
 def render_quote_list_item(
