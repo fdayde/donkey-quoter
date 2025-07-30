@@ -66,7 +66,7 @@
 
 /* ===== Base et Layout ===== */
 .stApp > .main {
-    background: #fef3e2; /* Fond beige/crème clair */
+    background: #fafaf9; /* stone-50 */
     min-height: 100vh;
     font-family: var(--font-family);
 }
@@ -103,43 +103,43 @@
 
 /* Conteneur Streamlit avec bordure - fond blanc */
 div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
-    background: rgba(255, 255, 255, 0.95) !important;
+    background: rgba(255, 255, 255, 0.7) !important; /* white/70 */
     backdrop-filter: blur(10px) !important;
     border-radius: var(--radius-lg) !important;
-    border-color: rgba(254, 243, 199, 0.5) !important;
+    border-color: rgba(254, 243, 199, 0.5) !important; /* amber-100/50 */
     box-shadow: var(--shadow-lg) !important;
 }
 
 .stats-card {
-    background: rgba(255, 251, 235, 0.8);
+    background: #fef3c7; /* amber-100 */
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
-    border: 1px solid rgba(254, 243, 199, 0.5);
+    border: 1px solid rgba(254, 243, 199, 0.5); /* amber-100/50 */
     text-align: center;
     transition: all 0.2s ease;
 }
 
 .stats-card.rose {
-    background: rgba(255, 241, 242, 0.8);
-    border-color: rgba(254, 205, 211, 0.5);
+    background: rgba(244, 63, 94, 0.1); /* rose-500/10 */
+    border-color: rgba(244, 63, 94, 0.3); /* rose-500/30 */
 }
 
 .stats-number {
     font-family: var(--font-family);
     font-size: 1.5rem;
     font-weight: 300;
-    color: var(--amber-800);
+    color: #b45309; /* amber-700 */
 }
 
 .stats-card.rose .stats-number {
-    color: var(--rose-800);
+    color: #f43f5e; /* rose-500 */
 }
 
 .stats-label {
     font-family: var(--font-family);
     font-size: 0.875rem;
     font-weight: 500;
-    color: rgba(180, 83, 9, 0.7);
+    color: rgba(180, 83, 9, 0.7); /* amber-700/70 */
 }
 
 .stats-card.rose .stats-label {
@@ -153,7 +153,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .quote-icon {
-    color: var(--amber-300);
+    color: #d97706; /* amber-600 */
     font-size: 3rem;
     margin-bottom: var(--spacing-lg);
     line-height: 1;
@@ -162,7 +162,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 .quote-text {
     font-family: var(--font-family);
     font-size: 1.5rem;
-    color: rgba(120, 53, 15, 0.9);
+    color: #78350f; /* amber-900 */
     line-height: 1.8;
     font-weight: 300;
     white-space: pre-line;
@@ -171,7 +171,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 
 .quote-author {
     font-family: var(--font-family);
-    color: rgba(180, 83, 9, 0.7);
+    color: #b45309; /* amber-700 */
     font-size: 1rem;
     font-weight: 500;
 }
@@ -190,79 +190,17 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     background-image: none !important;
 }
 
-/* Boutons par type */
-.stButton:has(button[key="new_quote"]) > button {
-    background-color: #fb923c !important; /* Orange */
-    color: white !important;
-}
+/* Boutons - Limitation Streamlit */
+/* NOTE: Streamlit ne permet que 2 types de boutons: primary et secondary */
+/* Les styles CSS personnalisés pour les couleurs de fond ne fonctionnent pas */
+/* Utiliser type="primary" dans le code Python pour les boutons principaux */
 
-.stButton:has(button[key="new_quote"]) > button:hover {
-    background-color: #f97316 !important;
-    box-shadow: var(--shadow-md) !important;
-}
-
-.stButton:has(button[key="create_poem"]) > button {
-    background-color: #ec4899 !important; /* Rose/Magenta */
-    color: white !important;
-}
-
-.stButton:has(button[key="create_poem"]) > button:hover {
-    background-color: #db2777 !important;
-    box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.25) !important;
-}
-
-.stButton:has(button[key="show_all_btn"]) > button {
-    background-color: transparent !important;
-    border: 2px solid #92400e !important; /* Style outline */
-    color: #92400e !important;
-}
-
-.stButton:has(button[key="show_all_btn"]) > button:hover {
-    background-color: rgba(146, 64, 14, 0.1) !important;
-}
-
-.stButton:has(button[key="add_quote_btn"]) > button {
-    background-color: #fb923c !important; /* Orange comme nouvelle citation */
-    color: white !important;
-}
-
-.stButton:has(button[key="add_quote_btn"]) > button:hover {
-    background-color: #f97316 !important;
-}
-
-.stDownloadButton > button {
-    background-color: var(--orange-600) !important;
-    color: white !important;
-}
-
-.stDownloadButton > button:hover {
-    background-color: var(--orange-700) !important;
-    box-shadow: var(--shadow-md) !important;
-}
-
+/* Style pour le bouton de changement de langue uniquement */
 .stButton:has(button[key="lang_switch"]) > button {
-    background-color: rgba(254, 243, 199, 0.8) !important;
-    color: var(--amber-800) !important;
-    border: 1px solid rgba(254, 230, 138, 0.6) !important;
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
     padding: 0.5rem 1rem !important;
-}
-
-.stButton:has(button[key="lang_switch"]) > button:hover {
-    background-color: rgba(254, 230, 138, 0.8) !important;
-}
-
-/* Bouton Sauvegarder avec fond jaune/doré */
-.stButton:has(button[key*="save_"]) > button {
-    background-color: #fbbf24 !important; /* Jaune doré */
-    color: #78350f !important;
-    border: 1px solid #f59e0b !important;
-}
-
-.stButton:has(button[key*="save_"]) > button:hover:not(:disabled) {
-    background-color: #f59e0b !important;
 }
 
 /* Boutons désactivés */

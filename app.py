@@ -44,13 +44,13 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
             f"""
             <div style="padding: 2rem;">
                 <div style="text-align: center;">
-                    <span style="font-size: 4rem; color: #f59e0b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 0.5;">"</span>
+                    <span style="font-size: 4rem; color: #d97706; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 0.5;">"</span>
                 </div>
-                <div style="font-size: 1.75rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; text-align: center; margin: 1rem 2rem;">
+                <div style="font-size: 1.25rem; color: #78350f; line-height: 1.8; font-weight: 300; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; text-align: center; margin: 1rem 2rem; white-space: pre-line;">
                     {quote_text}
                 </div>
                 <div style="text-align: right; margin-right: 2rem; margin-top: 1rem;">
-                    <span style="color: #92400e; font-size: 1.125rem; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
+                    <span style="color: #b45309; font-size: 1.125rem; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
                 </div>
             </div>
             """,
@@ -93,7 +93,7 @@ def render_action_buttons(quote_manager: QuoteManager, haiku_generator: HaikuGen
     
     # Nouvelle citation
     with col1:
-        if st.button(f"🔀 {t['new_quote']}", key="new_quote", use_container_width=True):
+        if st.button(f"🔀 {t['new_quote']}", key="new_quote", use_container_width=True, type="primary"):
             quote_manager.get_random_quote()
             st.rerun()
     
@@ -104,6 +104,7 @@ def render_action_buttons(quote_manager: QuoteManager, haiku_generator: HaikuGen
             key="create_poem",
             disabled=not quote_manager.current_quote,
             use_container_width=True,
+            type="secondary"
         ):
             with st.spinner(t["creating"]):
                 poem = haiku_generator.generate_from_quote(
@@ -128,7 +129,7 @@ def render_action_buttons(quote_manager: QuoteManager, haiku_generator: HaikuGen
     st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button(f"➕ {t['add_quote']}", key="add_quote_btn", use_container_width=True):
+        if st.button(f"➕ {t['add_quote']}", key="add_quote_btn", use_container_width=True, type="primary"):
             if "show_add_form" not in st.session_state:
                 st.session_state.show_add_form = False
             st.session_state.show_add_form = not st.session_state.show_add_form

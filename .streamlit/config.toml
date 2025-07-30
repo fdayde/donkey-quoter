@@ -1,9 +1,9 @@
 [theme]
 base = "light"
-primaryColor = "#f59e0b"
+primaryColor = "#d97706"
 backgroundColor = "#fafaf9"
-secondaryBackgroundColor = "#fffbeb"
-textColor = "#1f2937"
+secondaryBackgroundColor = "#fef3c7"
+textColor = "#78350f"
 font = "sans serif"
 
 # Nouvelles options de thème 2025
