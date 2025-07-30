@@ -1,0 +1,16 @@
+[theme]
+base = "light"
+primaryColor = "#d97706"
+backgroundColor = "#fafaf9"
+secondaryBackgroundColor = "#fef3c7"
+textColor = "#78350f"
+font = "sans serif"
+
+# Nouvelles options de thème 2025
+chartCategoricalColors = ["#f59e0b", "#d97706", "#b45309", "#92400e", "#78350f", "#ea580c", "#c2410c", "#9a3412"]
+chartSequentialColors = ["#fffbeb", "#fef3c7", "#fde68a", "#fcd34d", "#fbbf24", "#f59e0b", "#d97706", "#b45309", "#92400e", "#78350f"]
+codeFontWeight = 400
+dataframeHeaderBackgroundColor = "#fef3c7"
+headingFontSizes = ["2.5rem", "2rem", "1.75rem", "1.5rem", "1.25rem", "1rem"]
+headingFontWeights = [300, 400, 500, 600, 700, 800]
+linkUnderline = false
