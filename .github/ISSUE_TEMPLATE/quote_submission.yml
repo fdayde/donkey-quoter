@@ -1,0 +1,93 @@
+name: 📝 Quote Submission
+description: Submit a new quote to be added to Donkey Quoter
+title: "[QUOTE] "
+labels: ["quote-submission", "needs-review"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🫏 Submit a New Quote
+
+        Thank you for contributing to Donkey Quoter! Please provide the quote in the required JSON format.
+
+        **Guidelines:**
+        - Quotes should be limited to **one sentence**
+        - **No offensive content** or plagiarism
+        - Provide both **French and English** translations
+        - Use an **unique ID** (check existing quotes to avoid duplicates)
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Select the most appropriate category for your quote
+      options:
+        - classic (proverbs, popular wisdom, historical quotes)
+        - personal (original philosophical reflections, personal thoughts)
+        - humorous (amusing quotes, wordplay, wisdom with humor)
+        - new-category (propose a new category - explain in additional context)
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: quote-json
+    attributes:
+      label: Quote JSON Format
+      description: |
+        Please provide the quote in the exact JSON format used by the project.
+        **Important:** Use a unique ID and ensure both French and English translations are provided.
+      placeholder: |
+        {
+          "id": "your_unique_id",
+          "text": {
+            "fr": "Votre citation en français (une phrase maximum)",
+            "en": "Your quote in English (one sentence maximum)"
+          },
+          "author": {
+            "fr": "Nom de l'auteur en français (ou 'Anonyme')",
+            "en": "Author name in English (or 'Anonymous')"
+          },
+          "category": "classic",
+          "type": "preset"
+        }
+      render: json
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Validation Checklist
+      description: Please confirm the following before submitting
+      options:
+        - label: The quote is **one sentence maximum**
+          required: true
+        - label: The content is **not offensive** and respects community guidelines
+          required: true
+        - label: This is **not plagiarized content** or copyrighted material
+          required: true
+        - label: I have provided **both French and English translations**
+          required: true
+        - label: I have used a **unique ID** that doesn't conflict with existing quotes
+          required: true
+        - label: The JSON format is **valid and complete** (includes all required fields)
+          required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context (Optional)
+      description: |
+        - If you selected "new-category", please explain your proposed category
+        - Any background information about the quote or author
+        - Translation notes or cultural context
+      placeholder: "Provide any additional context about your quote submission..."
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Source/Attribution (Optional)
+      description: Where did you find this quote? (for verification purposes)
+      placeholder: "Book, website, personal creation, etc."

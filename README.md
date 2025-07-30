@@ -1,11 +1,11 @@
-# 🫏 Donkey Quoter
+# Donkey Quoter
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-red.svg)
+![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-red.svg)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
 ![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 
-> *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
+🫏 *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
 
 ## ✨ Overview
 
@@ -15,6 +15,14 @@ Donkey Quoter is a minimalist web application that allows you to:
 - 💾 Save your favorite quotes and haikus
 - 📥 Export your collection in JSON format
 - 🌐 Switch between French and English
+
+## 📸 Screenshots
+
+<div align="center">
+
+![App](docs/app.png)
+
+</div>
 
 ## 🎯 Features
 
@@ -40,7 +48,7 @@ cd donkey-quoter
 
 # Create a virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\Activate.ps1
 
 # Install dependencies
 pip install -r requirements.txt
@@ -50,7 +58,7 @@ pip install -r requirements.txt
 
 - **streamlit** >= 1.32.0: Web application framework
 - **pydantic** >= 2.0.0: Data validation
-- **python** >= 3.10: Required Python version
+- **python** >= 3.9: Required Python version
 
 ## 🎮 Usage
 
@@ -82,33 +90,38 @@ donkey-quoter/
 ## 🎨 Customization
 
 ### Adding Quotes
-Modify the `data/quotes.json` file to add your own quotes:
 
-```json
-{
-  "id": "custom_001",
-  "text": {
+#### Submit via GitHub Issue
+The easiest way to contribute quotes is through our GitHub issue template:
+1. Go to [Submit a Quote](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
+2. Fill in the form with your quote in both languages
+3. Submit and wait for review
+
+#### Local Development
+For testing, you can modify the `src/donkey_quoter/data/quotes.py` file directly:
+
+```python
+Quote(
+  id="custom_001",
+  text={
     "fr": "Votre citation en français",
     "en": "Your quote in English"
   },
-  "author": {
+  author={
     "fr": "Auteur",
     "en": "Author"
   },
-  "category": "personal"
-}
+  category="personal"
+)
 ```
-
-### Modifying the Theme
-Adjust colors in `.streamlit/config.toml` to customize the appearance.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Add quotes
-- 🌍 Improve translations
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+- Development setup
+- Code style and quality standards
+- Submitting pull requests
+- Running tests
 
 ## 📄 License
 
@@ -116,7 +129,7 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 
 ## 🙏 Acknowledgments
 
-Inspired by popular wisdom and the love of simple poetry.
+Inspired by popular wisdom and the love of simple 🫏 poetry.
 
 ---
 
