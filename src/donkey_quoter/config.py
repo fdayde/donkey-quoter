@@ -1,6 +1,7 @@
 """
 Configuration centralisée de l'application.
 """
+
 from pathlib import Path
 
 # Configuration de la page
@@ -20,7 +21,7 @@ CATEGORY_COLORS = {
     "classic": "orange",
     "personal": "orange",
     "poem": "red",
-    "humor": "yellow"
+    "humor": "yellow",
 }
 
 # Configuration de l'export

@@ -1,6 +1,7 @@
 """
 Module de génération de haïkus.
 """
+
 import random
 import time
 from datetime import datetime
@@ -85,9 +86,7 @@ class HaikuGenerator:
         """Initialise le générateur de haïkus."""
         pass
 
-    def get_theme_from_quote(
-        self, text: str, author: str, category: str
-    ) -> str:
+    def get_theme_from_quote(self, text: str, author: str, category: str) -> str:
         """Détermine le thème approprié basé sur la citation."""
         if category == "humor":
             return "humor"
@@ -107,9 +106,7 @@ class HaikuGenerator:
 
         return "wisdom"
 
-    def generate_from_quote(
-        self, quote: Quote, language: str
-    ) -> Optional[Quote]:
+    def generate_from_quote(self, quote: Quote, language: str) -> Optional[Quote]:
         """Génère un haïku basé sur une citation."""
         # Simuler le temps de génération
         progress_bar = st.progress(0)

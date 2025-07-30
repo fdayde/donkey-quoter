@@ -1,6 +1,7 @@
 """
 Module de gestion des citations.
 """
+
 import json
 import random
 from datetime import datetime
@@ -93,7 +94,9 @@ class QuoteManager:
 
     def delete_quote(self, quote_id: str):
         """Supprime une citation."""
-        st.session_state.quotes = [q for q in st.session_state.quotes if q.id != quote_id]
+        st.session_state.quotes = [
+            q for q in st.session_state.quotes if q.id != quote_id
+        ]
         if self.current_quote and self.current_quote.id == quote_id:
             if st.session_state.quotes:
                 self.current_quote = st.session_state.quotes[0]
@@ -110,7 +113,10 @@ class QuoteManager:
 
     def save_current_quote(self) -> bool:
         """Sauvegarde la citation courante."""
-        if self.current_quote and self.current_quote not in st.session_state.saved_quotes:
+        if (
+            self.current_quote
+            and self.current_quote not in st.session_state.saved_quotes
+        ):
             st.session_state.saved_quotes.append(self.current_quote)
             return True
         return False

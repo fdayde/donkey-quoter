@@ -1,6 +1,7 @@
 """
 Modèles de données pour l'application.
 """
+
 from typing import Dict, Optional
 
 from pydantic import BaseModel, Field
