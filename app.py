@@ -15,7 +15,6 @@ from src.donkey_quoter.config import (
     STYLES_CSS_PATH,
 )
 from src.donkey_quoter.haiku_generator import HaikuGenerator
-from src.donkey_quoter.models import QuoteInput
 from src.donkey_quoter.quote_manager import QuoteManager
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
@@ -216,21 +215,6 @@ def render_action_buttons(
             )
         )
 
-    # Bouton secondaire centré (Ajouter une citation)
-    st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button(
-            f"➕ {t['add_quote']}",
-            key="add_quote_btn",
-            use_container_width=True,
-            type="primary",
-        ):
-            if "show_add_form" not in st.session_state:
-                st.session_state.show_add_form = False
-            st.session_state.show_add_form = not st.session_state.show_add_form
-            st.rerun()
-
     # Bouton Export (si des citations sont sauvegardées)
     total_saved = len(quote_manager.saved_quotes) + len(quote_manager.saved_poems)
     if total_saved > 0:
@@ -269,15 +253,11 @@ def render_all_quotes_list(quote_manager: QuoteManager, lang: str, t: dict):
                     quote_text=quote_text,
                     quote_author=quote_author,
                     on_display=lambda q: (
-                        quote_manager.set_current_quote(q),
+                        setattr(quote_manager, "current_quote", q),
                         StateManager.hide_all_quotes(),
                         st.rerun(),
                     ),
-                    on_delete=lambda qid, q=quote: (
-                        (quote_manager.delete_quote(qid), st.rerun())
-                        if q.type == "user"
-                        else None
-                    ),
+                    on_delete=None,  # Suppression désactivée
                 )
                 st.divider()
 
@@ -306,64 +286,6 @@ def render_saved_stats(quote_manager: QuoteManager, t: dict):
         )
 
     st.markdown("</div>", unsafe_allow_html=True)
-
-
-def render_add_quote_form(
-    quote_manager: QuoteManager, haiku_generator: HaikuGenerator, lang: str, t: dict
-):
-    """Affiche le formulaire d'ajout de citation."""
-    from src.donkey_quoter.translations import CATEGORY_LABELS
-
-    if st.session_state.get("show_add_form", False):
-        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
-        with st.container(border=True):
-            st.markdown(f"### {t['add_quote']}")
-            with st.form("add_quote_form", clear_on_submit=True):
-                text = st.text_area(
-                    t["citation"],
-                    placeholder=t["placeholder_quote"],
-                    height=100,
-                )
-                author = st.text_input(
-                    t["author"],
-                    placeholder=t["placeholder_author"],
-                )
-                category = st.selectbox(
-                    t["category"],
-                    options=["personal", "humor", "classic"],
-                    format_func=lambda x: CATEGORY_LABELS[x][lang],
-                )
-
-                col1, col2 = st.columns(2)
-                with col1:
-                    submitted = st.form_submit_button(
-                        t["add"], use_container_width=True, type="primary"
-                    )
-                with col2:
-                    if st.form_submit_button(
-                        t.get("cancel", "Annuler"), use_container_width=True
-                    ):
-                        st.session_state.show_add_form = False
-                        st.rerun()
-
-                if submitted:
-                    if text and author:
-                        quote_input = QuoteInput(
-                            text=text.strip(),
-                            author=author.strip(),
-                            category=category,
-                        )
-                        quote_manager.add_quote(quote_input, lang)
-
-                        # Désactivé : pas de génération automatique de haïku pour les nouvelles citations
-                        # Pour compatibilité avec Streamlit Cloud et cohérence avec le système de limites
-                        pass
-
-                        st.success("✅")
-                        st.session_state.show_add_form = False
-                        st.rerun()
-                    else:
-                        st.error("❌")
 
 
 def main():
@@ -398,9 +320,6 @@ def main():
 
     # Boutons d'action
     render_action_buttons(quote_manager, haiku_generator, lang, t)
-
-    # Formulaire d'ajout (affiché sous le bouton Ajouter)
-    render_add_quote_form(quote_manager, haiku_generator, lang, t)
 
     # Liste des citations
     render_all_quotes_list(quote_manager, lang, t)
