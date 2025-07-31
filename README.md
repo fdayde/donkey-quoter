@@ -31,13 +31,11 @@ Donkey Quoter is a minimalist web application that allows you to:
 - **Personal**: Original philosophical reflections
 - **Humorous**: Light and amusing quotes
 
-### Haiku Generator
-Automatic creation of thematic haikus based on the spirit of the displayed quote.
-
-### Elegant Interface
-- Minimalist design with amber/stone color palette
-- Modern and readable sans-serif font
-- Smooth animations and responsive interface
+### AI-Powered Haiku Generator
+- **Claude Haiku 3.5**: Generate personalized haikus inspired by quotes using Anthropic's latest model
+- **Real-time generation**: Create new haikus with one click with Claude Haiku 3 (5 generations per session)
+- **Multi-language support**: Available in both French and English
+- **Stored haikus**: Access pre-generated haikus when API is unavailable
 
 ## 🚀 Installation
 
@@ -56,8 +54,10 @@ pip install -r requirements.txt
 
 ## 📦 Dependencies
 
-- **streamlit** >= 1.32.0: Web application framework
-- **pydantic** >= 2.0.0: Data validation
+- **streamlit** >= 1.31.0: Web application framework
+- **pydantic** >= 2.5.0: Data validation and models
+- **anthropic** >= 0.18.0: Claude API integration for haiku generation
+- **python-dotenv**: Environment variables management
 - **python** >= 3.9: Required Python version
 
 ## 🎮 Usage
@@ -77,14 +77,24 @@ donkey-quoter/
 ├── src/donkey_quoter/      # Main package
 │   ├── models.py          # Data models (Quote)
 │   ├── quote_manager.py   # Quote management
-│   ├── haiku_generator.py # Haiku generator
+│   ├── haiku_generator.py # AI haiku generation
+│   ├── haiku_storage.py   # Haiku persistence
+│   ├── claude_api.py      # Claude API integration
 │   ├── ui_components.py   # Reusable UI components
 │   ├── translations.py    # FR/EN translations
+│   ├── state_manager.py   # Session state management
+│   ├── config/            # Configuration modules
+│   │   ├── model_mapping.py # Claude model mappings
+│   │   └── api_pricing.py   # API pricing config
+│   ├── data/
+│   │   └── quotes.py      # Quote database
 │   └── styles.css        # Custom styles
-├── .streamlit/
-│   └── config.toml       # Theme configuration
-└── data/
-    └── quotes.json       # Quote database
+├── scripts/
+│   ├── regenerate_haikus.py    # Batch haiku generation
+│   └── generate_missing_haikus.py # Generate missing haikus
+├── data/
+│   └── haikus.json       # Generated haikus storage
+└── tests/                # Test suite
 ```
 
 ## 🎨 Customization
@@ -115,10 +125,20 @@ Quote(
 )
 ```
 
-### Generating Haikus
+### AI Haiku Configuration
 
-The application can generate haikus using Claude API. To regenerate haikus in batch:
+The application supports multiple Claude models for haiku generation:
 
+**Supported Models**:
+- `claude-3-5-haiku-20241022` (Claude Haiku 3.5) - Latest and fastest
+- `claude-3-haiku-20240307` (Claude Haiku 3) - Previous version
+
+**Setup**:
+1. Create a `.env` file in the project root
+2. Add your Anthropic API key: `ANTHROPIC_API_KEY=your_key_here`
+3. Optionally set the model: `CLAUDE_MODEL=claude-3-5-haiku-20241022`
+
+**Batch Generation**:
 ```bash
 # Generate missing haikus only
 python scripts/regenerate_haikus.py
@@ -130,9 +150,10 @@ python scripts/regenerate_haikus.py --regenerate-all
 python scripts/regenerate_haikus.py --limit 5 --dry-run
 ```
 
-**Requirements**:
-- Set `ANTHROPIC_API_KEY` in your `.env` file
-- Haikus are stored with metadata (date, model) in `data/haikus.json`
+**Features**:
+- Haikus stored with metadata (date, model) in `data/haikus.json`
+- Real-time generation limited to 5 per session
+- Fallback to stored haikus when API unavailable
 
 ## 🤝 Contributing
 
