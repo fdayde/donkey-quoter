@@ -27,7 +27,7 @@ Thank you for your interest in contributing!
 - **KISS**: Keep it simple - prefer clarity over cleverness
 - **DRY**: Don't repeat yourself - extract common logic
 - **Modular**: One function = one responsibility
-- **PEP8**: Follow Python style guide
+- **Style**: Code formatting and linting handled by Ruff
 - **Documentation**: Add docstrings to new functions
 
 ### ✅ Before Submitting
@@ -42,14 +42,34 @@ pre-commit install
 # Run all checks
 pre-commit run --all-files
 
-# Ensure your code is properly formatted
-black src/
-isort src/
+# Format and lint your code
+ruff check src/ --fix
+ruff format src/
 ```
+
+### 🎨 Generate Haikus
+
+To regenerate haikus using Claude API:
+
+```bash
+# Test with dry run (no API calls)
+python scripts/regenerate_haikus.py --dry-run
+
+# Generate missing haikus only
+python scripts/regenerate_haikus.py
+
+# Regenerate ALL haikus
+python scripts/regenerate_haikus.py --regenerate-all
+
+# Test with limited quotes
+python scripts/regenerate_haikus.py --limit 5
+```
+
+**Note**: Requires `ANTHROPIC_API_KEY` in `.env` file.
 
 ### 📋 Pull Request Checklist
 
-- [ ] Code follows project style (Black, isort, PEP8)
+- [ ] Code follows project style (Ruff for formatting and linting)
 - [ ] Functions have clear docstrings
 - [ ] No code duplication (DRY principle)
 - [ ] Changes are focused and minimal (KISS principle)

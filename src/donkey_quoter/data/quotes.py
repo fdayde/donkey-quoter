@@ -96,8 +96,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c10",
         "text": {
-            "fr": "Méfie-toi du tigre plus que du lion, et d'un âne méchant plus que du tigre.",
-            "en": "Beware of the tiger more than the lion, and of a mean donkey more than the tiger.",
+            "fr": (
+                "Méfie-toi du tigre plus que du lion, "
+                "et d'un âne méchant plus que du tigre."
+            ),
+            "en": (
+                "Beware of the tiger more than the lion, "
+                "and of a mean donkey more than the tiger."
+            ),
         },
         "author": {"fr": "Proverbe arabe", "en": "Arabic proverb"},
         "category": "classic",
@@ -106,8 +112,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c11",
         "text": {
-            "fr": "Celui qui porte un présent sur un âne attend de recevoir un présent sur un chameau.",
-            "en": "One who brings a gift on a donkey expects to receive a gift on a camel.",
+            "fr": (
+                "Celui qui porte un présent sur un âne "
+                "attend de recevoir un présent sur un chameau."
+            ),
+            "en": (
+                "One who brings a gift on a donkey "
+                "expects to receive a gift on a camel."
+            ),
         },
         "author": {"fr": "Proverbe arabe", "en": "Arabic proverb"},
         "category": "classic",
@@ -116,8 +128,13 @@ CLASSIC_QUOTES = [
     {
         "id": "c12",
         "text": {
-            "fr": "Le riche avare est semblable à un âne chargé d'or qui mange de la paille.",
-            "en": "The miserly rich man is like a donkey loaded with gold eating straw.",
+            "fr": (
+                "Le riche avare est semblable à un âne "
+                "chargé d'or qui mange de la paille."
+            ),
+            "en": (
+                "The miserly rich man is like a donkey loaded with gold eating straw."
+            ),
         },
         "author": {"fr": "Proverbe algérien", "en": "Algerian proverb"},
         "category": "classic",
@@ -126,7 +143,9 @@ CLASSIC_QUOTES = [
     {
         "id": "c13",
         "text": {
-            "fr": "Si vous donnez de l'avoine à un âne, il vous paiera d'un coup de pied.",
+            "fr": (
+                "Si vous donnez de l'avoine à un âne, il vous paiera d'un coup de pied."
+            ),
             "en": "If you give oats to a donkey, it will repay you with a kick.",
         },
         "author": {"fr": "Proverbe français", "en": "French proverb"},
@@ -136,8 +155,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c14",
         "text": {
-            "fr": "Vous pouvez obliger un âne à traverser l'eau, mais vous ne pouvez pas l'obliger à en boire.",
-            "en": "You can force a donkey to cross water, but you can't force it to drink.",
+            "fr": (
+                "Vous pouvez obliger un âne à traverser l'eau, "
+                "mais vous ne pouvez pas l'obliger à en boire."
+            ),
+            "en": (
+                "You can force a donkey to cross water, "
+                "but you can't force it to drink."
+            ),
         },
         "author": {"fr": "Proverbe créole", "en": "Creole proverb"},
         "category": "classic",
@@ -156,7 +181,10 @@ CLASSIC_QUOTES = [
     {
         "id": "c16",
         "text": {
-            "fr": "Un âne reste un âne, même quand il se trouve parmi un millier de chevaux.",
+            "fr": (
+                "Un âne reste un âne, même quand il se trouve "
+                "parmi un millier de chevaux."
+            ),
             "en": "A donkey remains a donkey, even among a thousand horses.",
         },
         "author": {"fr": "Proverbe juif", "en": "Jewish proverb"},
@@ -166,8 +194,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c17",
         "text": {
-            "fr": "Celui qui fait l'âne ne doit pas s'étonner si les autres lui grimpent sur le dos.",
-            "en": "He who acts like a donkey shouldn't be surprised if others climb on his back.",
+            "fr": (
+                "Celui qui fait l'âne ne doit pas s'étonner "
+                "si les autres lui grimpent sur le dos."
+            ),
+            "en": (
+                "He who acts like a donkey shouldn't be surprised "
+                "if others climb on his back."
+            ),
         },
         "author": {"fr": "Proverbe chinois", "en": "Chinese proverb"},
         "category": "classic",
@@ -206,8 +240,13 @@ CLASSIC_QUOTES = [
     {
         "id": "c21",
         "text": {
-            "fr": "Des moutons dirigés par un lion sont plus redoutables que des lions dirigés par un âne.",
-            "en": "Sheep led by a lion are more formidable than lions led by a donkey.",
+            "fr": (
+                "Des moutons dirigés par un lion sont plus redoutables "
+                "que des lions dirigés par un âne."
+            ),
+            "en": (
+                "Sheep led by a lion are more formidable than lions led by a donkey."
+            ),
         },
         "author": {"fr": "Douglas MacArthur", "en": "Douglas MacArthur"},
         "category": "classic",
@@ -227,7 +266,9 @@ CLASSIC_QUOTES = [
         "id": "c23",
         "text": {
             "fr": "Il n'est forteresse qu'un âne chargé d'or ne puisse approcher.",
-            "en": "There is no fortress that a donkey loaded with gold cannot approach.",
+            "en": (
+                "There is no fortress that a donkey loaded with gold cannot approach."
+            ),
         },
         "author": {"fr": "Philippe II de Macédoine", "en": "Philip II of Macedon"},
         "category": "classic",
@@ -236,8 +277,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c24",
         "text": {
-            "fr": "J'aime mieux une armée de moutons commandée par un lion qu'une armée de lions commandés par un âne.",
-            "en": "I prefer an army of sheep led by a lion to an army of lions led by a donkey.",
+            "fr": (
+                "J'aime mieux une armée de moutons commandée par un lion "
+                "qu'une armée de lions commandés par un âne."
+            ),
+            "en": (
+                "I prefer an army of sheep led by a lion "
+                "to an army of lions led by a donkey."
+            ),
         },
         "author": {"fr": "Ferdinand Foch", "en": "Ferdinand Foch"},
         "category": "classic",
@@ -256,7 +303,9 @@ CLASSIC_QUOTES = [
     {
         "id": "c26",
         "text": {
-            "fr": "La nuit est destinée au sommeil, le jour au repos et l'âne au travail.",
+            "fr": (
+                "La nuit est destinée au sommeil, le jour au repos et l'âne au travail."
+            ),
             "en": "The night is for sleep, the day for rest, and the donkey for work.",
         },
         "author": {"fr": "Proverbe afghan", "en": "Afghan proverb"},
@@ -296,8 +345,11 @@ CLASSIC_QUOTES = [
     {
         "id": "c30",
         "text": {
-            "fr": "Si la forte voix servait à quelque chose, l'âne se serait fait construire des palais.",
-            "en": "If a loud voice were useful, the donkey would have built palaces.",
+            "fr": (
+                "Si la forte voix servait à quelque chose, "
+                "l'âne se serait fait construire des palais."
+            ),
+            "en": ("If a loud voice were useful, the donkey would have built palaces."),
         },
         "author": {"fr": "Proverbe libanais", "en": "Lebanese proverb"},
         "category": "humor",
@@ -306,7 +358,10 @@ CLASSIC_QUOTES = [
     {
         "id": "c31",
         "text": {
-            "fr": "Un âne qui porte sa charge vaut mieux qu'un lion qui dévore les hommes.",
+            "fr": (
+                "Un âne qui porte sa charge vaut mieux "
+                "qu'un lion qui dévore les hommes."
+            ),
             "en": "A donkey carrying its load is worth more than a lion devouring men.",
         },
         "author": {"fr": "Proverbe oriental", "en": "Oriental proverb"},
@@ -316,8 +371,13 @@ CLASSIC_QUOTES = [
     {
         "id": "c32",
         "text": {
-            "fr": "Même s'il porte un précieux harnais, l'âne ne se transforme pas en cheval de course.",
-            "en": "Even wearing precious harness, a donkey doesn't become a racehorse.",
+            "fr": (
+                "Même s'il porte un précieux harnais, "
+                "l'âne ne se transforme pas en cheval de course."
+            ),
+            "en": (
+                "Even wearing precious harness, a donkey doesn't become a racehorse."
+            ),
         },
         "author": {"fr": "Proverbe tunisien", "en": "Tunisian proverb"},
         "category": "classic",
@@ -346,8 +406,16 @@ CLASSIC_QUOTES = [
     {
         "id": "c35",
         "text": {
-            "fr": "Je suis fermement persuadé que les ânes, quand ils s'insultent entre eux, n'ont pas de plus sanglante injure que de s'appeler hommes.",
-            "en": "I am firmly convinced that donkeys, when they insult each other, have no bloodier insult than calling each other humans.",
+            "fr": (
+                "Je suis fermement persuadé que les ânes, "
+                "quand ils s'insultent entre eux, n'ont pas de plus "
+                "sanglante injure que de s'appeler hommes."
+            ),
+            "en": (
+                "I am firmly convinced that donkeys, when they insult "
+                "each other, have no bloodier insult than calling "
+                "each other humans."
+            ),
         },
         "author": {"fr": "Auteur inconnu", "en": "Unknown author"},
         "category": "classic",
@@ -356,8 +424,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c36",
         "text": {
-            "fr": "Comment se fait-il que le sage soit devant nous sur son âne, et nous loin derrière sur nos pur-sang ?",
-            "en": "How is it that the wise man is ahead of us on his donkey, while we are far behind on our thoroughbreds?",
+            "fr": (
+                "Comment se fait-il que le sage soit devant nous "
+                "sur son âne, et nous loin derrière sur nos pur-sang ?"
+            ),
+            "en": (
+                "How is it that the wise man is ahead of us on his donkey, "
+                "while we are far behind on our thoroughbreds?"
+            ),
         },
         "author": {"fr": "Auteur inconnu", "en": "Unknown author"},
         "category": "classic",
@@ -376,8 +450,13 @@ CLASSIC_QUOTES = [
     {
         "id": "c38",
         "text": {
-            "fr": "Tous ceux qui se livrent à la philosophie combattent pour l'ombre d'un âne.",
-            "en": "All those who engage in philosophy fight for the shadow of a donkey.",
+            "fr": (
+                "Tous ceux qui se livrent à la philosophie "
+                "combattent pour l'ombre d'un âne."
+            ),
+            "en": (
+                "All those who engage in philosophy fight for the shadow of a donkey."
+            ),
         },
         "author": {"fr": "Lucien de Samosate", "en": "Lucian of Samosata"},
         "category": "classic",
@@ -396,7 +475,10 @@ CLASSIC_QUOTES = [
     {
         "id": "c40",
         "text": {
-            "fr": "Il est honteux de monter sur un âne, mais il est plus honteux d'en tomber.",
+            "fr": (
+                "Il est honteux de monter sur un âne, "
+                "mais il est plus honteux d'en tomber."
+            ),
             "en": "It's shameful to ride a donkey, but more shameful to fall off one.",
         },
         "author": {"fr": "Proverbe russe", "en": "Russian proverb"},
@@ -416,7 +498,9 @@ CLASSIC_QUOTES = [
     {
         "id": "c42",
         "text": {
-            "fr": "Ne meurs pas, ô mon âne ! le printemps viendra et avec lui le trèfle.",
+            "fr": (
+                "Ne meurs pas, ô mon âne ! le printemps viendra et avec lui le trèfle."
+            ),
             "en": "Don't die, oh my donkey! Spring will come and with it the clover.",
         },
         "author": {"fr": "Proverbe turc", "en": "Turkish proverb"},
@@ -446,8 +530,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c45",
         "text": {
-            "fr": "Garde-toi de faire société avec un ignorant ; car si tu es sage, tu deviendras un âne.",
-            "en": "Beware of keeping company with an ignorant person; for if you are wise, you will become a donkey.",
+            "fr": (
+                "Garde-toi de faire société avec un ignorant ; "
+                "car si tu es sage, tu deviendras un âne."
+            ),
+            "en": (
+                "Beware of keeping company with an ignorant person; "
+                "for if you are wise, you will become a donkey."
+            ),
         },
         "author": {"fr": "Saadi (poète persan)", "en": "Saadi (Persian poet)"},
         "category": "classic",
@@ -476,8 +566,14 @@ CLASSIC_QUOTES = [
     {
         "id": "c48",
         "text": {
-            "fr": "C'est à l'évaluation qu'on va voir la différence entre les ânes et ceux qui ont travaillé.",
-            "en": "It's at evaluation time that we'll see the difference between donkeys and those who worked.",
+            "fr": (
+                "C'est à l'évaluation qu'on va voir la différence "
+                "entre les ânes et ceux qui ont travaillé."
+            ),
+            "en": (
+                "It's at evaluation time that we'll see the difference "
+                "between donkeys and those who worked."
+            ),
         },
         "author": {"fr": "Mohamed Bouzinbi", "en": "Mohamed Bouzinbi"},
         "category": "classic",

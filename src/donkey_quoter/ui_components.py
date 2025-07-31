@@ -21,7 +21,24 @@ def render_category_badge(category: str, lang: str):
     """Affiche un badge de catégorie."""
     category_label = CATEGORY_LABELS.get(category, {}).get(lang, category)
     color = CATEGORY_COLORS.get(category, "gray")
-    st.badge(category_label, color=color)
+
+    # Mapping des couleurs Streamlit vers les couleurs CSS
+    color_map = {
+        "orange": "#f97316",
+        "red": "#ef4444",
+        "yellow": "#eab308",
+        "gray": "#6b7280",
+    }
+
+    css_color = color_map.get(color, "#6b7280")
+
+    # Utiliser du HTML personnalisé au lieu de st.badge
+    st.markdown(
+        f'<span style="display: inline-block; padding: 0.25rem 0.75rem; '
+        f"background-color: {css_color}; color: white; border-radius: 1rem; "
+        f'font-size: 0.75rem; font-weight: 500; margin-bottom: 0.5rem;">{category_label}</span>',
+        unsafe_allow_html=True,
+    )
 
 
 def render_stats_card(value: int, label: str, style_class: str = ""):
