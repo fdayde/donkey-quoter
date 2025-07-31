@@ -4,7 +4,10 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(cp:*)",
-      "Bash(pip freeze)"
+      "Bash(pip freeze)",
+      "Bash(python scripts/migrate_haikus.py:*)",
+      "Bash(python:*)",
+      "Bash(ruff check:*)"
     ],
     "deny": []
   }

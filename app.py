@@ -3,6 +3,7 @@ Donkey Quoter - Application Streamlit principale (version refactorisée).
 """
 
 from datetime import datetime
+from pathlib import Path
 
 import streamlit as st
 
@@ -108,6 +109,16 @@ def render_action_buttons(
     """Affiche les boutons d'action principaux."""
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # Afficher le compteur d'usage si API disponible
+    if haiku_generator.api_client:
+        usage_display = haiku_generator.get_usage_display(lang)
+        st.markdown(
+            f'<div style="text-align: center; color: #92400e; '
+            f'font-size: 0.875rem; margin-bottom: 1rem;">'
+            f"{usage_display}</div>",
+            unsafe_allow_html=True,
+        )
+
     # Boutons principaux en ligne horizontale (3 colonnes)
     col1, col2, col3 = st.columns(3, gap="medium")
 
@@ -124,16 +135,29 @@ def render_action_buttons(
 
     # Créer haïku
     with col2:
+        # Vérifier si on affiche un poème actuellement
+        is_poem = (
+            quote_manager.current_quote
+            and quote_manager.current_quote.category == "poem"
+        )
+        button_label = (
+            f"🔄 {t.get('regenerate_poem', 'Régénérer')}"
+            if is_poem
+            else f"✨ {t['create_poem']}"
+        )
+
         if st.button(
-            f"✨ {t['create_poem']}",
+            button_label,
             key="create_poem",
             disabled=not quote_manager.current_quote,
             use_container_width=True,
             type="secondary",
         ):
             with st.spinner(t["creating"]):
+                # Force new si c'est déjà un poème (régénération)
+                force_new = is_poem
                 poem = haiku_generator.generate_from_quote(
-                    quote_manager.current_quote, lang
+                    quote_manager.current_quote, lang, force_new=force_new
                 )
                 if poem:
                     quote_manager.current_quote = poem
@@ -243,7 +267,9 @@ def render_saved_stats(quote_manager: QuoteManager, t: dict):
     st.markdown("</div>", unsafe_allow_html=True)
 
 
-def render_add_quote_form(quote_manager: QuoteManager, lang: str, t: dict):
+def render_add_quote_form(
+    quote_manager: QuoteManager, haiku_generator: HaikuGenerator, lang: str, t: dict
+):
     """Affiche le formulaire d'ajout de citation."""
     from src.donkey_quoter.translations import CATEGORY_LABELS
 
@@ -286,7 +312,26 @@ def render_add_quote_form(quote_manager: QuoteManager, lang: str, t: dict):
                             author=author.strip(),
                             category=category,
                         )
-                        quote_manager.add_quote(quote_input, lang)
+                        new_quote = quote_manager.add_quote(quote_input, lang)
+
+                        # Générer un haïku automatiquement pour la nouvelle citation
+                        if haiku_generator.api_client:
+                            with st.spinner(t["creating"]):
+                                can_use, _ = haiku_generator.limiter.can_use_api()
+                                if can_use:
+                                    haiku_text = (
+                                        haiku_generator.api_client.generate_haiku(
+                                            new_quote.text[lang],
+                                            new_quote.author[lang],
+                                            lang,
+                                        )
+                                    )
+                                    if haiku_text:
+                                        haiku_generator.storage.add_haiku(
+                                            new_quote.id, haiku_text, lang
+                                        )
+                                        haiku_generator.limiter.increment_usage()
+
                         st.success("✅")
                         st.session_state.show_add_form = False
                         st.rerun()
@@ -307,7 +352,7 @@ def main():
 
     # Initialiser les gestionnaires
     quote_manager = QuoteManager()
-    haiku_generator = HaikuGenerator()
+    haiku_generator = HaikuGenerator(Path("data"))
 
     # Obtenir la langue et les traductions
     lang = StateManager.get_language()
@@ -328,7 +373,7 @@ def main():
     render_action_buttons(quote_manager, haiku_generator, lang, t)
 
     # Formulaire d'ajout (affiché sous le bouton Ajouter)
-    render_add_quote_form(quote_manager, lang, t)
+    render_add_quote_form(quote_manager, haiku_generator, lang, t)
 
     # Liste des citations
     render_all_quotes_list(quote_manager, lang, t)

@@ -152,3 +152,7 @@ ehthumbs.db
 # Streamlit
 .streamlit/secrets.toml
 *.db
+
+# Project specific
+data/haikus.json
+data/api_limits.json
