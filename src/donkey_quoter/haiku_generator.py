@@ -11,7 +11,6 @@ from typing import Optional
 
 import streamlit as st
 
-from .api_limiter import APILimiter
 from .claude_api import ClaudeAPIClient
 from .config.model_mapping import get_author_for_model
 from .haiku_storage import HaikuStorage
@@ -42,8 +41,11 @@ class HaikuGenerator:
     def __init__(self, data_dir: Path = None):
         """Initialise le générateur de haïkus."""
         self.storage = HaikuStorage(data_dir)
-        self.limiter = APILimiter(data_dir)
         self.api_client = None
+
+        # Initialiser le compteur de session pour les haïkus
+        if "haiku_generation_count" not in st.session_state:
+            st.session_state.haiku_generation_count = 0
 
         # Initialiser le client API seulement si la clé est disponible
         try:
@@ -118,13 +120,10 @@ class HaikuGenerator:
 
         # Si force_new=True, toujours essayer de générer un nouveau haïku
         if self.api_client and force_new:
-            can_use, message = self.limiter.can_use_api()
-            if can_use:
-                use_api = True
-            else:
-                api_message = message
-                st.warning(f"⚠️ {api_message}")
-                return None
+            # Vérifier la limite de session (5 générations max)
+            if st.session_state.haiku_generation_count >= 5:
+                return None  # Le bouton sera désactivé, mais au cas où
+            use_api = True
 
         # Afficher la progress bar
         progress_bar = st.progress(0)
@@ -140,10 +139,12 @@ class HaikuGenerator:
             )
 
             if haiku_text:
-                # Sauvegarder le haïku généré
-                model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
-                self.storage.add_haiku(quote.id, haiku_text, language, model)
-                self.limiter.increment_usage()
+                # Ne pas sauvegarder le haïku pour compatibilité Streamlit Cloud
+                # model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
+                # self.storage.add_haiku(quote.id, haiku_text, language, model)
+
+                # Incrémenter le compteur de session
+                st.session_state.haiku_generation_count += 1
 
                 for i in range(50, 100):
                     time.sleep(0.01)
@@ -203,4 +204,10 @@ class HaikuGenerator:
 
     def get_usage_display(self, language: str = "fr") -> str:
         """Retourne l'affichage du compteur d'usage."""
-        return self.limiter.get_usage_display(language)
+        count = st.session_state.haiku_generation_count
+        remaining = max(0, 5 - count)
+
+        if language == "fr":
+            return f"Haïkus restants : {remaining}/5"
+        else:
+            return f"Haikus remaining: {remaining}/5"

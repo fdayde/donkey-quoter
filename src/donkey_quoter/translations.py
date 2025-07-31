@@ -43,6 +43,8 @@ TRANSLATIONS = {
         "view_haiku": "Voir le Haïku",
         "loading_haiku": "Chargement...",
         "no_haiku": "Aucun haïku disponible pour cette citation.",
+        "limit_reached": "Limite atteinte",
+        "limit_message": "🐝 Les haïkus sont plus savoureux avec modération. Revenez demain pour 5 nouvelles créations !",
     },
     "en": {
         "title": "Donkey Quoter",
@@ -84,6 +86,8 @@ TRANSLATIONS = {
         "view_haiku": "View Haiku",
         "loading_haiku": "Loading...",
         "no_haiku": "No haiku available for this quote.",
+        "limit_reached": "Limit reached",
+        "limit_message": "🐝 Haikus are more delightful in moderation. Come back tomorrow for 5 new creations!",
     },
 }
 

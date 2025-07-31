@@ -143,10 +143,18 @@ def render_action_buttons(
 
         # Si c'est déjà un poème, proposer de créer un nouveau
         if is_poem:
+            # Vérifier si on a atteint la limite
+            has_reached_limit = st.session_state.get("haiku_generation_count", 0) >= 5
+
+            # Texte du bouton avec indication si limite atteinte
+            button_text = f"✨ {t['create_poem']}"
+            if has_reached_limit:
+                button_text = f"🚫 {t.get('limit_reached', 'Limite atteinte')}"
+
             if st.button(
-                f"✨ {t['create_poem']}",
+                button_text,
                 key="create_new_poem",
-                disabled=not quote_manager.current_quote,
+                disabled=not quote_manager.current_quote or has_reached_limit,
                 use_container_width=True,
                 type="secondary",
             ):
@@ -196,6 +204,16 @@ def render_action_buttons(
         ):
             StateManager.toggle_show_all_quotes()
             st.rerun()
+
+    # Afficher un message sympathique si la limite est atteinte
+    if st.session_state.get("haiku_generation_count", 0) >= 5:
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        st.info(
+            t.get(
+                "limit_message",
+                "🐝 Les haïkus sont plus savoureux avec modération. Revenez demain pour 5 nouvelles créations !",
+            )
+        )
 
     # Bouton secondaire centré (Ajouter une citation)
     st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
@@ -334,25 +352,11 @@ def render_add_quote_form(
                             author=author.strip(),
                             category=category,
                         )
-                        new_quote = quote_manager.add_quote(quote_input, lang)
+                        quote_manager.add_quote(quote_input, lang)
 
-                        # Générer un haïku automatiquement pour la nouvelle citation
-                        if haiku_generator.api_client:
-                            with st.spinner(t["creating"]):
-                                can_use, _ = haiku_generator.limiter.can_use_api()
-                                if can_use:
-                                    haiku_text = (
-                                        haiku_generator.api_client.generate_haiku(
-                                            new_quote.text[lang],
-                                            new_quote.author[lang],
-                                            lang,
-                                        )
-                                    )
-                                    if haiku_text:
-                                        haiku_generator.storage.add_haiku(
-                                            new_quote.id, haiku_text, lang
-                                        )
-                                        haiku_generator.limiter.increment_usage()
+                        # Désactivé : pas de génération automatique de haïku pour les nouvelles citations
+                        # Pour compatibilité avec Streamlit Cloud et cohérence avec le système de limites
+                        pass
 
                         st.success("✅")
                         st.session_state.show_add_form = False
