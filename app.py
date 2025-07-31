@@ -100,6 +100,31 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
                         quote_manager.save_current_quote()
                     st.rerun()
 
+    # Afficher la citation originale si c'est un haïku
+    if current_quote.category == "poem" and quote_manager.original_quote:
+        original = quote_manager.original_quote
+        original_text = quote_manager.get_text(original.text, lang)
+        original_author = quote_manager.get_text(original.author, lang)
+
+        st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div style="text-align: center; padding: 0.5rem;
+                background-color: rgba(254, 243, 199, 0.3);
+                border-radius: 0.5rem; margin-top: 0.5rem;">
+                <p style="font-size: 0.75rem; color: #92400e;
+                    font-style: italic; margin: 0;">
+                    {t.get("original_quote", "Citation originale" if lang == "fr" else "Original quote")} :
+                </p>
+                <p style="font-size: 0.75rem; color: #78350f;
+                    margin: 0.25rem 0 0 0;">
+                    "{original_text}" — {original_author}
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
 
 def render_action_buttons(
     quote_manager: QuoteManager, haiku_generator: HaikuGenerator, lang: str, t: dict
