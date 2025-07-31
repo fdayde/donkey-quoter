@@ -50,10 +50,10 @@ class HaikuGenerator:
         # Initialiser le client API seulement si la clé est disponible
         try:
             self.api_client = ClaudeAPIClient()
-        except ValueError:
-            print(
-                "API Claude non configurée - utilisation des haïkus stockés uniquement"
-            )
+        except ValueError as e:
+            self.api_client = None
+            # Stocker l'erreur pour l'afficher à l'utilisateur si nécessaire
+            self.api_error = str(e)
 
     def get_existing_haiku(self, quote: Quote, language: str) -> Optional[Quote]:
         """

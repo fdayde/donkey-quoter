@@ -114,7 +114,7 @@ class QuoteManager:
                 st.session_state.current_quote = None
 
     def get_random_quote(self) -> Optional[Quote]:
-        """Retourne une citation aléatoire."""
+        """Retourne une citation aléatoire et la définit comme courante."""
         if self.quotes:
             quote = random.choice(self.quotes)
             self.current_quote = quote
