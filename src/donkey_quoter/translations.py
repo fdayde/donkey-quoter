@@ -43,6 +43,7 @@ TRANSLATIONS = {
         "api_error_network": "Erreur de connexion. Vérifiez votre connexion internet.",
         "api_error_generic": "Erreur lors de la génération du haïku.",
         "original_quote": "Citation originale",
+        "contribute_message": "Venez ajouter vos propres citations",
     },
     "en": {
         "title": "Donkey Quoter",
@@ -84,6 +85,7 @@ TRANSLATIONS = {
         "api_error_network": "Connection error. Please check your internet connection.",
         "api_error_generic": "Error generating haiku.",
         "original_quote": "Original quote",
+        "contribute_message": "Come add your own quotes",
     },
 }
 

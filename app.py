@@ -323,7 +323,7 @@ def main():
     # Footer avec lien GitHub
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown(
-        """
+        f"""
         <div style="text-align: center; padding: 2rem 0 1rem 0;
             border-top: 1px solid rgba(254, 243, 199, 0.5); margin-top: 3rem;">
             <a href="https://github.com/fdayde/donkey-quoter" target="_blank"
@@ -346,6 +346,10 @@ def main():
                 </svg>
                 GitHub
             </a>
+            <p style="font-size: 0.625rem; font-style: italic; color: #d97706;
+                margin-top: 0.5rem; margin-bottom: 0;">
+                ↑ {t.get("contribute_message", "Venez ajouter vos propres citations" if lang == "fr" else "Come add your own quotes")}
+            </p>
         </div>
         """,
         unsafe_allow_html=True,
