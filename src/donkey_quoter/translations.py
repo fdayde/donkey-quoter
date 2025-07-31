@@ -44,6 +44,8 @@ TRANSLATIONS = {
         "api_error_generic": "Erreur lors de la génération du haïku.",
         "original_quote": "Citation originale",
         "contribute_message": "Venez ajouter vos propres citations",
+        "api_error": "❌ Clé API non configurée. Impossible de générer de nouveaux haïkus.",
+        "api_fail_fallback": "⚠️ Erreur API. Affichage d'un haïku existant.",
     },
     "en": {
         "title": "Donkey Quoter",
@@ -86,6 +88,8 @@ TRANSLATIONS = {
         "api_error_generic": "Error generating haiku.",
         "original_quote": "Original quote",
         "contribute_message": "Come add your own quotes",
+        "api_error": "❌ API key not configured. Cannot generate new haikus.",
+        "api_fail_fallback": "⚠️ API error. Showing existing haiku.",
     },
 }
 

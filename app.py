@@ -172,14 +172,52 @@ def render_action_buttons(
                 use_container_width=True,
                 type="secondary",
             ):
+                # Utiliser la citation originale si elle existe
+                # Si on affiche déjà un poème, original_quote devrait toujours exister
+                source_quote = quote_manager.original_quote
+                if not source_quote:
+                    # Fallback de sécurité - ne devrait jamais arriver
+                    st.error("Erreur: citation originale non trouvée")
+                    return
+
                 with st.spinner(t["creating"]):
-                    # Toujours forcer la création d'un nouveau haïku
-                    poem = haiku_generator.generate_from_quote(
-                        quote_manager.original_quote, lang, force_new=True
-                    )
-                    if poem:
-                        quote_manager.current_quote = poem
-                        st.rerun()
+                    # Vérifier si l'API est disponible
+                    if not haiku_generator.api_client:
+                        st.error(
+                            t.get(
+                                "api_error",
+                                "❌ Clé API non configurée. Impossible de générer de nouveaux haïkus.",
+                            )
+                        )
+                        # Essayer de récupérer un haïku existant à la place
+                        existing_poem = haiku_generator.get_existing_haiku(
+                            source_quote, lang
+                        )
+                        if existing_poem:
+                            quote_manager.current_quote = existing_poem
+                            st.rerun()
+                    else:
+                        # Toujours forcer la création d'un nouveau haïku
+                        poem = haiku_generator.generate_from_quote(
+                            source_quote, lang, force_new=True
+                        )
+                        if poem:
+                            quote_manager.current_quote = poem
+                            st.rerun()
+                        else:
+                            # Si échec de génération, essayer de récupérer un haïku existant
+                            existing_poem = haiku_generator.get_existing_haiku(
+                                source_quote, lang
+                            )
+                            if existing_poem:
+                                st.warning(
+                                    t.get(
+                                        "api_fail_fallback",
+                                        "⚠️ Erreur API. Affichage d'un haïku existant.",
+                                    )
+                                )
+                                quote_manager.current_quote = existing_poem
+                                st.rerun()
         else:
             # Si c'est une citation, proposer de voir le haïku existant
             if st.button(
@@ -290,16 +328,25 @@ def main():
     # Configuration de la page
     st.set_page_config(**PAGE_CONFIG)
 
-    # Forcer une nouvelle session à chaque refresh en utilisant query params
-    # Cela permet d'avoir une citation aléatoire à chaque F5
-    import time
+    # Gérer le refresh F5 vs rerun interne
+    # Utiliser un ID de session pour différencier les vrais refresh des reruns
+    if "session_id" not in st.session_state:
+        import random
+        import time
 
-    current_time = str(int(time.time()))
-    if st.query_params.get("t") != current_time:
-        # Nouveau refresh détecté - effacer current_quote pour forcer une nouvelle citation
+        # Créer un ID de session unique au premier chargement
+        st.session_state.session_id = f"{int(time.time())}_{random.randint(1000, 9999)}"
+        # Effacer current_quote pour forcer une nouvelle citation au premier chargement
         if "current_quote" in st.session_state:
             del st.session_state.current_quote
-        st.query_params["t"] = current_time
+
+    # Vérifier si c'est un vrai refresh (F5) en comparant l'ID de session dans query params
+    session_param = st.query_params.get("session")
+    if session_param != st.session_state.session_id:
+        # C'est un vrai refresh F5, pas un st.rerun()
+        if "current_quote" in st.session_state:
+            del st.session_state.current_quote
+        st.query_params["session"] = st.session_state.session_id
 
     # Initialiser l'état
     StateManager.initialize()
