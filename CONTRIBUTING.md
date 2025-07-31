@@ -76,13 +76,34 @@ python scripts/regenerate_haikus.py --limit 5
 - [ ] Pre-commit checks pass
 - [ ] Manual testing completed
 
+### 📖 Contributing Quotes
+
+We welcome quote suggestions to enrich our collection!
+
+**🎯 Quote Submission Guidelines**:
+- Provide both French and English translations
+- Choose appropriate category (classic, personal, humorous)
+- Ensure quotes are inspiring, meaningful, or thought-provoking
+- Verify author attribution when possible
+
+**📝 How to Submit**:
+1. Use our [Quote Submission Template](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
+2. Fill in all required fields (text, author, category)
+3. Wait for maintainer review and approval
+
+**✅ What Makes a Good Quote**:
+- Universal wisdom or insight
+- Clear, concise language
+- Appropriate for all audiences
+- Original or properly attributed
+
 ### 🚀 Quick Fixes Welcome
 
 - Typos in documentation
 - Bug fixes with clear explanations
 - Performance improvements
 - Translation updates
-- Add quotes via [Quote Submission Form](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
+- Quote suggestions via [Quote Submission Form](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
 
 ### 💬 Questions?
 Open an issue and we'll help!

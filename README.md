@@ -7,6 +7,8 @@
 
 🫏 *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
 
+💡 **Want to contribute quotes?** Check out our [Quote Submission Guide](#-suggest-new--quotes)
+
 ## ✨ Overview
 
 Donkey Quoter is a minimalist web application that allows you to:
@@ -101,14 +103,18 @@ donkey-quoter/
 
 ### Adding Quotes
 
-#### Submit via GitHub Issue
-The easiest way to contribute quotes is through our GitHub issue template:
-1. Go to [Submit a Quote](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
-2. Fill in the form with your quote in both languages
-3. Submit and wait for review
+#### 💡 Suggest New 🫏 Quotes
+We encourage community contributions to enrich our quote collection! You can suggest quotes in two ways:
 
-#### Local Development
-For testing, you can modify the `src/donkey_quoter/data/quotes.py` file directly:
+**📝 Submit via GitHub Issue (Recommended)**
+The easiest way to contribute quotes is through our dedicated template:
+1. Go to [Submit a Quote](https://github.com/fdayde/donkey-quoter/issues/new?template=quote_submission.yml)
+2. Fill in the form with your quote in both French and English
+3. Select the appropriate category (classic, personal, humorous)
+4. Submit and wait for review
+
+**⚡ Local Development**
+For testing purposes, you can modify the `src/donkey_quoter/data/quotes.py` file directly:
 
 ```python
 Quote(
