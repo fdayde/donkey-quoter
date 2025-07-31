@@ -140,9 +140,22 @@ The application supports multiple Claude models for haiku generation:
 - `claude-3-haiku-20240307` (Claude Haiku 3) - Previous version
 
 **Setup**:
+
+*Local Development*:
 1. Create a `.env` file in the project root
 2. Add your Anthropic API key: `ANTHROPIC_API_KEY=your_key_here`
 3. Optionally set the model: `CLAUDE_MODEL=claude-3-5-haiku-20241022`
+
+*Streamlit Cloud Deployment*:
+1. Deploy your app to Streamlit Cloud
+2. Go to your app's Settings → Secrets
+3. Add your secrets in TOML format:
+   ```toml
+   ANTHROPIC_API_KEY = "your_key_here"
+   CLAUDE_MODEL = "claude-3-haiku-20240307"
+   ```
+4. Save and restart your app
+5. **Note**: The app automatically uses Streamlit secrets when available, falling back to `.env` for local development
 
 **Batch Generation**:
 ```bash

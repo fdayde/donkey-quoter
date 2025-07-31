@@ -5,6 +5,7 @@ Module pour l'intégration avec l'API Claude d'Anthropic.
 import os
 from typing import Optional
 
+import streamlit as st
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
@@ -16,13 +17,26 @@ class ClaudeAPIClient:
 
     def __init__(self):
         """Initialise le client Claude."""
-        self.api_key = os.getenv("ANTHROPIC_API_KEY")
-        self.model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
-        self.max_tokens_input = int(os.getenv("MAX_TOKENS_INPUT", "200"))
-        self.max_tokens_output = int(os.getenv("MAX_TOKENS_OUTPUT", "100"))
+        # Priorité aux secrets Streamlit, fallback vers .env
+        try:
+            self.api_key = st.secrets.get("ANTHROPIC_API_KEY")
+        except (AttributeError, FileNotFoundError):
+            self.api_key = os.getenv("ANTHROPIC_API_KEY")
+
+        # Configuration avec fallback similaire
+        try:
+            self.model = st.secrets.get("CLAUDE_MODEL", "claude-3-haiku-20240307")
+            self.max_tokens_input = int(st.secrets.get("MAX_TOKENS_INPUT", "200"))
+            self.max_tokens_output = int(st.secrets.get("MAX_TOKENS_OUTPUT", "100"))
+        except (AttributeError, FileNotFoundError):
+            self.model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
+            self.max_tokens_input = int(os.getenv("MAX_TOKENS_INPUT", "200"))
+            self.max_tokens_output = int(os.getenv("MAX_TOKENS_OUTPUT", "100"))
 
         if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY not found in environment variables")
+            raise ValueError(
+                "ANTHROPIC_API_KEY not found in Streamlit secrets or environment variables"
+            )
 
         self.client = Anthropic(api_key=self.api_key)
 
