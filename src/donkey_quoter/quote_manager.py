@@ -20,8 +20,7 @@ class QuoteManager:
         """Initialise le gestionnaire de citations."""
         if "quotes" not in st.session_state:
             st.session_state.quotes = [Quote(**q) for q in CLASSIC_QUOTES]
-        if "current_quote" not in st.session_state:
-            st.session_state.current_quote = st.session_state.quotes[0]
+        # La gestion de current_quote est maintenant dans StateManager
         if "saved_quotes" not in st.session_state:
             st.session_state.saved_quotes = []
         if "saved_poems" not in st.session_state:
