@@ -44,7 +44,11 @@ TRANSLATIONS = {
         "loading_haiku": "Chargement...",
         "no_haiku": "Aucun haïku disponible pour cette citation.",
         "limit_reached": "Limite atteinte",
-        "limit_message": "🐝 Les haïkus sont plus savoureux avec modération. Revenez demain pour 5 nouvelles créations !",
+        "limit_message": "🫏 Même l'âne le plus têtu doit s'arrêter pour se reposer. Revenez plus tard pour 5 nouveaux haïkus !",
+        "api_error_quota": "Limite de crédit API atteinte. Vérifiez votre compte Anthropic.",
+        "api_error_key": "Clé API invalide. Vérifiez votre configuration.",
+        "api_error_network": "Erreur de connexion. Vérifiez votre connexion internet.",
+        "api_error_generic": "Erreur lors de la génération du haïku.",
     },
     "en": {
         "title": "Donkey Quoter",
@@ -87,7 +91,11 @@ TRANSLATIONS = {
         "loading_haiku": "Loading...",
         "no_haiku": "No haiku available for this quote.",
         "limit_reached": "Limit reached",
-        "limit_message": "🐝 Haikus are more delightful in moderation. Come back tomorrow for 5 new creations!",
+        "limit_message": "🫏 Even the most stubborn donkey must stop to rest. Come back later for 5 new haikus!",
+        "api_error_quota": "API credit limit reached. Please check your Anthropic account.",
+        "api_error_key": "Invalid API key. Please check your configuration.",
+        "api_error_network": "Connection error. Please check your internet connection.",
+        "api_error_generic": "Error generating haiku.",
     },
 }
 

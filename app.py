@@ -109,16 +109,6 @@ def render_action_buttons(
     """Affiche les boutons d'action principaux."""
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Afficher le compteur d'usage si API disponible
-    if haiku_generator.api_client:
-        usage_display = haiku_generator.get_usage_display(lang)
-        st.markdown(
-            f'<div style="text-align: center; color: #92400e; '
-            f'font-size: 0.875rem; margin-bottom: 1rem;">'
-            f"{usage_display}</div>",
-            unsafe_allow_html=True,
-        )
-
     # Boutons principaux en ligne horizontale (3 colonnes)
     col1, col2, col3 = st.columns(3, gap="medium")
 
@@ -204,6 +194,17 @@ def render_action_buttons(
         ):
             StateManager.toggle_show_all_quotes()
             st.rerun()
+
+    # Afficher le compteur d'usage si API disponible
+    if haiku_generator.api_client:
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        usage_display = haiku_generator.get_usage_display(lang)
+        st.markdown(
+            f'<div style="text-align: center; color: #92400e; '
+            f'font-size: 0.875rem;">'
+            f"{usage_display}</div>",
+            unsafe_allow_html=True,
+        )
 
     # Afficher un message sympathique si la limite est atteinte
     if st.session_state.get("haiku_generation_count", 0) >= 5:

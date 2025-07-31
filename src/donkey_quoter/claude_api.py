@@ -100,8 +100,25 @@ Reply only with the haiku (3 lines), no explanation."""
                 return haiku
 
         except Exception as e:
-            print(f"Erreur lors de la génération du haïku : {e}")
-            return None
+            # Identifier le type d'erreur pour un message plus précis
+            error_msg = str(e).lower()
+
+            if "rate_limit" in error_msg or "quota" in error_msg:
+                raise Exception(
+                    "Limite de crédit API atteinte. Veuillez vérifier votre compte Anthropic."
+                ) from e
+            elif "unauthorized" in error_msg or "api_key" in error_msg:
+                raise Exception(
+                    "Clé API invalide. Veuillez vérifier votre configuration."
+                ) from e
+            elif "connection" in error_msg or "network" in error_msg:
+                raise Exception(
+                    "Erreur de connexion. Vérifiez votre connexion internet."
+                ) from e
+            else:
+                raise Exception(
+                    f"Erreur lors de la génération : {str(e)[:100]}..."
+                ) from e
 
     def is_available(self) -> bool:
         """Vérifie si l'API est disponible."""

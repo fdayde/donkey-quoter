@@ -134,27 +134,34 @@ class HaikuGenerator:
                 time.sleep(0.02)
                 progress_bar.progress(i + 1)
 
-            haiku_text = self.api_client.generate_haiku(
-                quote_text, quote_author, language
-            )
+            try:
+                haiku_text = self.api_client.generate_haiku(
+                    quote_text, quote_author, language
+                )
 
-            if haiku_text:
-                # Ne pas sauvegarder le haïku pour compatibilité Streamlit Cloud
-                # model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
-                # self.storage.add_haiku(quote.id, haiku_text, language, model)
+                if haiku_text:
+                    # Ne pas sauvegarder le haïku pour compatibilité Streamlit Cloud
+                    # model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
+                    # self.storage.add_haiku(quote.id, haiku_text, language, model)
 
-                # Incrémenter le compteur de session
-                st.session_state.haiku_generation_count += 1
+                    # Incrémenter le compteur de session seulement en cas de succès
+                    st.session_state.haiku_generation_count += 1
 
-                for i in range(50, 100):
-                    time.sleep(0.01)
-                    progress_bar.progress(i + 1)
-            else:
-                # Échec de l'API, utiliser le stockage
-                use_api = False
-                for i in range(50, 100):
-                    time.sleep(0.01)
-                    progress_bar.progress(i + 1)
+                    for i in range(50, 100):
+                        time.sleep(0.01)
+                        progress_bar.progress(i + 1)
+                else:
+                    # Échec silencieux, utiliser le stockage
+                    use_api = False
+                    for i in range(50, 100):
+                        time.sleep(0.01)
+                        progress_bar.progress(i + 1)
+
+            except Exception as e:
+                # Afficher l'erreur à l'utilisateur
+                progress_bar.empty()
+                st.error(f"⚠️ {str(e)}")
+                return None
 
         if not use_api:
             # Utiliser un haïku stocké
