@@ -237,30 +237,26 @@ def render_all_quotes_list(quote_manager: QuoteManager, lang: str, t: dict):
         return
 
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="quote-card">', unsafe_allow_html=True)
 
     container = st.container(height=QUOTE_LIST_HEIGHT)
     with container:
         for quote in quote_manager.quotes:
-            with st.container():
-                quote_text = quote_manager.get_text(quote.text, lang)
-                quote_author = quote_manager.get_text(quote.author, lang)
+            quote_text = quote_manager.get_text(quote.text, lang)
+            quote_author = quote_manager.get_text(quote.author, lang)
 
-                render_quote_list_item(
-                    quote=quote,
-                    lang=lang,
-                    quote_text=quote_text,
-                    quote_author=quote_author,
-                    on_display=lambda q: (
-                        setattr(quote_manager, "current_quote", q),
-                        StateManager.hide_all_quotes(),
-                        st.rerun(),
-                    ),
-                    on_delete=None,  # Suppression désactivée
-                )
-                st.divider()
-
-    st.markdown("</div>", unsafe_allow_html=True)
+            render_quote_list_item(
+                quote=quote,
+                lang=lang,
+                quote_text=quote_text,
+                quote_author=quote_author,
+                on_display=lambda q: (
+                    setattr(quote_manager, "current_quote", q),
+                    StateManager.hide_all_quotes(),
+                    st.rerun(),
+                ),
+                on_delete=None,  # Suppression désactivée
+            )
+            st.divider()
 
 
 def main():
