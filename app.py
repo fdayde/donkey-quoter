@@ -22,7 +22,6 @@ from src.donkey_quoter.ui_components import (
     render_category_badge,
     render_header,
     render_quote_list_item,
-    render_stats_card,
 )
 
 
@@ -264,30 +263,6 @@ def render_all_quotes_list(quote_manager: QuoteManager, lang: str, t: dict):
     st.markdown("</div>", unsafe_allow_html=True)
 
 
-def render_saved_stats(quote_manager: QuoteManager, t: dict):
-    """Affiche les statistiques de sauvegarde."""
-    if not (quote_manager.saved_quotes or quote_manager.saved_poems):
-        return
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="quote-card">', unsafe_allow_html=True)
-    st.markdown(
-        f'<h3 style="text-align: center; font-weight: 300; '
-        f'color: rgba(120, 53, 15, 0.9);">{t["my_saves"]}</h3>',
-        unsafe_allow_html=True,
-    )
-
-    col1, col2 = st.columns(2)
-    with col1:
-        render_stats_card(len(quote_manager.saved_quotes), t["saved_quotes"])
-    with col2:
-        render_stats_card(
-            len(quote_manager.saved_poems), t["saved_poems"], style_class="rose"
-        )
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-
 def main():
     """Point d'entrée principal de l'application."""
     # Configuration de la page
@@ -323,9 +298,6 @@ def main():
 
     # Liste des citations
     render_all_quotes_list(quote_manager, lang, t)
-
-    # Statistiques
-    render_saved_stats(quote_manager, t)
 
     # Footer avec lien GitHub
     st.markdown("<br><br>", unsafe_allow_html=True)
