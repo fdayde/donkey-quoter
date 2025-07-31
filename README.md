@@ -115,6 +115,25 @@ Quote(
 )
 ```
 
+### Generating Haikus
+
+The application can generate haikus using Claude API. To regenerate haikus in batch:
+
+```bash
+# Generate missing haikus only
+python scripts/regenerate_haikus.py
+
+# Force regeneration of all haikus
+python scripts/regenerate_haikus.py --regenerate-all
+
+# Test with a limited number of quotes
+python scripts/regenerate_haikus.py --limit 5 --dry-run
+```
+
+**Requirements**:
+- Set `ANTHROPIC_API_KEY` in your `.env` file
+- Haikus are stored with metadata (date, model) in `data/haikus.json`
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:

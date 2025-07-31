@@ -47,6 +47,26 @@ ruff check src/ --fix
 ruff format src/
 ```
 
+### 🎨 Generate Haikus
+
+To regenerate haikus using Claude API:
+
+```bash
+# Test with dry run (no API calls)
+python scripts/regenerate_haikus.py --dry-run
+
+# Generate missing haikus only
+python scripts/regenerate_haikus.py
+
+# Regenerate ALL haikus
+python scripts/regenerate_haikus.py --regenerate-all
+
+# Test with limited quotes
+python scripts/regenerate_haikus.py --limit 5
+```
+
+**Note**: Requires `ANTHROPIC_API_KEY` in `.env` file.
+
 ### 📋 Pull Request Checklist
 
 - [ ] Code follows project style (Ruff for formatting and linting)
