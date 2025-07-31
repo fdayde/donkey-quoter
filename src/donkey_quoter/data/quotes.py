@@ -133,8 +133,7 @@ CLASSIC_QUOTES = [
                 "chargé d'or qui mange de la paille."
             ),
             "en": (
-                "The miserly rich man is like a donkey "
-                "loaded with gold eating straw."
+                "The miserly rich man is like a donkey loaded with gold eating straw."
             ),
         },
         "author": {"fr": "Proverbe algérien", "en": "Algerian proverb"},
@@ -145,8 +144,7 @@ CLASSIC_QUOTES = [
         "id": "c13",
         "text": {
             "fr": (
-                "Si vous donnez de l'avoine à un âne, "
-                "il vous paiera d'un coup de pied."
+                "Si vous donnez de l'avoine à un âne, il vous paiera d'un coup de pied."
             ),
             "en": "If you give oats to a donkey, it will repay you with a kick.",
         },
@@ -247,7 +245,7 @@ CLASSIC_QUOTES = [
                 "que des lions dirigés par un âne."
             ),
             "en": (
-                "Sheep led by a lion are more formidable " "than lions led by a donkey."
+                "Sheep led by a lion are more formidable than lions led by a donkey."
             ),
         },
         "author": {"fr": "Douglas MacArthur", "en": "Douglas MacArthur"},
@@ -269,8 +267,7 @@ CLASSIC_QUOTES = [
         "text": {
             "fr": "Il n'est forteresse qu'un âne chargé d'or ne puisse approcher.",
             "en": (
-                "There is no fortress that a donkey loaded with gold "
-                "cannot approach."
+                "There is no fortress that a donkey loaded with gold cannot approach."
             ),
         },
         "author": {"fr": "Philippe II de Macédoine", "en": "Philip II of Macedon"},
@@ -307,8 +304,7 @@ CLASSIC_QUOTES = [
         "id": "c26",
         "text": {
             "fr": (
-                "La nuit est destinée au sommeil, le jour au repos "
-                "et l'âne au travail."
+                "La nuit est destinée au sommeil, le jour au repos et l'âne au travail."
             ),
             "en": "The night is for sleep, the day for rest, and the donkey for work.",
         },
@@ -353,9 +349,7 @@ CLASSIC_QUOTES = [
                 "Si la forte voix servait à quelque chose, "
                 "l'âne se serait fait construire des palais."
             ),
-            "en": (
-                "If a loud voice were useful, " "the donkey would have built palaces."
-            ),
+            "en": ("If a loud voice were useful, the donkey would have built palaces."),
         },
         "author": {"fr": "Proverbe libanais", "en": "Lebanese proverb"},
         "category": "humor",
@@ -382,7 +376,7 @@ CLASSIC_QUOTES = [
                 "l'âne ne se transforme pas en cheval de course."
             ),
             "en": (
-                "Even wearing precious harness, " "a donkey doesn't become a racehorse."
+                "Even wearing precious harness, a donkey doesn't become a racehorse."
             ),
         },
         "author": {"fr": "Proverbe tunisien", "en": "Tunisian proverb"},
@@ -461,8 +455,7 @@ CLASSIC_QUOTES = [
                 "combattent pour l'ombre d'un âne."
             ),
             "en": (
-                "All those who engage in philosophy "
-                "fight for the shadow of a donkey."
+                "All those who engage in philosophy fight for the shadow of a donkey."
             ),
         },
         "author": {"fr": "Lucien de Samosate", "en": "Lucian of Samosata"},
@@ -506,8 +499,7 @@ CLASSIC_QUOTES = [
         "id": "c42",
         "text": {
             "fr": (
-                "Ne meurs pas, ô mon âne ! le printemps viendra "
-                "et avec lui le trèfle."
+                "Ne meurs pas, ô mon âne ! le printemps viendra et avec lui le trèfle."
             ),
             "en": "Don't die, oh my donkey! Spring will come and with it the clover.",
         },

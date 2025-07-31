@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-red.svg)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
-![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 🫏 *Wisdom & Poetry* - An elegant web application to discover inspiring quotes and generate poetic haikus.
 

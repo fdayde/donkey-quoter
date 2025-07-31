@@ -13,10 +13,9 @@ pip install -r requirements-dev.txt
 # Run application
 streamlit run app.py
 
-# Code formatting
-black src/
-isort src/
-ruff check src/
+# Code formatting and linting
+ruff check src/ --fix
+ruff format src/
 
 # Pre-commit setup
 pre-commit install
@@ -48,9 +47,7 @@ donkey-quoter/
 ## Key Technical Details
 
 ### Code Style
-- Black formatter (line-length: 88)
-- isort for imports
-- Ruff for linting
+- Ruff for formatting, linting, and import sorting (line-length: 88)
 - Type hints avec Pydantic
 
 ### Architecture Patterns
@@ -97,5 +94,5 @@ Quote(
 ## Important Notes
 - No package.json (pure Python project)
 - No automated tests yet implemented
-- Pre-commit hooks recommended but config missing
+- Pre-commit hooks configured with Ruff
 - Apache 2.0 License (note: pyproject.toml says MIT - needs alignment)
