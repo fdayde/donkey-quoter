@@ -154,5 +154,4 @@ ehthumbs.db
 *.db
 
 # Project specific
-data/haikus.json
-data/api_limits.json
+# Les fichiers JSON dans data/ sont maintenant versionnés

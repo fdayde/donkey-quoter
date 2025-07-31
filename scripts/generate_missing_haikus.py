@@ -88,7 +88,7 @@ def generate_missing_haikus(languages=None, limit=None):
             time.sleep(1)
 
     # Résumé
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("Génération terminée :")
     print(f"  - Haïkus générés : {generated}")
     print(f"  - Échecs : {failed}")

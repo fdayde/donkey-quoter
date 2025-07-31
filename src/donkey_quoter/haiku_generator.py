@@ -2,6 +2,7 @@
 Module de génération de haïkus.
 """
 
+import os
 import random
 import time
 from datetime import datetime
@@ -96,7 +97,8 @@ class HaikuGenerator:
 
             if haiku_text:
                 # Sauvegarder le haïku généré
-                self.storage.add_haiku(quote.id, haiku_text, language)
+                model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
+                self.storage.add_haiku(quote.id, haiku_text, language, model)
                 self.limiter.increment_usage()
 
                 for i in range(50, 100):
