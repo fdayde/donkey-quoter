@@ -155,6 +155,17 @@ python scripts/regenerate_haikus.py --limit 5 --dry-run
 - Real-time generation limited to 5 per session
 - Fallback to stored haikus when API unavailable
 
+## 🏷️ Versioning
+
+Version is managed in `src/donkey_quoter/__init__.py`. To release:
+```bash
+# Update version
+__version__ = "1.2.0"
+
+# Tag and push
+git tag v1.2.0 && git push --tags
+```
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
