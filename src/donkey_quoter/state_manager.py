@@ -14,10 +14,16 @@ class StateManager:
     @staticmethod
     def initialize():
         """Initialise l'état de l'application."""
+        import random
+
         if "quotes" not in st.session_state:
             st.session_state.quotes = [Quote(**q) for q in CLASSIC_QUOTES]
+
+        # Toujours choisir une citation aléatoire si current_quote n'existe pas
+        # Cela permet d'avoir une nouvelle citation à chaque refresh complet (F5)
         if "current_quote" not in st.session_state:
-            st.session_state.current_quote = st.session_state.quotes[0]
+            st.session_state.current_quote = random.choice(st.session_state.quotes)
+
         if "saved_quotes" not in st.session_state:
             st.session_state.saved_quotes = []
         if "saved_poems" not in st.session_state:

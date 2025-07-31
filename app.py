@@ -3,9 +3,11 @@ Donkey Quoter - Application Streamlit principale (version refactorisée).
 """
 
 from datetime import datetime
+from pathlib import Path
 
 import streamlit as st
 
+from src.donkey_quoter import __version__
 from src.donkey_quoter.config import (
     EXPORT_DATE_FORMAT,
     EXPORT_FILE_PREFIX,
@@ -14,7 +16,6 @@ from src.donkey_quoter.config import (
     STYLES_CSS_PATH,
 )
 from src.donkey_quoter.haiku_generator import HaikuGenerator
-from src.donkey_quoter.models import QuoteInput
 from src.donkey_quoter.quote_manager import QuoteManager
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
@@ -22,7 +23,6 @@ from src.donkey_quoter.ui_components import (
     render_category_badge,
     render_header,
     render_quote_list_item,
-    render_stats_card,
 )
 
 
@@ -101,6 +101,31 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
                         quote_manager.save_current_quote()
                     st.rerun()
 
+    # Afficher la citation originale si c'est un haïku
+    if current_quote.category == "poem" and quote_manager.original_quote:
+        original = quote_manager.original_quote
+        original_text = quote_manager.get_text(original.text, lang)
+        original_author = quote_manager.get_text(original.author, lang)
+
+        st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div style="text-align: center; padding: 0.5rem;
+                background-color: rgba(254, 243, 199, 0.3);
+                border-radius: 0.5rem; margin-top: 0.5rem;">
+                <p style="font-size: 0.75rem; color: #92400e;
+                    font-style: italic; margin: 0;">
+                    {t.get("original_quote", "Citation originale" if lang == "fr" else "Original quote")} :
+                </p>
+                <p style="font-size: 0.75rem; color: #78350f;
+                    margin: 0.25rem 0 0 0;">
+                    "{original_text}" — {original_author}
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
 
 def render_action_buttons(
     quote_manager: QuoteManager, haiku_generator: HaikuGenerator, lang: str, t: dict
@@ -122,22 +147,65 @@ def render_action_buttons(
             quote_manager.get_random_quote()
             st.rerun()
 
-    # Créer haïku
+    # Boutons pour haïku selon le contexte
     with col2:
-        if st.button(
-            f"✨ {t['create_poem']}",
-            key="create_poem",
-            disabled=not quote_manager.current_quote,
-            use_container_width=True,
-            type="secondary",
-        ):
-            with st.spinner(t["creating"]):
-                poem = haiku_generator.generate_from_quote(
-                    quote_manager.current_quote, lang
-                )
-                if poem:
-                    quote_manager.current_quote = poem
-                    st.rerun()
+        # Vérifier si on affiche un poème actuellement
+        is_poem = (
+            quote_manager.current_quote
+            and quote_manager.current_quote.category == "poem"
+        )
+
+        # Si c'est déjà un poème, proposer de créer un nouveau
+        if is_poem:
+            # Vérifier si on a atteint la limite
+            has_reached_limit = st.session_state.get("haiku_generation_count", 0) >= 5
+
+            # Texte du bouton avec indication si limite atteinte
+            button_text = f"✨ {t['create_poem']}"
+            if has_reached_limit:
+                button_text = f"🚫 {t.get('limit_reached', 'Limite atteinte')}"
+
+            if st.button(
+                button_text,
+                key="create_new_poem",
+                disabled=not quote_manager.current_quote or has_reached_limit,
+                use_container_width=True,
+                type="secondary",
+            ):
+                with st.spinner(t["creating"]):
+                    # Toujours forcer la création d'un nouveau haïku
+                    poem = haiku_generator.generate_from_quote(
+                        quote_manager.original_quote, lang, force_new=True
+                    )
+                    if poem:
+                        quote_manager.current_quote = poem
+                        st.rerun()
+        else:
+            # Si c'est une citation, proposer de voir le haïku existant
+            if st.button(
+                f"👁️ {t.get('view_haiku', 'Voir le Haïku')}",
+                key="view_haiku",
+                disabled=not quote_manager.current_quote,
+                use_container_width=True,
+                type="secondary",
+            ):
+                with st.spinner(t.get("loading_haiku", "Chargement...")):
+                    # Récupérer le haïku existant
+                    poem = haiku_generator.get_existing_haiku(
+                        quote_manager.current_quote, lang
+                    )
+                    if poem:
+                        # Sauvegarder la citation originale
+                        quote_manager.original_quote = quote_manager.current_quote
+                        quote_manager.current_quote = poem
+                        st.rerun()
+                    else:
+                        st.info(
+                            t.get(
+                                "no_haiku",
+                                "Aucun haïku disponible pour cette citation.",
+                            )
+                        )
 
     # Voir toutes les citations
     with col3:
@@ -151,20 +219,26 @@ def render_action_buttons(
             StateManager.toggle_show_all_quotes()
             st.rerun()
 
-    # Bouton secondaire centré (Ajouter une citation)
-    st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button(
-            f"➕ {t['add_quote']}",
-            key="add_quote_btn",
-            use_container_width=True,
-            type="primary",
-        ):
-            if "show_add_form" not in st.session_state:
-                st.session_state.show_add_form = False
-            st.session_state.show_add_form = not st.session_state.show_add_form
-            st.rerun()
+    # Afficher le compteur d'usage si API disponible
+    if haiku_generator.api_client:
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        usage_display = haiku_generator.get_usage_display(lang)
+        st.markdown(
+            f'<div style="text-align: center; color: #92400e; '
+            f'font-size: 0.875rem;">'
+            f"{usage_display}</div>",
+            unsafe_allow_html=True,
+        )
+
+    # Afficher un message sympathique si la limite est atteinte
+    if st.session_state.get("haiku_generation_count", 0) >= 5:
+        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+        st.info(
+            t.get(
+                "limit_message",
+                "🐝 Les haïkus sont plus savoureux avec modération. Revenez demain pour 5 nouvelles créations !",
+            )
+        )
 
     # Bouton Export (si des citations sont sauvegardées)
     total_saved = len(quote_manager.saved_quotes) + len(quote_manager.saved_poems)
@@ -189,115 +263,43 @@ def render_all_quotes_list(quote_manager: QuoteManager, lang: str, t: dict):
         return
 
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="quote-card">', unsafe_allow_html=True)
 
     container = st.container(height=QUOTE_LIST_HEIGHT)
     with container:
         for quote in quote_manager.quotes:
-            with st.container():
-                quote_text = quote_manager.get_text(quote.text, lang)
-                quote_author = quote_manager.get_text(quote.author, lang)
+            quote_text = quote_manager.get_text(quote.text, lang)
+            quote_author = quote_manager.get_text(quote.author, lang)
 
-                render_quote_list_item(
-                    quote=quote,
-                    lang=lang,
-                    quote_text=quote_text,
-                    quote_author=quote_author,
-                    on_display=lambda q: (
-                        quote_manager.set_current_quote(q),
-                        StateManager.hide_all_quotes(),
-                        st.rerun(),
-                    ),
-                    on_delete=lambda qid, q=quote: (
-                        (quote_manager.delete_quote(qid), st.rerun())
-                        if q.type == "user"
-                        else None
-                    ),
-                )
-                st.divider()
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-
-def render_saved_stats(quote_manager: QuoteManager, t: dict):
-    """Affiche les statistiques de sauvegarde."""
-    if not (quote_manager.saved_quotes or quote_manager.saved_poems):
-        return
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="quote-card">', unsafe_allow_html=True)
-    st.markdown(
-        f'<h3 style="text-align: center; font-weight: 300; '
-        f'color: rgba(120, 53, 15, 0.9);">{t["my_saves"]}</h3>',
-        unsafe_allow_html=True,
-    )
-
-    col1, col2 = st.columns(2)
-    with col1:
-        render_stats_card(len(quote_manager.saved_quotes), t["saved_quotes"])
-    with col2:
-        render_stats_card(
-            len(quote_manager.saved_poems), t["saved_poems"], style_class="rose"
-        )
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-
-def render_add_quote_form(quote_manager: QuoteManager, lang: str, t: dict):
-    """Affiche le formulaire d'ajout de citation."""
-    from src.donkey_quoter.translations import CATEGORY_LABELS
-
-    if st.session_state.get("show_add_form", False):
-        st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
-        with st.container(border=True):
-            st.markdown(f"### {t['add_quote']}")
-            with st.form("add_quote_form", clear_on_submit=True):
-                text = st.text_area(
-                    t["citation"],
-                    placeholder=t["placeholder_quote"],
-                    height=100,
-                )
-                author = st.text_input(
-                    t["author"],
-                    placeholder=t["placeholder_author"],
-                )
-                category = st.selectbox(
-                    t["category"],
-                    options=["personal", "humor", "classic"],
-                    format_func=lambda x: CATEGORY_LABELS[x][lang],
-                )
-
-                col1, col2 = st.columns(2)
-                with col1:
-                    submitted = st.form_submit_button(
-                        t["add"], use_container_width=True, type="primary"
-                    )
-                with col2:
-                    if st.form_submit_button(
-                        t.get("cancel", "Annuler"), use_container_width=True
-                    ):
-                        st.session_state.show_add_form = False
-                        st.rerun()
-
-                if submitted:
-                    if text and author:
-                        quote_input = QuoteInput(
-                            text=text.strip(),
-                            author=author.strip(),
-                            category=category,
-                        )
-                        quote_manager.add_quote(quote_input, lang)
-                        st.success("✅")
-                        st.session_state.show_add_form = False
-                        st.rerun()
-                    else:
-                        st.error("❌")
+            render_quote_list_item(
+                quote=quote,
+                lang=lang,
+                quote_text=quote_text,
+                quote_author=quote_author,
+                on_display=lambda q: (
+                    setattr(quote_manager, "current_quote", q),
+                    StateManager.hide_all_quotes(),
+                    st.rerun(),
+                ),
+                on_delete=None,  # Suppression désactivée
+            )
+            st.divider()
 
 
 def main():
     """Point d'entrée principal de l'application."""
     # Configuration de la page
     st.set_page_config(**PAGE_CONFIG)
+
+    # Forcer une nouvelle session à chaque refresh en utilisant query params
+    # Cela permet d'avoir une citation aléatoire à chaque F5
+    import time
+
+    current_time = str(int(time.time()))
+    if st.query_params.get("t") != current_time:
+        # Nouveau refresh détecté - effacer current_quote pour forcer une nouvelle citation
+        if "current_quote" in st.session_state:
+            del st.session_state.current_quote
+        st.query_params["t"] = current_time
 
     # Initialiser l'état
     StateManager.initialize()
@@ -307,7 +309,7 @@ def main():
 
     # Initialiser les gestionnaires
     quote_manager = QuoteManager()
-    haiku_generator = HaikuGenerator()
+    haiku_generator = HaikuGenerator(Path("data"))
 
     # Obtenir la langue et les traductions
     lang = StateManager.get_language()
@@ -327,19 +329,13 @@ def main():
     # Boutons d'action
     render_action_buttons(quote_manager, haiku_generator, lang, t)
 
-    # Formulaire d'ajout (affiché sous le bouton Ajouter)
-    render_add_quote_form(quote_manager, lang, t)
-
     # Liste des citations
     render_all_quotes_list(quote_manager, lang, t)
-
-    # Statistiques
-    render_saved_stats(quote_manager, t)
 
     # Footer avec lien GitHub
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown(
-        """
+        f"""
         <div style="text-align: center; padding: 2rem 0 1rem 0;
             border-top: 1px solid rgba(254, 243, 199, 0.5); margin-top: 3rem;">
             <a href="https://github.com/fdayde/donkey-quoter" target="_blank"
@@ -362,6 +358,13 @@ def main():
                 </svg>
                 GitHub
             </a>
+            <p style="font-size: 0.625rem; font-style: italic; color: #d97706;
+                margin-top: 0.5rem; margin-bottom: 0;">
+                ↑ {t.get("contribute_message", "Venez ajouter vos propres citations" if lang == "fr" else "Come add your own quotes")}
+            </p>
+            <p style="font-size: 0.625rem; color: #a3a3a3; margin-top: 0.75rem; margin-bottom: 0;">
+                Donkey Quoter v{__version__}
+            </p>
         </div>
         """,
         unsafe_allow_html=True,

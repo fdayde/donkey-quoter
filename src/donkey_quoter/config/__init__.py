@@ -1,6 +1,4 @@
-"""
-Configuration centralisée de l'application.
-"""
+"""Package de configuration."""
 
 from pathlib import Path
 
@@ -13,7 +11,7 @@ PAGE_CONFIG = {
 }
 
 # Chemins des fichiers
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
 STYLES_CSS_PATH = BASE_DIR / "styles.css"
 
 # Couleurs par catégorie

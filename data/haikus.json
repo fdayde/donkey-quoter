@@ -1,0 +1,818 @@
+{
+  "c1": {
+    "fr": [
+      {
+        "text": "Âne vivant chante\nSa liberté sous le ciel\nPhilosophe dort",
+        "generated_at": "2025-07-31T08:01:48.198756Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Living donkey brays\nHis wild freedom echoes loud\nPhilosopher sleeps",
+        "generated_at": "2025-07-31T08:01:48.199349Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c2": {
+    "fr": [
+      {
+        "text": "Modeste âne gris\nPorte plus de sagesse que\nCheval du palais",
+        "generated_at": "2025-07-31T08:01:48.199982Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Simple donkey's path\nCarries deeper wisdom than\nRoyal steed's parade",
+        "generated_at": "2025-07-31T08:01:48.200552Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c3": {
+    "fr": [
+      {
+        "text": "Longues oreilles\nRévèlent l'âne pensant\nMots trahissent fou",
+        "generated_at": "2025-07-31T08:01:48.204203Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Ears stretched outward\nRevealing inner nature\nWords unmask the fool",
+        "generated_at": "2025-07-31T08:01:48.204642Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c4": {
+    "fr": [
+      {
+        "text": "Tête d'âne fière\nVaut mieux que queue rampante\nD'un cheval altier",
+        "generated_at": "2025-07-31T08:01:48.205263Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Donkey's bold spirit\nSurpasses horse's shadow\nLeading with courage",
+        "generated_at": "2025-07-31T08:01:48.205732Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c5": {
+    "fr": [
+      {
+        "text": "Martins à la foire\nÂnes nombreux, noms communs\nSimplicité pure",
+        "generated_at": "2025-07-31T08:01:48.206141Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Market donkeys stand\nMany Martins, shared stories\nSimplicity sings",
+        "generated_at": "2025-07-31T08:01:48.206520Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c6": {
+    "fr": [
+      {
+        "text": "Âne têtu lavé\nL'eau coule, l'effort s'efface\nVaine est ma lessive",
+        "generated_at": "2025-07-31T08:01:56.111796Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Stubborn donkey's head\nWater flows, effort dissolves\nSoap's futile dance",
+        "generated_at": "2025-07-31T08:01:56.112397Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c7": {
+    "fr": [
+      {
+        "text": "Sous le bât usé\nL'âne connaît sa douleur\nSilence pesant",
+        "generated_at": "2025-07-31T08:01:56.113128Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Worn saddle speaks soft\nDonkey knows his hidden pain\nWisdom in quiet",
+        "generated_at": "2025-07-31T08:01:56.113765Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c8": {
+    "fr": [
+      {
+        "text": "Coups et volonté\nN'changeront point la nature\nÂne reste âne",
+        "generated_at": "2025-07-31T08:01:56.114234Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Beating will not change\nNature's deep-rooted essence\nDonkey stays donkey",
+        "generated_at": "2025-07-31T08:01:56.114786Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c9": {
+    "fr": [
+      {
+        "text": "Voyage sans âme\nL'âne erre vers la Mecque\nPèlerinage vain",
+        "generated_at": "2025-07-31T08:01:56.115272Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Pilgrimage blind\nDonkey walks sacred pathways\nNo wisdom earned yet",
+        "generated_at": "2025-07-31T08:01:56.115774Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c10": {
+    "fr": [
+      {
+        "text": "Tigre, lion, âne\nMéchanceté plus cruelle\nQue griffe ou rugir",
+        "generated_at": "2025-07-31T08:01:56.116286Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Tiger, lion, ass\nMalice cuts deeper than claws\nBeware quiet rage",
+        "generated_at": "2025-07-31T08:01:56.116893Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c11": {
+    "fr": [
+      {
+        "text": "Don sur l'âne gris\nL'espoir d'un cadeau plus grand\nSur le chameau bleu",
+        "generated_at": "2025-07-31T08:02:04.039575Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Donkey carries hope\nGift balanced on dusty back\nCamel waits beyond",
+        "generated_at": "2025-07-31T08:02:04.040389Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c12": {
+    "fr": [
+      {
+        "text": "Or lourd et stérile\nL'avare mange sa paille\nRichesse sans joie",
+        "generated_at": "2025-07-31T08:02:04.041152Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Golden burden weighs\nMiserly beast chews dry straw\nWealth without spirit",
+        "generated_at": "2025-07-31T08:02:04.041750Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c13": {
+    "fr": [
+      {
+        "text": "Avoine offerte\nLe sabot claque en réponse\nIngrat est l'âne gris",
+        "generated_at": "2025-07-31T08:02:04.042438Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Oats fall softly down\nHooves rise in sharp defiance\nGratitude fails",
+        "generated_at": "2025-07-31T08:02:04.043044Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c14": {
+    "fr": [
+      {
+        "text": "Eau claire coule là\nL'âne regarde et s'arrête\nLibre de choisir",
+        "generated_at": "2025-07-31T08:02:04.043677Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Water flows gently\nDonkey pauses at river's edge\nChoice remains his own",
+        "generated_at": "2025-07-31T08:02:04.044232Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c15": {
+    "fr": [
+      {
+        "text": "Soif seule commande\nL'âne immobile écoute\nSon désir profond",
+        "generated_at": "2025-07-31T08:02:04.044803Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Thirst speaks softly now\nDonkey listens to silence\nWisdom waits within",
+        "generated_at": "2025-07-31T08:02:04.045341Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c16": {
+    "fr": [
+      {
+        "text": "Âne solitaire\nParmis mille destriers fiers\nNe change son âme",
+        "generated_at": "2025-07-31T08:02:11.805469Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Lone donkey stands\nAmidst a thousand horses\nTrue self unchanged, still",
+        "generated_at": "2025-07-31T08:02:11.806553Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c17": {
+    "fr": [
+      {
+        "text": "Dos docile offert\nInvite aux fardeaux pesants\nL'humilité mord",
+        "generated_at": "2025-07-31T08:02:11.807423Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Humble back bends low\nInviting riders' burdens\nMeekness has its price",
+        "generated_at": "2025-07-31T08:02:11.808179Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c18": {
+    "fr": [
+      {
+        "text": "Paon, lion, âne\nÉtapes de la passion\nAmour transformé",
+        "generated_at": "2025-07-31T08:02:11.808921Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Peacock, lion, mule\nPassion's shifting landscape\nLove's true disguise speaks",
+        "generated_at": "2025-07-31T08:02:11.809676Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c19": {
+    "fr": [
+      {
+        "text": "Mon âne fidèle\nChemins connus, force tranquille\nConfiance sans prix",
+        "generated_at": "2025-07-31T08:02:11.810496Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "My donkey, my trust\nKnown paths, quiet strength whispers\nCompanion of hope",
+        "generated_at": "2025-07-31T08:02:11.811287Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c20": {
+    "fr": [
+      {
+        "text": "Avoine servie\nL'âne répond sans façon\nRudesse rustique",
+        "generated_at": "2025-07-31T08:02:11.812089Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Oats freely given\nDonkey answers candidly\nNature unfiltered",
+        "generated_at": "2025-07-31T08:02:11.813029Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c21": {
+    "fr": [
+      {
+        "text": "Lions et moutons\nDans la danse du pouvoir\nLa force s'éveille",
+        "generated_at": "2025-07-31T08:02:19.948058Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Sheep march with pride\nLed by a lion's spirit\nStrength conquers weakness",
+        "generated_at": "2025-07-31T08:02:19.949612Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c22": {
+    "fr": [
+      {
+        "text": "Coup de pied reçu\nSagesse de Socrate dort\nSilence paisible",
+        "generated_at": "2025-07-31T08:02:19.950555Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Donkey's harsh kick falls\nWisdom whispers: do not strike\nPeace blooms in stillness",
+        "generated_at": "2025-07-31T08:02:19.951423Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c23": {
+    "fr": [
+      {
+        "text": "Or sur le dos âne\nLes portes s'ouvrent grandes\nPouvoir sans combat",
+        "generated_at": "2025-07-31T08:02:19.952350Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Gold-laden donkey\nFortress walls crumble softly\nWealth breaks all barriers",
+        "generated_at": "2025-07-31T08:02:19.953204Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c24": {
+    "fr": [
+      {
+        "text": "Moutons courageux\nGuident par leur lion d'espoir\nVictoire en marche",
+        "generated_at": "2025-07-31T08:02:19.954087Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Sheep with lion's heart\nCommand transforms weakness now\nBattle's true spirit",
+        "generated_at": "2025-07-31T08:02:19.955207Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c25": {
+    "fr": [
+      {
+        "text": "Couronne sans sens\nL'âne ignore sa lumière\nRègne sans savoir",
+        "generated_at": "2025-07-31T08:02:19.956368Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Crowned ignorance\nKing sits upon empty throne\nWisdom left unseen",
+        "generated_at": "2025-07-31T08:02:19.957274Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c26": {
+    "fr": [
+      {
+        "text": "Nuit de silence\nL'âne au travail patient\nRêve de repos",
+        "generated_at": "2025-07-31T08:02:27.479142Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Moonlit stillness\nDonkey toils with quiet strength\nDreaming of soft rest",
+        "generated_at": "2025-07-31T08:02:27.480454Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c27": {
+    "fr": [
+      {
+        "text": "Moteur rugissant\nÂne maladroit au volant\nDanse mécanique",
+        "generated_at": "2025-07-31T08:02:27.481479Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Engine roaring loud\nClumsy donkey grips the wheel\nComic ballet spins",
+        "generated_at": "2025-07-31T08:02:27.482508Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c28": {
+    "fr": [
+      {
+        "text": "Chute brutale\nMensonge glissant comme l'eau\nL'âne sourit bas",
+        "generated_at": "2025-07-31T08:02:27.483529Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Tumbling rider falls\nLies slide like water's whisper\nDonkey's knowing grin",
+        "generated_at": "2025-07-31T08:02:27.484552Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c29": {
+    "fr": [
+      {
+        "text": "Minuscule mouche\nDanse sur l'échine puissante\nL'âne se tortille",
+        "generated_at": "2025-07-31T08:02:27.486120Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Tiny winged spark\nDancing on muscled backbone\nDonkey squirms and kicks",
+        "generated_at": "2025-07-31T08:02:27.487185Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c30": {
+    "fr": [
+      {
+        "text": "Voix qui résonne\nPalais imaginaires\nÂne philosophe",
+        "generated_at": "2025-07-31T08:02:27.488231Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Echoes of loud dreams\nImaginable towers\nDonkey's wisdom speaks",
+        "generated_at": "2025-07-31T08:02:27.489299Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c31": {
+    "fr": [
+      {
+        "text": "Charge modeste et sage\nL'âne marche pas à pas fort\nLion vain s'effondre",
+        "generated_at": "2025-07-31T08:02:35.100358Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Humble donkey's path\nBearing wisdom step by step\nLion's pride will fall",
+        "generated_at": "2025-07-31T08:02:35.101885Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c32": {
+    "fr": [
+      {
+        "text": "Harnais brillant, vain\nL'essence ne change jamais\nÂne reste âne",
+        "generated_at": "2025-07-31T08:02:35.103378Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Glittering harness\nEssence cannot be transformed\nDonkey stays donkey",
+        "generated_at": "2025-07-31T08:02:35.104484Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c33": {
+    "fr": [
+      {
+        "text": "Moqueries cruelles\nL'âne dresse ses longues oreilles\nEt brait sa fierté",
+        "generated_at": "2025-07-31T08:02:35.105580Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Cruel whispers rise\nLong ears lifted with courage\nDonkey brays his truth",
+        "generated_at": "2025-07-31T08:02:35.106660Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c34": {
+    "fr": [
+      {
+        "text": "Rêves de grandeur\nChaque âne croit son destin\nRoyal et sublime",
+        "generated_at": "2025-07-31T08:02:35.107721Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Dreams of greatness shine\nEach donkey believes its fate\nRoyal and noble",
+        "generated_at": "2025-07-31T08:02:35.108814Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c35": {
+    "fr": [
+      {
+        "text": "Insultes amères\nÂnes et hommes se heurtent\nMiroir de l'orgueil",
+        "generated_at": "2025-07-31T08:02:35.109909Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Bitter words echo\nDonkeys and humans collide\nPride's harsh reflection",
+        "generated_at": "2025-07-31T08:02:35.111049Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c36": {
+    "fr": [
+      {
+        "text": "Sage sur son âne\nCavaliers pressés s'égarent\nSagesse chemine",
+        "generated_at": "2025-07-31T08:02:42.829092Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Wisdom trots ahead\nThoroughbreds race pointlessly\nSimple path unfolds",
+        "generated_at": "2025-07-31T08:02:42.830589Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c37": {
+    "fr": [
+      {
+        "text": "Paille humble et dorée\nL'âne choisit la simplicité\nRichesse intérieure",
+        "generated_at": "2025-07-31T08:02:42.831671Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Golden straw glimmers\nDonkey knows true wealth whispers\nIn modest moments",
+        "generated_at": "2025-07-31T08:02:42.832738Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c38": {
+    "fr": [
+      {
+        "text": "Ombres de pensées\nÂne philosophique erre\nVérité légère",
+        "generated_at": "2025-07-31T08:02:42.833814Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Shadows of ideas\nDonkey wanders philosophy\nTruth drifts like a breeze",
+        "generated_at": "2025-07-31T08:02:42.834856Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c39": {
+    "fr": [
+      {
+        "text": "Âne qui résonne\nSon chant contagieux s'élève\nSilence, prudence",
+        "generated_at": "2025-07-31T08:02:42.835969Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Braying echoes loud\nContagious sounds of folly\nWisdom stays silent",
+        "generated_at": "2025-07-31T08:02:42.837003Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c40": {
+    "fr": [
+      {
+        "text": "Monter, descendre\nL'honneur tremble sur l'âne\nChute ou sagesse",
+        "generated_at": "2025-07-31T08:02:42.838098Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Riding, falling down\nHonor balances softly\nOn donkey's backbone",
+        "generated_at": "2025-07-31T08:02:42.839251Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c41": {
+    "fr": [
+      {
+        "text": "Âne fatigué\nSous le poids de l'injuste\nCommunauté lasse",
+        "generated_at": "2025-07-31T08:02:49.868074Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Burdened donkey\nBearing community's weight\nSilent suffering",
+        "generated_at": "2025-07-31T08:02:49.869909Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c42": {
+    "fr": [
+      {
+        "text": "Âne patient\nL'espoir du printemps naît\nDans ses yeux usés",
+        "generated_at": "2025-07-31T08:02:49.871234Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Weary donkey\nSpring's promise whispers soft\nClover's sweet embrace",
+        "generated_at": "2025-07-31T08:02:49.872774Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c43": {
+    "fr": [
+      {
+        "text": "Douleur aiguë\nTransforme la souffrance\nEn force de vie",
+        "generated_at": "2025-07-31T08:02:49.874121Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Pain awakens\nDonkey's hidden strength rises\nBeyond horse's might",
+        "generated_at": "2025-07-31T08:02:49.875531Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c44": {
+    "fr": [
+      {
+        "text": "Âne tombé\nLes chiens dansent sa chute\nCruauté nue",
+        "generated_at": "2025-07-31T08:02:49.876891Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Fallen donkey\nDogs celebrate his demise\nNature's harsh dance",
+        "generated_at": "2025-07-31T08:02:49.878492Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c45": {
+    "fr": [
+      {
+        "text": "Sagesse pure\nÀ côté de l'ignorant\nL'esprit s'égare",
+        "generated_at": "2025-07-31T08:02:49.879887Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Wisdom trembles\nNear ignorance's shadow\nMind slowly fades",
+        "generated_at": "2025-07-31T08:02:49.881234Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c46": {
+    "fr": [
+      {
+        "text": "Rire sans retenue\nL'âne fou dévalant la pente\nSans frein ni raison",
+        "generated_at": "2025-07-31T08:02:57.308827Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Donkey's wild laughter\nRolling down the steep hillside\nNo brakes to restrain",
+        "generated_at": "2025-07-31T08:02:57.310778Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c47": {
+    "fr": [
+      {
+        "text": "Fils ou bien ânes\nL'amour paternel se cache\nDans ces mots amers",
+        "generated_at": "2025-07-31T08:02:57.312412Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Sons or stubborn beasts\nPaternal love disguises\nHidden bitter truth",
+        "generated_at": "2025-07-31T08:02:57.314195Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c48": {
+    "fr": [
+      {
+        "text": "L'évaluation\nSéparera le travail\nDes ânes oisifs",
+        "generated_at": "2025-07-31T08:02:57.315958Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Moment of judgment\nSeparates true workers' skill\nFrom lazy donkeys",
+        "generated_at": "2025-07-31T08:02:57.317450Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c49": {
+    "fr": [
+      {
+        "text": "Nature profonde\nL'âne demeure lui-même\nInchangé, têtu",
+        "generated_at": "2025-07-31T08:02:57.319041Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Essence unchanged\nThe donkey stays true to self\nUnyielding spirit",
+        "generated_at": "2025-07-31T08:02:57.320759Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c50": {
+    "fr": [
+      {
+        "text": "Vingt-cinq ingénieurs\nTrois brillent, les autres braient\nMédiocrité",
+        "generated_at": "2025-07-31T08:02:57.322183Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Twenty-five minds meet\nThree shine, others just bellow\nMediocrity",
+        "generated_at": "2025-07-31T08:02:57.323589Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  },
+  "c51": {
+    "fr": [
+      {
+        "text": "Âne au cœur serein\nDans les prés, libre et paisible\nSimplicité pure",
+        "generated_at": "2025-07-31T08:03:02.964051Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ],
+    "en": [
+      {
+        "text": "Donkey's soft spirit\nBraying joy through meadow's breath\nSimple bliss unfolds",
+        "generated_at": "2025-07-31T08:03:02.966018Z",
+        "model": "claude-3-5-haiku-20241022"
+      }
+    ]
+  }
+}

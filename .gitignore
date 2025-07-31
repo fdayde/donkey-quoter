@@ -152,3 +152,6 @@ ehthumbs.db
 # Streamlit
 .streamlit/secrets.toml
 *.db
+
+# Project specific
+# Les fichiers JSON dans data/ sont maintenant versionnés
