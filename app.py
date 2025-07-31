@@ -7,6 +7,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from src.donkey_quoter import __version__
 from src.donkey_quoter.config import (
     EXPORT_DATE_FORMAT,
     EXPORT_FILE_PREFIX,
@@ -360,6 +361,9 @@ def main():
             <p style="font-size: 0.625rem; font-style: italic; color: #d97706;
                 margin-top: 0.5rem; margin-bottom: 0;">
                 ↑ {t.get("contribute_message", "Venez ajouter vos propres citations" if lang == "fr" else "Come add your own quotes")}
+            </p>
+            <p style="font-size: 0.625rem; color: #a3a3a3; margin-top: 0.75rem; margin-bottom: 0;">
+                Donkey Quoter v{__version__}
             </p>
         </div>
         """,
