@@ -26,6 +26,8 @@ class QuoteManager:
             st.session_state.saved_quotes = []
         if "saved_poems" not in st.session_state:
             st.session_state.saved_poems = []
+        if "original_quote" not in st.session_state:
+            st.session_state.original_quote = None
 
     @property
     def quotes(self) -> list[Quote]:
@@ -51,6 +53,16 @@ class QuoteManager:
     def saved_poems(self) -> list[Quote]:
         """Retourne les poèmes sauvegardés."""
         return st.session_state.saved_poems
+
+    @property
+    def original_quote(self) -> Optional[Quote]:
+        """Retourne la citation originale (avant génération de haïku)."""
+        return st.session_state.original_quote
+
+    @original_quote.setter
+    def original_quote(self, quote: Optional[Quote]):
+        """Définit la citation originale."""
+        st.session_state.original_quote = quote
 
     def get_text(self, text_dict: dict[str, str], language: str) -> str:
         """Obtient le texte dans la langue spécifiée."""

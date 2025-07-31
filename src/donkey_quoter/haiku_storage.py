@@ -98,6 +98,33 @@ class HaikuStorage:
                 return haiku_data  # Ancien format
         return None
 
+    def get_haiku_with_metadata(self, quote_id: str, language: str) -> Optional[dict]:
+        """
+        Récupère un haïku avec ses métadonnées.
+
+        Args:
+            quote_id: ID de la citation
+            language: Langue du haïku
+
+        Returns:
+            Dict avec text, generated_at, model ou None
+        """
+        if quote_id in self.haikus_data:
+            haikus = self.haikus_data[quote_id].get(language, [])
+            if haikus:
+                haiku_data = random.choice(haikus)
+                # Assurer le format dict
+                if isinstance(haiku_data, dict):
+                    return haiku_data
+                else:
+                    # Ancien format - convertir
+                    return {
+                        "text": haiku_data,
+                        "generated_at": "unknown",
+                        "model": "unknown",
+                    }
+        return None
+
     def add_haiku(self, quote_id: str, haiku: str, language: str, model: str = None):
         """
         Ajoute un haïku pour une citation avec métadonnées.

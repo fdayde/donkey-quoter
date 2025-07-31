@@ -13,6 +13,7 @@ import streamlit as st
 
 from .api_limiter import APILimiter
 from .claude_api import ClaudeAPIClient
+from .config.model_mapping import get_author_for_model
 from .haiku_storage import HaikuStorage
 from .models import Quote
 
@@ -52,6 +53,48 @@ class HaikuGenerator:
                 "API Claude non configurée - utilisation des haïkus stockés uniquement"
             )
 
+    def get_existing_haiku(self, quote: Quote, language: str) -> Optional[Quote]:
+        """
+        Récupère un haïku existant pour une citation.
+
+        Args:
+            quote: La citation source
+            language: La langue du haïku
+
+        Returns:
+            Un objet Quote contenant le haïku ou None si aucun n'existe
+        """
+        # Récupérer le haïku avec ses métadonnées
+        haiku_data = self.storage.get_haiku_with_metadata(quote.id, language)
+
+        if not haiku_data:
+            return None
+
+        # Déterminer l'auteur basé sur le modèle
+        model = haiku_data.get("model", "unknown")
+        author_name = get_author_for_model(model, language)
+
+        # Créer le poème avec les bonnes métadonnées
+        poem = Quote(
+            id=f"poem_{quote.id}_{int(datetime.now().timestamp())}",
+            text={
+                language: haiku_data.get("text", ""),
+                "fr" if language == "en" else "en": haiku_data.get("text", ""),
+            },
+            author={
+                "fr": author_name
+                if language == "fr"
+                else get_author_for_model(model, "fr"),
+                "en": author_name
+                if language == "en"
+                else get_author_for_model(model, "en"),
+            },
+            category="poem",
+            type="generated",  # Utiliser "generated" car le haïku a été généré
+        )
+
+        return poem
+
     def generate_from_quote(
         self, quote: Quote, language: str, force_new: bool = False
     ) -> Optional[Quote]:
@@ -73,14 +116,15 @@ class HaikuGenerator:
         use_api = False
         api_message = ""
 
-        if self.api_client and (
-            force_new or not self.storage.has_haiku(quote.id, language)
-        ):
+        # Si force_new=True, toujours essayer de générer un nouveau haïku
+        if self.api_client and force_new:
             can_use, message = self.limiter.can_use_api()
             if can_use:
                 use_api = True
             else:
                 api_message = message
+                st.warning(f"⚠️ {api_message}")
+                return None
 
         # Afficher la progress bar
         progress_bar = st.progress(0)
@@ -128,10 +172,20 @@ class HaikuGenerator:
 
         progress_bar.empty()
 
-        # Créer le poème avec l'auteur approprié
+        # Déterminer le modèle utilisé
+        if use_api:
+            model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
+        else:
+            # Si on n'a pas utilisé l'API mais qu'on force la génération, on n'a pas de haïku
+            if force_new:
+                return None
+            # Sinon, utiliser un fallback générique
+            model = "unknown"
+
+        # Créer le poème avec l'auteur approprié basé sur le modèle
         author_name = {
-            "fr": "Claude Haiku" if use_api else "Maître du Haïku",
-            "en": "Claude Haiku" if use_api else "Haiku Master",
+            "fr": get_author_for_model(model, "fr"),
+            "en": get_author_for_model(model, "en"),
         }
 
         poem = Quote(

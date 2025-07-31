@@ -40,6 +40,9 @@ TRANSLATIONS = {
         "delete": "Supprimer",
         "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette citation ?",
         "language": "Langue",
+        "view_haiku": "Voir le Haïku",
+        "loading_haiku": "Chargement...",
+        "no_haiku": "Aucun haïku disponible pour cette citation.",
     },
     "en": {
         "title": "Donkey Quoter",
@@ -78,6 +81,9 @@ TRANSLATIONS = {
         "delete": "Delete",
         "confirm_delete": "Are you sure you want to delete this quote?",
         "language": "Language",
+        "view_haiku": "View Haiku",
+        "loading_haiku": "Loading...",
+        "no_haiku": "No haiku available for this quote.",
     },
 }
 

@@ -133,35 +133,57 @@ def render_action_buttons(
             quote_manager.get_random_quote()
             st.rerun()
 
-    # Créer haïku
+    # Boutons pour haïku selon le contexte
     with col2:
         # Vérifier si on affiche un poème actuellement
         is_poem = (
             quote_manager.current_quote
             and quote_manager.current_quote.category == "poem"
         )
-        button_label = (
-            f"🔄 {t.get('regenerate_poem', 'Régénérer')}"
-            if is_poem
-            else f"✨ {t['create_poem']}"
-        )
 
-        if st.button(
-            button_label,
-            key="create_poem",
-            disabled=not quote_manager.current_quote,
-            use_container_width=True,
-            type="secondary",
-        ):
-            with st.spinner(t["creating"]):
-                # Force new si c'est déjà un poème (régénération)
-                force_new = is_poem
-                poem = haiku_generator.generate_from_quote(
-                    quote_manager.current_quote, lang, force_new=force_new
-                )
-                if poem:
-                    quote_manager.current_quote = poem
-                    st.rerun()
+        # Si c'est déjà un poème, proposer de créer un nouveau
+        if is_poem:
+            if st.button(
+                f"✨ {t['create_poem']}",
+                key="create_new_poem",
+                disabled=not quote_manager.current_quote,
+                use_container_width=True,
+                type="secondary",
+            ):
+                with st.spinner(t["creating"]):
+                    # Toujours forcer la création d'un nouveau haïku
+                    poem = haiku_generator.generate_from_quote(
+                        quote_manager.original_quote, lang, force_new=True
+                    )
+                    if poem:
+                        quote_manager.current_quote = poem
+                        st.rerun()
+        else:
+            # Si c'est une citation, proposer de voir le haïku existant
+            if st.button(
+                f"👁️ {t.get('view_haiku', 'Voir le Haïku')}",
+                key="view_haiku",
+                disabled=not quote_manager.current_quote,
+                use_container_width=True,
+                type="secondary",
+            ):
+                with st.spinner(t.get("loading_haiku", "Chargement...")):
+                    # Récupérer le haïku existant
+                    poem = haiku_generator.get_existing_haiku(
+                        quote_manager.current_quote, lang
+                    )
+                    if poem:
+                        # Sauvegarder la citation originale
+                        quote_manager.original_quote = quote_manager.current_quote
+                        quote_manager.current_quote = poem
+                        st.rerun()
+                    else:
+                        st.info(
+                            t.get(
+                                "no_haiku",
+                                "Aucun haïku disponible pour cette citation.",
+                            )
+                        )
 
     # Voir toutes les citations
     with col3:
