@@ -3,7 +3,7 @@ Module pour l'intégration avec l'API Claude d'Anthropic.
 """
 
 import os
-from typing import Optional
+from typing import Any, Optional
 
 import streamlit as st
 from anthropic import Anthropic
@@ -39,6 +39,9 @@ class ClaudeAPIClient:
             )
 
         self.client = Anthropic(api_key=self.api_key)
+
+        # Métriques d'utilisation
+        self.last_usage_metrics = None
 
     def generate_haiku(
         self, quote_text: str, quote_author: str, language: str = "fr"
@@ -90,6 +93,9 @@ Reply only with the haiku (3 lines), no explanation."""
                 temperature=0.7,
                 messages=[{"role": "user", "content": prompt}],
             )
+
+            # Stocker les métriques d'utilisation
+            self.last_usage_metrics = response.usage
 
             # Extraire le haïku de la réponse
             haiku = response.content[0].text.strip()
@@ -146,3 +152,84 @@ Reply only with the haiku (3 lines), no explanation."""
             return True
         except Exception:
             return False
+
+    def get_last_usage_metrics(self) -> Optional[dict[str, int]]:
+        """
+        Retourne les métriques d'utilisation du dernier appel API.
+
+        Returns:
+            Dict avec les clés:
+            - input_tokens: Nombre de tokens d'entrée
+            - output_tokens: Nombre de tokens de sortie
+        """
+        if not self.last_usage_metrics:
+            return None
+
+        return {
+            "input_tokens": self.last_usage_metrics.input_tokens,
+            "output_tokens": self.last_usage_metrics.output_tokens,
+        }
+
+    def calculate_last_request_cost(self) -> Optional[dict[str, float]]:
+        """
+        Calcule le coût du dernier appel API en USD.
+
+        Returns:
+            Dict avec les clés:
+            - input_cost: Coût des tokens d'entrée
+            - output_cost: Coût des tokens de sortie
+            - total_cost: Coût total
+        """
+        metrics = self.get_last_usage_metrics()
+        if not metrics:
+            return None
+
+        # Prix par défaut pour Claude 3 Haiku
+        pricing = {
+            "claude-3-haiku-20240307": {
+                "input": 0.25,  # $0.25 par million de tokens
+                "output": 1.25,  # $1.25 par million de tokens
+                "cache_read": 0.03,  # $0.03 par million de tokens (90% moins cher)
+            },
+            "claude-3-5-haiku-20241022": {
+                "input": 1.00,
+                "output": 5.00,
+                "cache_read": 0.10,
+            },
+        }
+
+        # Sélectionner les prix selon le modèle
+        model_pricing = pricing.get(self.model, pricing["claude-3-haiku-20240307"])
+
+        # Calculer les coûts
+        input_cost = (metrics["input_tokens"] / 1_000_000) * model_pricing["input"]
+        output_cost = (metrics["output_tokens"] / 1_000_000) * model_pricing["output"]
+        total_cost = input_cost + output_cost
+
+        return {
+            "input_cost": input_cost,
+            "output_cost": output_cost,
+            "total_cost": total_cost,
+        }
+
+    def generate_haiku_with_metrics(
+        self, quote_text: str, quote_author: str, language: str = "fr"
+    ) -> tuple[Optional[str], Optional[dict[str, Any]]]:
+        """
+        Génère un haïku et retourne les métriques d'utilisation.
+
+        Returns:
+            Tuple (haiku, metrics) où metrics contient:
+            - usage: métriques de tokens
+            - cost: détails des coûts
+        """
+        haiku = self.generate_haiku(quote_text, quote_author, language)
+
+        if haiku and self.last_usage_metrics:
+            metrics = {
+                "usage": self.get_last_usage_metrics(),
+                "cost": self.calculate_last_request_cost(),
+            }
+            return haiku, metrics
+
+        return haiku, None

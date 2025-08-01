@@ -35,6 +35,14 @@ class OptimizedHaikuRegenerator:
         self.api_client = None
         self.model = os.getenv("CLAUDE_MODEL_HAIKU", "claude-3-5-haiku-20241022")
 
+        # Métriques d'utilisation globales
+        self.total_metrics = {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_cost": 0.0,
+            "batches_processed": 0,
+        }
+
         if not dry_run:
             try:
                 # Utiliser temporairement le modèle Haiku 3.5
@@ -219,6 +227,22 @@ class OptimizedHaikuRegenerator:
 
         return input_cost + output_cost
 
+    def calculate_exact_cost(self, usage_metrics) -> dict[str, float]:
+        """Calcule le coût exact basé sur les métriques d'utilisation réelles."""
+        pricing = CLAUDE_PRICING.get(
+            self.model, CLAUDE_PRICING["claude-3-5-haiku-20241022"]
+        )
+
+        input_cost = (usage_metrics.input_tokens / 1_000_000) * pricing["input"]
+        output_cost = (usage_metrics.output_tokens / 1_000_000) * pricing["output"]
+        total_cost = input_cost + output_cost
+
+        return {
+            "input_cost": input_cost,
+            "output_cost": output_cost,
+            "total_cost": total_cost,
+        }
+
     def generate_batch_haikus(self, quotes: list[Quote]) -> dict[str, dict[str, str]]:
         """Génère des haïkus pour un batch de citations."""
         if self.dry_run:
@@ -236,6 +260,16 @@ class OptimizedHaikuRegenerator:
             temperature=0.7,
             messages=[{"role": "user", "content": prompt}],
         )
+
+        # Capturer les métriques d'utilisation
+        if hasattr(response, "usage"):
+            self.total_metrics["input_tokens"] += response.usage.input_tokens
+            self.total_metrics["output_tokens"] += response.usage.output_tokens
+            self.total_metrics["batches_processed"] += 1
+
+            # Calculer le coût de ce batch
+            batch_cost = self.calculate_exact_cost(response.usage)
+            self.total_metrics["total_cost"] += batch_cost["total_cost"]
 
         # Parser la réponse
         quote_ids = [q.id for q in quotes]
@@ -316,13 +350,26 @@ class OptimizedHaikuRegenerator:
                 print(f" ❌ Erreur : {e}")
                 error_count += len(batch) * 2
 
-        # Résumé
+        # Résumé avec métriques réelles
         print("\n✨ Génération terminée !")
         print(f"   - Haïkus générés : {success_count}")
         print(f"   - Échecs : {error_count}")
-        print(
-            f"   - Économies réalisées : ~{(success_count // (self.BATCH_SIZE * 2)) * 30}% vs génération individuelle"
-        )
+
+        if not self.dry_run and self.total_metrics["batches_processed"] > 0:
+            print("\n📊 Métriques d'utilisation réelles :")
+            print(
+                f"   - Tokens d'entrée totaux : {self.total_metrics['input_tokens']:,}"
+            )
+            print(
+                f"   - Tokens de sortie totaux : {self.total_metrics['output_tokens']:,}"
+            )
+
+            print("\n💰 Coûts réels :")
+            print(f"   - Coût total : ${self.total_metrics['total_cost']:.6f}")
+        else:
+            print(
+                f"   - Économies réalisées : ~{(success_count // (self.BATCH_SIZE * 2)) * 30}% vs génération individuelle"
+            )
 
 
 def main():
