@@ -3,11 +3,18 @@ Module pour l'intégration avec l'API Claude d'Anthropic.
 """
 
 import os
+from contextlib import contextmanager
 from typing import Any, Optional
 
 import streamlit as st
-from anthropic import Anthropic
+from anthropic import Anthropic, APIError, APITimeoutError, RateLimitError
 from dotenv import load_dotenv
+from tenacity import (
+    retry,
+    retry_if_not_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 load_dotenv()
 
@@ -38,10 +45,80 @@ class ClaudeAPIClient:
                 "ANTHROPIC_API_KEY not found in Streamlit secrets or environment variables"
             )
 
-        self.client = Anthropic(api_key=self.api_key)
+        # Ne pas créer le client ici, utiliser le context manager
+        self._client = None
 
         # Métriques d'utilisation
         self.last_usage_metrics = None
+
+    @property
+    def client(self) -> Anthropic:
+        """Retourne le client Anthropic (lazy loading)."""
+        if self._client is None:
+            self._client = Anthropic(api_key=self.api_key)
+        return self._client
+
+    @contextmanager
+    def _api_call(self):
+        """Context manager pour les appels API avec gestion d'erreur."""
+        try:
+            yield self.client
+        except RateLimitError as e:
+            raise Exception(
+                "Limite de crédit API atteinte. Veuillez vérifier votre compte Anthropic."
+            ) from e
+        except APITimeoutError as e:
+            raise Exception(
+                "Délai d'attente dépassé. Vérifiez votre connexion internet."
+            ) from e
+        except APIError as e:
+            error_msg = str(e).lower()
+            if "unauthorized" in error_msg or "api_key" in error_msg:
+                raise Exception(
+                    "Clé API invalide. Veuillez vérifier votre configuration."
+                ) from e
+            else:
+                raise Exception(f"Erreur API : {str(e)[:100]}...") from e
+        except Exception as e:
+            error_msg = str(e).lower()
+            if "connection" in error_msg or "network" in error_msg:
+                raise Exception(
+                    "Erreur de connexion. Vérifiez votre connexion internet."
+                ) from e
+            else:
+                raise Exception(
+                    f"Erreur lors de la génération : {str(e)[:100]}..."
+                ) from e
+
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_not_exception_type(RateLimitError),
+        reraise=True,
+    )
+    def _make_api_call(self, messages, model=None, max_tokens=None, temperature=0.7):
+        """
+        Effectue un appel API avec retry automatique pour les erreurs temporaires.
+
+        Args:
+            messages: Messages à envoyer à l'API
+            model: Modèle à utiliser (par défaut self.model)
+            max_tokens: Nombre max de tokens (par défaut self.max_tokens_output)
+            temperature: Température pour la génération
+
+        Returns:
+            Réponse de l'API
+
+        Raises:
+            Exception: Pour les erreurs non récupérables (RateLimitError, etc.)
+        """
+        with self._api_call() as client:
+            return client.messages.create(
+                model=model or self.model,
+                max_tokens=max_tokens or self.max_tokens_output,
+                temperature=temperature,
+                messages=messages,
+            )
 
     def generate_haiku(
         self, quote_text: str, quote_author: str, language: str = "fr"
@@ -57,10 +134,9 @@ class ClaudeAPIClient:
         Returns:
             Le haïku généré ou None en cas d'erreur
         """
-        try:
-            # Prompt adapté selon la langue
-            if language == "fr":
-                prompt = f"""Génère un haïku en français inspiré de cette citation :
+        # Prompt adapté selon la langue
+        if language == "fr":
+            prompt = f"""Génère un haïku en français inspiré de cette citation :
 "{quote_text}" - {quote_author}
 
 Le haïku doit :
@@ -70,8 +146,8 @@ Le haïku doit :
 - Être contemplatif et philosophique
 
 Réponds uniquement avec le haïku (3 lignes), sans explication."""
-            else:
-                prompt = f"""Generate an English haiku inspired by this quote:
+        else:
+            prompt = f"""Generate an English haiku inspired by this quote:
 "{quote_text}" - {quote_author}
 
 The haiku must:
@@ -82,72 +158,44 @@ The haiku must:
 
 Reply only with the haiku (3 lines), no explanation."""
 
-            # Limiter la longueur du prompt
-            if len(prompt) > self.max_tokens_input * 4:  # Approximation
-                prompt = prompt[: self.max_tokens_input * 4]
+        # Limiter la longueur du prompt
+        if len(prompt) > self.max_tokens_input * 4:  # Approximation
+            prompt = prompt[: self.max_tokens_input * 4]
 
-            # Appel à l'API Claude
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=self.max_tokens_output,
-                temperature=0.7,
-                messages=[{"role": "user", "content": prompt}],
-            )
+        # Appel à l'API Claude avec retry automatique
+        response = self._make_api_call(messages=[{"role": "user", "content": prompt}])
 
-            # Stocker les métriques d'utilisation
-            self.last_usage_metrics = response.usage
+        # Stocker les métriques d'utilisation
+        self.last_usage_metrics = response.usage
 
-            # Extraire le haïku de la réponse
-            haiku = response.content[0].text.strip()
+        # Extraire le haïku de la réponse
+        haiku = response.content[0].text.strip()
 
-            # Vérifier que c'est bien un haïku (3 lignes)
-            lines = haiku.split("\n")
-            if len(lines) == 3:
-                return haiku
-            else:
-                # Essayer de reformater si nécessaire
-                words = haiku.split()
-                if len(words) >= 10:
-                    # Approximation pour découper en 3 lignes
-                    third = len(words) // 3
-                    return "\n".join(
-                        [
-                            " ".join(words[:third]),
-                            " ".join(words[third : 2 * third]),
-                            " ".join(words[2 * third :]),
-                        ]
-                    )
-                return haiku
-
-        except Exception as e:
-            # Identifier le type d'erreur pour un message plus précis
-            error_msg = str(e).lower()
-
-            if "rate_limit" in error_msg or "quota" in error_msg:
-                raise Exception(
-                    "Limite de crédit API atteinte. Veuillez vérifier votre compte Anthropic."
-                ) from e
-            elif "unauthorized" in error_msg or "api_key" in error_msg:
-                raise Exception(
-                    "Clé API invalide. Veuillez vérifier votre configuration."
-                ) from e
-            elif "connection" in error_msg or "network" in error_msg:
-                raise Exception(
-                    "Erreur de connexion. Vérifiez votre connexion internet."
-                ) from e
-            else:
-                raise Exception(
-                    f"Erreur lors de la génération : {str(e)[:100]}..."
-                ) from e
+        # Vérifier que c'est bien un haïku (3 lignes)
+        lines = haiku.split("\n")
+        if len(lines) == 3:
+            return haiku
+        else:
+            # Essayer de reformater si nécessaire
+            words = haiku.split()
+            if len(words) >= 10:
+                # Approximation pour découper en 3 lignes
+                third = len(words) // 3
+                return "\n".join(
+                    [
+                        " ".join(words[:third]),
+                        " ".join(words[third : 2 * third]),
+                        " ".join(words[2 * third :]),
+                    ]
+                )
+            return haiku
 
     def is_available(self) -> bool:
         """Vérifie si l'API est disponible."""
         try:
-            # Test rapide de connexion
-            self.client.messages.create(
-                model=self.model,
-                max_tokens=10,
-                messages=[{"role": "user", "content": "test"}],
+            # Test rapide de connexion avec retry
+            self._make_api_call(
+                messages=[{"role": "user", "content": "test"}], max_tokens=10
             )
             return True
         except Exception:
@@ -189,12 +237,10 @@ Reply only with the haiku (3 lines), no explanation."""
             "claude-3-haiku-20240307": {
                 "input": 0.25,  # $0.25 par million de tokens
                 "output": 1.25,  # $1.25 par million de tokens
-                "cache_read": 0.03,  # $0.03 par million de tokens (90% moins cher)
             },
             "claude-3-5-haiku-20241022": {
-                "input": 1.00,
-                "output": 5.00,
-                "cache_read": 0.10,
+                "input": 0.80,  # $0.80 par million de tokens
+                "output": 4.00,  # $4.00 par million de tokens
             },
         }
 

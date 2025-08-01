@@ -253,12 +253,12 @@ class OptimizedHaikuRegenerator:
 
         prompt = self.create_batch_prompt(quotes)
 
-        # Appel API avec le prompt optimisé
-        response = self.api_client.client.messages.create(
+        # Appel API avec le prompt optimisé et retry automatique
+        response = self.api_client._make_api_call(
+            messages=[{"role": "user", "content": prompt}],
             model=self.model,
             max_tokens=TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes),
             temperature=0.7,
-            messages=[{"role": "user", "content": prompt}],
         )
 
         # Capturer les métriques d'utilisation
