@@ -22,16 +22,12 @@ Créez un fichier `.env` à la racine du projet (basé sur `.env.example`) :
 # Configuration API Claude
 ANTHROPIC_API_KEY=sk-ant-api03-xxxxx...
 
-# Modèle Claude à utiliser
+# Modèle Claude à utiliser (claude-3-haiku-20240307 ou claude-3-5-haiku-20241022)
 CLAUDE_MODEL=claude-3-haiku-20240307
 
 # Limites de tokens
 MAX_TOKENS_INPUT=200
 MAX_TOKENS_OUTPUT=100
-
-# Limites d'utilisation
-SESSION_LIMIT=10
-DAILY_LIMIT=10
 ```
 
 ## Architecture
@@ -39,14 +35,13 @@ DAILY_LIMIT=10
 ### Modules principaux
 
 - **`claude_api.py`** : Client pour l'API Claude
-- **`api_limiter.py`** : Gestion des limites (10/session, 10/jour)
 - **`haiku_storage.py`** : Stockage persistant des haïkus
-- **`haiku_generator.py`** : Logique de génération avec fallback
+- **`haiku_generator.py`** : Logique de génération avec fallback et gestion des limites
 
 ### Flux de génération
 
 1. L'utilisateur clique sur "Créer un haïku"
-2. Vérification des limites d'usage
+2. Vérification de la limite de session (5 générations)
 3. Si OK → Appel API Claude → Stockage du haïku
 4. Si limite atteinte → Utilisation d'un haïku stocké
 5. Affichage du compteur d'usage
@@ -56,8 +51,7 @@ DAILY_LIMIT=10
 ### Interface utilisateur
 
 - **Bouton "Créer un haïku"** : Génère un haïku pour la citation courante
-- **Bouton "Régénérer"** : Apparaît quand un haïku est affiché, force une nouvelle génération
-- **Compteur d'usage** : Affiche les générations restantes (session/jour)
+- **Compteur d'usage** : Affiche les générations restantes (limite de session : 5)
 
 ### Génération automatique
 
@@ -96,24 +90,17 @@ Les haïkus sont stockés dans `data/haikus.json` :
 
 ### Limites d'usage
 
-Les compteurs sont stockés dans `data/api_limits.json` :
-
-```json
-{
-  "2024-03-20": 5
-}
-```
+La limite de session est gérée via `st.session_state.haiku_generation_count` (maximum 5 générations par session).
 
 ## Comportement sans API
 
 Si la clé API n'est pas configurée :
 - Utilisation des haïkus pré-générés uniquement
 - Pas de compteur d'usage affiché
-- Pas de bouton "Régénérer"
 
 ## Coûts estimés
 
-Avec Claude 3 Haiku :
+Avec Claude 3 Haiku ou Claude 3.5 Haiku :
 - ~0.001$ par génération
-- Limite quotidienne de 10 = max 0.01$/jour
+- Limite de session de 5 = max 0.005$/session
 - Réutilisation des haïkus stockés = coûts réduits
