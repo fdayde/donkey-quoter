@@ -19,6 +19,7 @@ from tenacity import (
 from .api.exceptions import APIErrorHandler
 from .config.api_pricing import CLAUDE_PRICING
 from .prompts.haiku_prompts import build_haiku_prompt
+from .token_counter import TokenCounter
 
 load_dotenv()
 
@@ -54,6 +55,9 @@ class ClaudeAPIClient:
 
         # Métriques d'utilisation
         self.last_usage_metrics = None
+
+        # Compteur pour count_tokens
+        self.token_counter = TokenCounter()
 
     @property
     def client(self) -> Anthropic:
@@ -228,3 +232,29 @@ class ClaudeAPIClient:
             return haiku, metrics
 
         return haiku, None
+
+    def count_tokens_safe(self, messages: list[dict]) -> tuple[Optional[int], str]:
+        """
+        Compte les tokens avec gestion des limites de débit.
+
+        Args:
+            messages: Messages à compter
+
+        Returns:
+            Tuple (nombre de tokens, statut) où statut peut être:
+            - "success": Succès
+            - "rate_limit": Limite de débit atteinte
+            - "error": Erreur API
+        """
+        if not self.token_counter.can_count_tokens():
+            return None, "rate_limit"
+
+        try:
+            with self._api_call() as client:
+                response = client.messages.count_tokens(
+                    messages=messages, model=self.model
+                )
+                self.token_counter.increment()
+                return response.input_tokens, "success"
+        except Exception:
+            return None, "error"

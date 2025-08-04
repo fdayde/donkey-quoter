@@ -117,16 +117,52 @@ class OptimizedHaikuRegenerator:
             return {}
 
     def estimate_batch_tokens(self, quotes: list[Quote]) -> dict[str, int]:
-        """Estime les tokens pour un batch de citations."""
+        """Estime les tokens pour un batch de citations avec count_tokens si possible."""
         prompt = self.create_batch_prompt(quotes)
+        messages = [{"role": "user", "content": prompt}]
+
+        # Essayer d'utiliser count_tokens pour plus de précision
+        if self.api_client:
+            precise_tokens, status = self.api_client.count_tokens_safe(messages)
+            if precise_tokens is not None:
+                # Output : environ 150 tokens par haïku × 2 langues × nombre de citations
+                output_tokens = (
+                    TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)
+                )
+                return {
+                    "input": precise_tokens,
+                    "output": output_tokens,
+                    "total": precise_tokens + output_tokens,
+                    "method": "count_tokens",
+                    "status": status,
+                }
+            else:
+                # Récupérer les infos pour l'affichage
+                wait_time = (
+                    self.api_client.token_counter.get_reset_time()
+                    if status == "rate_limit"
+                    else 0
+                )
+                return {
+                    "input": len(prompt) // TOKEN_ESTIMATION["chars_per_token"],
+                    "output": TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes),
+                    "total": (len(prompt) // TOKEN_ESTIMATION["chars_per_token"])
+                    + (TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)),
+                    "method": "estimation",
+                    "status": status,
+                    "wait_time": wait_time,
+                }
+
+        # Fallback vers estimation simple
         input_tokens = len(prompt) // TOKEN_ESTIMATION["chars_per_token"]
-        # Output : environ 150 tokens par haïku × 2 langues × nombre de citations
         output_tokens = TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)
 
         return {
             "input": input_tokens,
             "output": output_tokens,
             "total": input_tokens + output_tokens,
+            "method": "estimation",
+            "status": "no_api",
         }
 
     def calculate_savings(
@@ -201,9 +237,38 @@ class OptimizedHaikuRegenerator:
         total_cost = self.calculate_cost(total_tokens)
         savings = self.calculate_savings(len(quotes), skipped)
 
+        # Déterminer la méthode d'estimation utilisée
+        estimation_method = tokens_est.get("method", "estimation")
+        status = tokens_est.get("status", "unknown")
+
+        if estimation_method == "count_tokens":
+            method_text = "count_tokens() officiel"
+        else:
+            # Différencier les raisons du fallback
+            if status == "no_api":
+                method_text = "estimation basique (pas d'API configurée)"
+            elif status == "rate_limit":
+                wait_time = tokens_est.get("wait_time", 0)
+                method_text = (
+                    f"estimation basique (limite atteinte, attendre {wait_time}s)"
+                )
+            elif status == "error":
+                method_text = "estimation basique (erreur API)"
+            else:
+                method_text = "estimation basique"
+
         print("\n💰 Estimation des coûts :")
-        print(f"   - Tokens input estimés : ~{total_tokens['input']:,}")
-        print(f"   - Tokens output estimés : ~{total_tokens['output']:,}")
+        print(f"   - Méthode : {method_text}")
+
+        # Clarifier la précision par type de token
+        if estimation_method == "count_tokens":
+            print(f"   - Tokens input (précis) : {total_tokens['input']:,}")
+        else:
+            print(f"   - Tokens input estimés : ~{total_tokens['input']:,}")
+
+        print(
+            f"   - Tokens output estimés : ~{total_tokens['output']:,}"
+        )  # Toujours estimation
         print(f"   - COÛT ESTIMÉ : ${total_cost:.4f} USD")
 
         print("\n📈 Optimisations appliquées :")
