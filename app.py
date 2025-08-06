@@ -15,8 +15,8 @@ from src.donkey_quoter.config import (
     QUOTE_LIST_HEIGHT,
     STYLES_CSS_PATH,
 )
-from src.donkey_quoter.haiku_generator import HaikuGenerator
-from src.donkey_quoter.quote_manager import QuoteManager
+from src.donkey_quoter.core.haiku_adapter import HaikuAdapter
+from src.donkey_quoter.core.quote_adapter import QuoteAdapter
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
 from src.donkey_quoter.ui.styles import (
@@ -39,7 +39,7 @@ def load_css():
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
+def render_current_quote(quote_manager: QuoteAdapter, lang: str, t: dict):
     """Affiche la citation courante."""
     if not quote_manager.current_quote:
         return
@@ -99,7 +99,7 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
 
 
 def render_action_buttons(
-    quote_manager: QuoteManager, haiku_generator: HaikuGenerator, lang: str, t: dict
+    quote_manager: QuoteAdapter, haiku_generator: HaikuAdapter, lang: str, t: dict
 ):
     """Affiche les boutons d'action principaux."""
     st.markdown("<br>", unsafe_allow_html=True)
@@ -262,7 +262,7 @@ def render_action_buttons(
             )
 
 
-def render_all_quotes_list(quote_manager: QuoteManager, lang: str, t: dict):
+def render_all_quotes_list(quote_manager: QuoteAdapter, lang: str, t: dict):
     """Affiche la liste de toutes les citations."""
     if not StateManager.get_show_all_quotes():
         return
@@ -322,8 +322,8 @@ def main():
     load_css()
 
     # Initialiser les gestionnaires
-    quote_manager = QuoteManager()
-    haiku_generator = HaikuGenerator(Path("data"))
+    quote_manager = QuoteAdapter()
+    haiku_generator = HaikuAdapter(Path("data"))
 
     # Obtenir la langue et les traductions
     lang = StateManager.get_language()

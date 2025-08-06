@@ -1,5 +1,5 @@
 """
-Module de gestion du stockage des haïkus générés.
+Service de stockage pour gérer la persistance des données (logique pure, sans UI).
 """
 
 import json
@@ -8,22 +8,25 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Union
 
+from .models import Quote
 
-class HaikuStorage:
-    """Gestionnaire du stockage des haïkus générés pour chaque citation."""
+
+class DataStorage:
+    """Service de stockage pour gérer haïkus et données de l'application."""
 
     def __init__(self, data_dir: Path = None):
         """
         Initialise le gestionnaire de stockage.
 
         Args:
-            data_dir: Répertoire pour stocker les haïkus
+            data_dir: Répertoire pour stocker les données
         """
         self.data_dir = data_dir or Path("data")
         self.data_dir.mkdir(exist_ok=True)
         self.haikus_file = self.data_dir / "haikus.json"
+        self.quotes_file = self.data_dir / "user_quotes.json"
 
-        # Charger les haïkus existants
+        # Charger les données existantes
         self.haikus_data = self._load_haikus()
 
     def _load_haikus(self) -> dict[str, dict[str, list[Union[str, dict]]]]:
@@ -37,16 +40,15 @@ class HaikuStorage:
             try:
                 with open(self.haikus_file, encoding="utf-8") as f:
                     data = json.load(f)
-                    # Convertir l'ancien format si nécessaire
-                    return self._migrate_old_format(data)
+                    return self._migrate_old_haiku_format(data)
             except Exception as e:
                 print(f"Erreur lors du chargement des haïkus : {e}")
                 return {}
         return {}
 
-    def _migrate_old_format(self, data: dict) -> dict:
+    def _migrate_old_haiku_format(self, data: dict) -> dict:
         """
-        Migre l'ancien format (string simple) vers le nouveau (avec métadonnées).
+        Migre l'ancien format haiku (string simple) vers le nouveau (avec métadonnées).
         """
         migrated_data = {}
 
@@ -63,7 +65,7 @@ class HaikuStorage:
                             {
                                 "text": haiku,
                                 "generated_at": "2024-01-01T00:00:00Z",
-                                "model": "unknown",  # Modèle inconnu pour les anciens
+                                "model": "unknown",
                             }
                         )
                     else:
@@ -77,6 +79,7 @@ class HaikuStorage:
         with open(self.haikus_file, "w", encoding="utf-8") as f:
             json.dump(self.haikus_data, f, ensure_ascii=False, indent=2)
 
+    # Méthodes pour les haïkus
     def get_haiku(self, quote_id: str, language: str) -> Optional[str]:
         """
         Récupère un haïku pour une citation donnée.
@@ -175,32 +178,6 @@ class HaikuStorage:
             and len(self.haikus_data[quote_id][language]) > 0
         )
 
-    def get_all_haikus(self, quote_id: str, language: str) -> list[dict]:
-        """
-        Récupère tous les haïkus avec métadonnées pour une citation.
-
-        Args:
-            quote_id: ID de la citation
-            language: Langue des haïkus
-
-        Returns:
-            Liste de dicts avec text, generated_at, model
-        """
-        if quote_id in self.haikus_data:
-            haikus = self.haikus_data[quote_id].get(language, [])
-            # Convertir au format uniforme
-            result = []
-            for h in haikus:
-                if isinstance(h, dict):
-                    result.append(h)
-                else:
-                    # Ancien format
-                    result.append(
-                        {"text": h, "generated_at": "unknown", "model": "unknown"}
-                    )
-            return result
-        return []
-
     def count_haikus(self, quote_id: str, language: str) -> int:
         """
         Compte le nombre de haïkus pour une citation.
@@ -212,45 +189,63 @@ class HaikuStorage:
         Returns:
             Nombre de haïkus
         """
-        return len(self.get_all_haikus(quote_id, language))
+        if quote_id in self.haikus_data:
+            return len(self.haikus_data[quote_id].get(language, []))
+        return 0
 
-    def get_missing_quotes(self, all_quote_ids: list[str], language: str) -> list[str]:
+    # Méthodes pour les quotes utilisateur
+    def save_user_quotes(self, quotes: list[Quote]):
         """
-        Retourne les IDs des citations sans haïku.
+        Sauvegarde les citations utilisateur.
 
         Args:
-            all_quote_ids: Liste de tous les IDs de citations
-            language: Langue à vérifier
+            quotes: Liste des citations à sauvegarder
+        """
+        data = [q.model_dump() for q in quotes if q.type == "user"]
+        with open(self.quotes_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def load_user_quotes(self) -> list[Quote]:
+        """
+        Charge les citations utilisateur depuis le fichier.
 
         Returns:
-            Liste des IDs sans haïku
+            Liste des citations utilisateur
         """
-        missing = []
-        for quote_id in all_quote_ids:
-            if not self.has_haiku(quote_id, language):
-                missing.append(quote_id)
-        return missing
+        if self.quotes_file.exists():
+            try:
+                with open(self.quotes_file, encoding="utf-8") as f:
+                    data = json.load(f)
+                    return [Quote(**q) for q in data]
+            except Exception as e:
+                print(f"Erreur lors du chargement des citations : {e}")
+        return []
 
-    def export_haikus(self) -> str:
+    # Méthodes d'export/import
+    def export_all_data(self) -> dict:
         """
-        Exporte tous les haïkus en JSON.
+        Exporte toutes les données.
 
         Returns:
-            String JSON des haïkus
+            Dict avec haikus et quotes
         """
-        return json.dumps(self.haikus_data, ensure_ascii=False, indent=2)
+        return {
+            "haikus": self.haikus_data,
+            "user_quotes": [q.model_dump() for q in self.load_user_quotes()],
+            "export_date": datetime.now().isoformat(),
+        }
 
-    def import_haikus(self, json_data: str):
+    def import_data(self, data: dict):
         """
-        Importe des haïkus depuis une chaîne JSON.
+        Importe des données.
 
         Args:
-            json_data: Données JSON à importer
+            data: Données à importer
         """
-        try:
-            imported_data = json.loads(json_data)
-            # Fusionner avec les données existantes
-            for quote_id, languages in imported_data.items():
+        # Importer haïkus
+        if "haikus" in data:
+            imported_haikus = data["haikus"]
+            for quote_id, languages in imported_haikus.items():
                 if quote_id not in self.haikus_data:
                     self.haikus_data[quote_id] = {"fr": [], "en": []}
 
@@ -258,7 +253,7 @@ class HaikuStorage:
                     if lang not in self.haikus_data[quote_id]:
                         self.haikus_data[quote_id][lang] = []
 
-                    # Ajouter sans doublons (basé sur le texte)
+                    # Ajouter sans doublons
                     existing_texts = [
                         h.get("text") if isinstance(h, dict) else h
                         for h in self.haikus_data[quote_id][lang]
@@ -272,6 +267,8 @@ class HaikuStorage:
                             self.haikus_data[quote_id][lang].append(haiku)
 
             self._save_haikus()
-        except Exception as e:
-            print(f"Erreur lors de l'import des haïkus : {e}")
-            raise
+
+        # Importer citations utilisateur
+        if "user_quotes" in data:
+            user_quotes = [Quote(**q) for q in data["user_quotes"]]
+            self.save_user_quotes(user_quotes)

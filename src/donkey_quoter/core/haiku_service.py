@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Optional
 
 from ..config.model_mapping import get_author_for_model
-from ..models import Quote
+from .models import Quote
 
 
 class HaikuService:
@@ -19,7 +19,7 @@ class HaikuService:
 
         Args:
             api_client: Client API pour la génération
-            storage: Stockage des haïkus
+            storage: Instance de DataStorage pour le stockage des haïkus
         """
         self.api_client = api_client
         self.storage = storage

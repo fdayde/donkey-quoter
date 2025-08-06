@@ -6,7 +6,7 @@ from typing import Callable, Optional
 
 import streamlit as st
 
-from .models import Quote
+from .core.models import Quote
 from .translations import CATEGORY_LABELS, TRANSLATIONS
 from .ui.styles import (
     get_category_badge_html,
