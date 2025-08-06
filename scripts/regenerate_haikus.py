@@ -35,6 +35,14 @@ class OptimizedHaikuRegenerator:
         self.api_client = None
         self.model = os.getenv("CLAUDE_MODEL_HAIKU", "claude-3-5-haiku-20241022")
 
+        # Métriques d'utilisation globales
+        self.total_metrics = {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_cost": 0.0,
+            "batches_processed": 0,
+        }
+
         if not dry_run:
             try:
                 # Utiliser temporairement le modèle Haiku 3.5
@@ -109,16 +117,52 @@ class OptimizedHaikuRegenerator:
             return {}
 
     def estimate_batch_tokens(self, quotes: list[Quote]) -> dict[str, int]:
-        """Estime les tokens pour un batch de citations."""
+        """Estime les tokens pour un batch de citations avec count_tokens si possible."""
         prompt = self.create_batch_prompt(quotes)
+        messages = [{"role": "user", "content": prompt}]
+
+        # Essayer d'utiliser count_tokens pour plus de précision
+        if self.api_client:
+            precise_tokens, status = self.api_client.count_tokens_safe(messages)
+            if precise_tokens is not None:
+                # Output : environ 150 tokens par haïku × 2 langues × nombre de citations
+                output_tokens = (
+                    TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)
+                )
+                return {
+                    "input": precise_tokens,
+                    "output": output_tokens,
+                    "total": precise_tokens + output_tokens,
+                    "method": "count_tokens",
+                    "status": status,
+                }
+            else:
+                # Récupérer les infos pour l'affichage
+                wait_time = (
+                    self.api_client.token_counter.get_reset_time()
+                    if status == "rate_limit"
+                    else 0
+                )
+                return {
+                    "input": len(prompt) // TOKEN_ESTIMATION["chars_per_token"],
+                    "output": TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes),
+                    "total": (len(prompt) // TOKEN_ESTIMATION["chars_per_token"])
+                    + (TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)),
+                    "method": "estimation",
+                    "status": status,
+                    "wait_time": wait_time,
+                }
+
+        # Fallback vers estimation simple
         input_tokens = len(prompt) // TOKEN_ESTIMATION["chars_per_token"]
-        # Output : environ 150 tokens par haïku × 2 langues × nombre de citations
         output_tokens = TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)
 
         return {
             "input": input_tokens,
             "output": output_tokens,
             "total": input_tokens + output_tokens,
+            "method": "estimation",
+            "status": "no_api",
         }
 
     def calculate_savings(
@@ -193,9 +237,38 @@ class OptimizedHaikuRegenerator:
         total_cost = self.calculate_cost(total_tokens)
         savings = self.calculate_savings(len(quotes), skipped)
 
+        # Déterminer la méthode d'estimation utilisée
+        estimation_method = tokens_est.get("method", "estimation")
+        status = tokens_est.get("status", "unknown")
+
+        if estimation_method == "count_tokens":
+            method_text = "count_tokens() officiel"
+        else:
+            # Différencier les raisons du fallback
+            if status == "no_api":
+                method_text = "estimation basique (pas d'API configurée)"
+            elif status == "rate_limit":
+                wait_time = tokens_est.get("wait_time", 0)
+                method_text = (
+                    f"estimation basique (limite atteinte, attendre {wait_time}s)"
+                )
+            elif status == "error":
+                method_text = "estimation basique (erreur API)"
+            else:
+                method_text = "estimation basique"
+
         print("\n💰 Estimation des coûts :")
-        print(f"   - Tokens input estimés : ~{total_tokens['input']:,}")
-        print(f"   - Tokens output estimés : ~{total_tokens['output']:,}")
+        print(f"   - Méthode : {method_text}")
+
+        # Clarifier la précision par type de token
+        if estimation_method == "count_tokens":
+            print(f"   - Tokens input (précis) : {total_tokens['input']:,}")
+        else:
+            print(f"   - Tokens input estimés : ~{total_tokens['input']:,}")
+
+        print(
+            f"   - Tokens output estimés : ~{total_tokens['output']:,}"
+        )  # Toujours estimation
         print(f"   - COÛT ESTIMÉ : ${total_cost:.4f} USD")
 
         print("\n📈 Optimisations appliquées :")
@@ -219,6 +292,22 @@ class OptimizedHaikuRegenerator:
 
         return input_cost + output_cost
 
+    def calculate_exact_cost(self, usage_metrics) -> dict[str, float]:
+        """Calcule le coût exact basé sur les métriques d'utilisation réelles."""
+        pricing = CLAUDE_PRICING.get(
+            self.model, CLAUDE_PRICING["claude-3-5-haiku-20241022"]
+        )
+
+        input_cost = (usage_metrics.input_tokens / 1_000_000) * pricing["input"]
+        output_cost = (usage_metrics.output_tokens / 1_000_000) * pricing["output"]
+        total_cost = input_cost + output_cost
+
+        return {
+            "input_cost": input_cost,
+            "output_cost": output_cost,
+            "total_cost": total_cost,
+        }
+
     def generate_batch_haikus(self, quotes: list[Quote]) -> dict[str, dict[str, str]]:
         """Génère des haïkus pour un batch de citations."""
         if self.dry_run:
@@ -229,13 +318,23 @@ class OptimizedHaikuRegenerator:
 
         prompt = self.create_batch_prompt(quotes)
 
-        # Appel API avec le prompt optimisé
-        response = self.api_client.client.messages.create(
+        # Appel API avec le prompt optimisé et retry automatique
+        response = self.api_client._make_api_call(
+            messages=[{"role": "user", "content": prompt}],
             model=self.model,
             max_tokens=TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes),
             temperature=0.7,
-            messages=[{"role": "user", "content": prompt}],
         )
+
+        # Capturer les métriques d'utilisation
+        if hasattr(response, "usage"):
+            self.total_metrics["input_tokens"] += response.usage.input_tokens
+            self.total_metrics["output_tokens"] += response.usage.output_tokens
+            self.total_metrics["batches_processed"] += 1
+
+            # Calculer le coût de ce batch
+            batch_cost = self.calculate_exact_cost(response.usage)
+            self.total_metrics["total_cost"] += batch_cost["total_cost"]
 
         # Parser la réponse
         quote_ids = [q.id for q in quotes]
@@ -316,13 +415,26 @@ class OptimizedHaikuRegenerator:
                 print(f" ❌ Erreur : {e}")
                 error_count += len(batch) * 2
 
-        # Résumé
+        # Résumé avec métriques réelles
         print("\n✨ Génération terminée !")
         print(f"   - Haïkus générés : {success_count}")
         print(f"   - Échecs : {error_count}")
-        print(
-            f"   - Économies réalisées : ~{(success_count // (self.BATCH_SIZE * 2)) * 30}% vs génération individuelle"
-        )
+
+        if not self.dry_run and self.total_metrics["batches_processed"] > 0:
+            print("\n📊 Métriques d'utilisation réelles :")
+            print(
+                f"   - Tokens d'entrée totaux : {self.total_metrics['input_tokens']:,}"
+            )
+            print(
+                f"   - Tokens de sortie totaux : {self.total_metrics['output_tokens']:,}"
+            )
+
+            print("\n💰 Coûts réels :")
+            print(f"   - Coût total : ${self.total_metrics['total_cost']:.6f}")
+        else:
+            print(
+                f"   - Économies réalisées : ~{(success_count // (self.BATCH_SIZE * 2)) * 30}% vs génération individuelle"
+            )
 
 
 def main():

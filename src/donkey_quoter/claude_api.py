@@ -3,11 +3,23 @@ Module pour l'intégration avec l'API Claude d'Anthropic.
 """
 
 import os
-from typing import Optional
+from contextlib import contextmanager
+from typing import Any, Optional
 
 import streamlit as st
-from anthropic import Anthropic
+from anthropic import Anthropic, RateLimitError
 from dotenv import load_dotenv
+from tenacity import (
+    retry,
+    retry_if_not_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
+
+from .api.exceptions import APIErrorHandler
+from .config.api_pricing import CLAUDE_PRICING
+from .prompts.haiku_prompts import build_haiku_prompt
+from .token_counter import TokenCounter
 
 load_dotenv()
 
@@ -38,7 +50,59 @@ class ClaudeAPIClient:
                 "ANTHROPIC_API_KEY not found in Streamlit secrets or environment variables"
             )
 
-        self.client = Anthropic(api_key=self.api_key)
+        # Ne pas créer le client ici, utiliser le context manager
+        self._client = None
+
+        # Métriques d'utilisation
+        self.last_usage_metrics = None
+
+        # Compteur pour count_tokens
+        self.token_counter = TokenCounter()
+
+    @property
+    def client(self) -> Anthropic:
+        """Retourne le client Anthropic (lazy loading)."""
+        if self._client is None:
+            self._client = Anthropic(api_key=self.api_key)
+        return self._client
+
+    @contextmanager
+    def _api_call(self):
+        """Context manager pour les appels API avec gestion d'erreur."""
+        try:
+            yield self.client
+        except Exception as e:
+            raise APIErrorHandler.handle_api_error(e) from e
+
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_not_exception_type(RateLimitError),
+        reraise=True,
+    )
+    def _make_api_call(self, messages, model=None, max_tokens=None, temperature=0.7):
+        """
+        Effectue un appel API avec retry automatique pour les erreurs temporaires.
+
+        Args:
+            messages: Messages à envoyer à l'API
+            model: Modèle à utiliser (par défaut self.model)
+            max_tokens: Nombre max de tokens (par défaut self.max_tokens_output)
+            temperature: Température pour la génération
+
+        Returns:
+            Réponse de l'API
+
+        Raises:
+            Exception: Pour les erreurs non récupérables (RateLimitError, etc.)
+        """
+        with self._api_call() as client:
+            return client.messages.create(
+                model=model or self.model,
+                max_tokens=max_tokens or self.max_tokens_output,
+                temperature=temperature,
+                messages=messages,
+            )
 
     def generate_haiku(
         self, quote_text: str, quote_author: str, language: str = "fr"
@@ -54,95 +118,143 @@ class ClaudeAPIClient:
         Returns:
             Le haïku généré ou None en cas d'erreur
         """
-        try:
-            # Prompt adapté selon la langue
-            if language == "fr":
-                prompt = f"""Génère un haïku en français inspiré de cette citation :
-"{quote_text}" - {quote_author}
+        # Construire le prompt avec le module dédié
+        prompt = build_haiku_prompt(quote_text, quote_author, language)
 
-Le haïku doit :
-- Respecter le format 5-7-5 syllabes
-- Capturer l'essence de la citation
-- Utiliser une imagerie poétique avec un âne/baudet/bourrique
-- Être contemplatif et philosophique
+        # Limiter la longueur du prompt
+        if len(prompt) > self.max_tokens_input * 4:  # Approximation
+            prompt = prompt[: self.max_tokens_input * 4]
 
-Réponds uniquement avec le haïku (3 lignes), sans explication."""
-            else:
-                prompt = f"""Generate an English haiku inspired by this quote:
-"{quote_text}" - {quote_author}
+        # Appel à l'API Claude avec retry automatique
+        response = self._make_api_call(messages=[{"role": "user", "content": prompt}])
 
-The haiku must:
-- Follow the 5-7-5 syllable format
-- Capture the essence of the quote
-- Use poetic imagery with a donkey/mule/ass
-- Be contemplative and philosophical
+        # Stocker les métriques d'utilisation
+        self.last_usage_metrics = response.usage
 
-Reply only with the haiku (3 lines), no explanation."""
+        # Extraire le haïku de la réponse
+        haiku = response.content[0].text.strip()
 
-            # Limiter la longueur du prompt
-            if len(prompt) > self.max_tokens_input * 4:  # Approximation
-                prompt = prompt[: self.max_tokens_input * 4]
-
-            # Appel à l'API Claude
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=self.max_tokens_output,
-                temperature=0.7,
-                messages=[{"role": "user", "content": prompt}],
-            )
-
-            # Extraire le haïku de la réponse
-            haiku = response.content[0].text.strip()
-
-            # Vérifier que c'est bien un haïku (3 lignes)
-            lines = haiku.split("\n")
-            if len(lines) == 3:
-                return haiku
-            else:
-                # Essayer de reformater si nécessaire
-                words = haiku.split()
-                if len(words) >= 10:
-                    # Approximation pour découper en 3 lignes
-                    third = len(words) // 3
-                    return "\n".join(
-                        [
-                            " ".join(words[:third]),
-                            " ".join(words[third : 2 * third]),
-                            " ".join(words[2 * third :]),
-                        ]
-                    )
-                return haiku
-
-        except Exception as e:
-            # Identifier le type d'erreur pour un message plus précis
-            error_msg = str(e).lower()
-
-            if "rate_limit" in error_msg or "quota" in error_msg:
-                raise Exception(
-                    "Limite de crédit API atteinte. Veuillez vérifier votre compte Anthropic."
-                ) from e
-            elif "unauthorized" in error_msg or "api_key" in error_msg:
-                raise Exception(
-                    "Clé API invalide. Veuillez vérifier votre configuration."
-                ) from e
-            elif "connection" in error_msg or "network" in error_msg:
-                raise Exception(
-                    "Erreur de connexion. Vérifiez votre connexion internet."
-                ) from e
-            else:
-                raise Exception(
-                    f"Erreur lors de la génération : {str(e)[:100]}..."
-                ) from e
+        # Vérifier que c'est bien un haïku (3 lignes)
+        lines = haiku.split("\n")
+        if len(lines) == 3:
+            return haiku
+        else:
+            # Essayer de reformater si nécessaire
+            words = haiku.split()
+            if len(words) >= 10:
+                # Approximation pour découper en 3 lignes
+                third = len(words) // 3
+                return "\n".join(
+                    [
+                        " ".join(words[:third]),
+                        " ".join(words[third : 2 * third]),
+                        " ".join(words[2 * third :]),
+                    ]
+                )
+            return haiku
 
     def is_available(self) -> bool:
         """Vérifie si l'API est disponible."""
         try:
-            # Test rapide de connexion
-            self.client.messages.create(
-                model=self.model,
-                max_tokens=10,
-                messages=[{"role": "user", "content": "test"}],
+            # Test rapide de connexion avec retry
+            self._make_api_call(
+                messages=[{"role": "user", "content": "test"}], max_tokens=10
             )
             return True
         except Exception:
             return False
+
+    def get_last_usage_metrics(self) -> Optional[dict[str, int]]:
+        """
+        Retourne les métriques d'utilisation du dernier appel API.
+
+        Returns:
+            Dict avec les clés:
+            - input_tokens: Nombre de tokens d'entrée
+            - output_tokens: Nombre de tokens de sortie
+        """
+        if not self.last_usage_metrics:
+            return None
+
+        return {
+            "input_tokens": self.last_usage_metrics.input_tokens,
+            "output_tokens": self.last_usage_metrics.output_tokens,
+        }
+
+    def calculate_last_request_cost(self) -> Optional[dict[str, float]]:
+        """
+        Calcule le coût du dernier appel API en USD.
+
+        Returns:
+            Dict avec les clés:
+            - input_cost: Coût des tokens d'entrée
+            - output_cost: Coût des tokens de sortie
+            - total_cost: Coût total
+        """
+        metrics = self.get_last_usage_metrics()
+        if not metrics:
+            return None
+
+        # Utiliser la configuration centralisée
+        model_pricing = CLAUDE_PRICING.get(
+            self.model, CLAUDE_PRICING["claude-3-haiku-20240307"]
+        )
+
+        # Calculer les coûts
+        input_cost = (metrics["input_tokens"] / 1_000_000) * model_pricing["input"]
+        output_cost = (metrics["output_tokens"] / 1_000_000) * model_pricing["output"]
+        total_cost = input_cost + output_cost
+
+        return {
+            "input_cost": input_cost,
+            "output_cost": output_cost,
+            "total_cost": total_cost,
+        }
+
+    def generate_haiku_with_metrics(
+        self, quote_text: str, quote_author: str, language: str = "fr"
+    ) -> tuple[Optional[str], Optional[dict[str, Any]]]:
+        """
+        Génère un haïku et retourne les métriques d'utilisation.
+
+        Returns:
+            Tuple (haiku, metrics) où metrics contient:
+            - usage: métriques de tokens
+            - cost: détails des coûts
+        """
+        haiku = self.generate_haiku(quote_text, quote_author, language)
+
+        if haiku and self.last_usage_metrics:
+            metrics = {
+                "usage": self.get_last_usage_metrics(),
+                "cost": self.calculate_last_request_cost(),
+            }
+            return haiku, metrics
+
+        return haiku, None
+
+    def count_tokens_safe(self, messages: list[dict]) -> tuple[Optional[int], str]:
+        """
+        Compte les tokens avec gestion des limites de débit.
+
+        Args:
+            messages: Messages à compter
+
+        Returns:
+            Tuple (nombre de tokens, statut) où statut peut être:
+            - "success": Succès
+            - "rate_limit": Limite de débit atteinte
+            - "error": Erreur API
+        """
+        if not self.token_counter.can_count_tokens():
+            return None, "rate_limit"
+
+        try:
+            with self._api_call() as client:
+                response = client.messages.count_tokens(
+                    messages=messages, model=self.model
+                )
+                self.token_counter.increment()
+                return response.input_tokens, "success"
+        except Exception:
+            return None, "error"

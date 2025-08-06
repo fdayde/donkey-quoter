@@ -19,6 +19,12 @@ from src.donkey_quoter.haiku_generator import HaikuGenerator
 from src.donkey_quoter.quote_manager import QuoteManager
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
+from src.donkey_quoter.ui.styles import (
+    get_footer_html,
+    get_original_quote_html,
+    get_quote_display_html,
+    get_usage_display_html,
+)
 from src.donkey_quoter.ui_components import (
     render_category_badge,
     render_header,
@@ -44,32 +50,9 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
 
     # Utiliser un conteneur Streamlit avec bordure
     with st.container(border=True):
-        # Citation avec guillemet stylisé (seulement ouvrant)
-        st.markdown(
-            f"""
-            <div style="padding: 2rem;">
-                <div style="text-align: center; margin-bottom: -1.5rem;">
-                    <span style="font-size: 4rem; color: #d97706;
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                        Roboto, 'Helvetica Neue', Arial, sans-serif;
-                        line-height: 0.5;">"</span>
-                </div>
-                <div style="font-size: 1.25rem; color: #78350f; line-height: 1.8;
-                    font-weight: 300; font-family: -apple-system, BlinkMacSystemFont,
-                    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                    text-align: center; margin: 0 2rem; white-space: pre-line;">
-                    {quote_text}
-                </div>
-                <div style="text-align: right; margin-right: 2rem; margin-top: 1rem;">
-                    <span style="color: #b45309; font-size: 0.75rem;
-                        font-weight: 500; font-family: -apple-system,
-                        BlinkMacSystemFont, 'Segoe UI', Roboto,
-                        'Helvetica Neue', Arial, sans-serif;">— {quote_author}</span>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        # Citation avec styles centralisés
+        quote_html = get_quote_display_html(quote_text, quote_author)
+        st.markdown(quote_html, unsafe_allow_html=True)
 
         # Tags/Catégories sous l'attribution
         st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
@@ -108,23 +91,11 @@ def render_current_quote(quote_manager: QuoteManager, lang: str, t: dict):
         original_author = quote_manager.get_text(original.author, lang)
 
         st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
-        st.markdown(
-            f"""
-            <div style="text-align: center; padding: 0.5rem;
-                background-color: rgba(254, 243, 199, 0.3);
-                border-radius: 0.5rem; margin-top: 0.5rem;">
-                <p style="font-size: 0.75rem; color: #92400e;
-                    font-style: italic; margin: 0;">
-                    {t.get("original_quote", "Citation originale" if lang == "fr" else "Original quote")} :
-                </p>
-                <p style="font-size: 0.75rem; color: #78350f;
-                    margin: 0.25rem 0 0 0;">
-                    "{original_text}" — {original_author}
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        label = t.get(
+            "original_quote", "Citation originale" if lang == "fr" else "Original quote"
         )
+        original_html = get_original_quote_html(original_text, original_author, label)
+        st.markdown(original_html, unsafe_allow_html=True)
 
 
 def render_action_buttons(
@@ -261,12 +232,8 @@ def render_action_buttons(
     if haiku_generator.api_client:
         st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
         usage_display = haiku_generator.get_usage_display(lang)
-        st.markdown(
-            f'<div style="text-align: center; color: #92400e; '
-            f'font-size: 0.875rem;">'
-            f"{usage_display}</div>",
-            unsafe_allow_html=True,
-        )
+        usage_html = get_usage_display_html(usage_display)
+        st.markdown(usage_html, unsafe_allow_html=True)
 
     # Afficher un message sympathique si la limite est atteinte
     if st.session_state.get("haiku_generation_count", 0) >= 5:
@@ -381,41 +348,14 @@ def main():
 
     # Footer avec lien GitHub
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown(
-        f"""
-        <div style="text-align: center; padding: 2rem 0 1rem 0;
-            border-top: 1px solid rgba(254, 243, 199, 0.5); margin-top: 3rem;">
-            <a href="https://github.com/fdayde/donkey-quoter" target="_blank"
-                style="color: #d97706; text-decoration: none; font-size: 0.875rem;">
-                <svg width="20" height="20" viewBox="0 0 24 24"
-                     fill="currentColor" style="vertical-align: middle;
-                     margin-right: 0.5rem;">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207
-                        11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416
-                        -4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083
-                        -.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834
-                        2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305
-                        -5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124
-                        -.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266
-                        1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552
-                        3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235
-                        1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823
-                        1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199
-                        -6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-                GitHub
-            </a>
-            <p style="font-size: 0.625rem; font-style: italic; color: #d97706;
-                margin-top: 0.5rem; margin-bottom: 0;">
-                ↑ {t.get("contribute_message", "Venez ajouter vos propres citations" if lang == "fr" else "Come add your own quotes")}
-            </p>
-            <p style="font-size: 0.625rem; color: #a3a3a3; margin-top: 0.75rem; margin-bottom: 0;">
-                Donkey Quoter v{__version__}
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    contribute_message = t.get(
+        "contribute_message",
+        "Venez ajouter vos propres citations"
+        if lang == "fr"
+        else "Come add your own quotes",
     )
+    footer_html = get_footer_html(__version__, contribute_message)
+    st.markdown(footer_html, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

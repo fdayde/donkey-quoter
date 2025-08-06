@@ -2,9 +2,6 @@
 Module de génération de haïkus.
 """
 
-import os
-import random
-import time
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -13,8 +10,10 @@ import streamlit as st
 
 from .claude_api import ClaudeAPIClient
 from .config.model_mapping import get_author_for_model
+from .core.haiku_service import HaikuService
 from .haiku_storage import HaikuStorage
 from .models import Quote
+from .ui.progress_bar import ProgressBarManager
 
 
 class HaikuGenerator:
@@ -54,6 +53,9 @@ class HaikuGenerator:
             self.api_client = None
             # Stocker l'erreur pour l'afficher à l'utilisateur si nécessaire
             self.api_error = str(e)
+
+        # Initialiser le service métier
+        self.service = HaikuService(self.api_client, self.storage)
 
     def get_existing_haiku(self, quote: Quote, language: str) -> Optional[Quote]:
         """
@@ -111,103 +113,47 @@ class HaikuGenerator:
         Returns:
             Un objet Quote contenant le haïku ou None en cas d'erreur
         """
-        quote_text = quote.text.get(language, quote.text.get("fr", ""))
-        quote_author = quote.author.get(language, quote.author.get("fr", ""))
+        # Vérifier les limites avant de commencer
+        generation_count = st.session_state.haiku_generation_count
+        if force_new and generation_count >= 5:
+            return None
 
-        # Vérifier si on peut/doit utiliser l'API
-        use_api = False
-        api_message = ""
+        # Afficher la barre de progression
+        progress_bar = ProgressBarManager.show_generation_progress()
 
-        # Si force_new=True, toujours essayer de générer un nouveau haïku
-        if self.api_client and force_new:
-            # Vérifier la limite de session (5 générations max)
-            if st.session_state.haiku_generation_count >= 5:
-                return None  # Le bouton sera désactivé, mais au cas où
-            use_api = True
+        try:
+            # Déterminer la stratégie et générer le haïku
+            haiku_text, model, was_api_call = self.service.generate_haiku_strategy(
+                quote, language, force_new, generation_count
+            )
 
-        # Afficher la progress bar
-        progress_bar = st.progress(0)
+            # Animer la barre de progression selon la stratégie
+            if was_api_call:
+                ProgressBarManager.animate_api_progress(progress_bar)
+                if haiku_text:
+                    # Incrémenter le compteur seulement en cas de succès
+                    st.session_state.haiku_generation_count += 1
+            else:
+                ProgressBarManager.animate_storage_progress(progress_bar)
 
-        if use_api:
-            # Générer via API Claude
-            for i in range(50):
-                time.sleep(0.02)
-                progress_bar.progress(i + 1)
+            # Compléter la barre de progression
+            if haiku_text:
+                ProgressBarManager.complete_progress(progress_bar)
+            else:
+                progress_bar.empty()
 
-            try:
-                haiku_text = self.api_client.generate_haiku(
-                    quote_text, quote_author, language
+            # Créer l'objet Quote si on a un haïku
+            if haiku_text:
+                return self.service.create_haiku_quote(
+                    haiku_text, language, model, quote.id
                 )
 
-                if haiku_text:
-                    # Ne pas sauvegarder le haïku pour compatibilité Streamlit Cloud
-                    # model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
-                    # self.storage.add_haiku(quote.id, haiku_text, language, model)
+            return None
 
-                    # Incrémenter le compteur de session seulement en cas de succès
-                    st.session_state.haiku_generation_count += 1
-
-                    for i in range(50, 100):
-                        time.sleep(0.01)
-                        progress_bar.progress(i + 1)
-                else:
-                    # Échec silencieux, utiliser le stockage
-                    use_api = False
-                    for i in range(50, 100):
-                        time.sleep(0.01)
-                        progress_bar.progress(i + 1)
-
-            except Exception as e:
-                # Afficher l'erreur à l'utilisateur
-                progress_bar.empty()
-                st.error(f"⚠️ {str(e)}")
-                return None
-
-        if not use_api:
-            # Utiliser un haïku stocké
-            for i in range(100):
-                time.sleep(0.015)
-                progress_bar.progress(i + 1)
-
-            haiku_text = self.storage.get_haiku(quote.id, language)
-
-            if not haiku_text:
-                # Aucun haïku stocké, utiliser un fallback
-                haiku_text = random.choice(self.FALLBACK_HAIKUS[language])
-
-                if api_message:
-                    st.warning(f"⚠️ {api_message}")
-
-        progress_bar.empty()
-
-        # Déterminer le modèle utilisé
-        if use_api:
-            model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
-        else:
-            # Si on n'a pas utilisé l'API mais qu'on force la génération, on n'a pas de haïku
-            if force_new:
-                return None
-            # Sinon, utiliser un fallback générique
-            model = "unknown"
-
-        # Créer le poème avec l'auteur approprié basé sur le modèle
-        author_name = {
-            "fr": get_author_for_model(model, "fr"),
-            "en": get_author_for_model(model, "en"),
-        }
-
-        poem = Quote(
-            id=f"poem_{int(datetime.now().timestamp())}",
-            text={
-                language: haiku_text,
-                "fr" if language == "en" else "en": haiku_text,
-            },
-            author=author_name,
-            category="poem",
-            type="generated",
-        )
-
-        return poem
+        except Exception as e:
+            progress_bar.empty()
+            st.error(f"⚠️ {str(e)}")
+            return None
 
     def get_usage_display(self, language: str = "fr") -> str:
         """Retourne l'affichage du compteur d'usage."""

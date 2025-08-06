@@ -8,37 +8,18 @@ import streamlit as st
 
 from .models import Quote
 from .translations import CATEGORY_LABELS, TRANSLATIONS
-
-CATEGORY_COLORS = {
-    "classic": "orange",
-    "personal": "orange",
-    "poem": "red",
-    "humor": "yellow",
-}
+from .ui.styles import (
+    get_category_badge_html,
+    get_header_style,
+    get_quote_list_item_html,
+)
 
 
 def render_category_badge(category: str, lang: str):
     """Affiche un badge de catégorie."""
     category_label = CATEGORY_LABELS.get(category, {}).get(lang, category)
-    color = CATEGORY_COLORS.get(category, "gray")
-
-    # Mapping des couleurs Streamlit vers les couleurs CSS
-    color_map = {
-        "orange": "#f97316",
-        "red": "#ef4444",
-        "yellow": "#eab308",
-        "gray": "#6b7280",
-    }
-
-    css_color = color_map.get(color, "#6b7280")
-
-    # Utiliser du HTML personnalisé au lieu de st.badge
-    st.markdown(
-        f'<span style="display: inline-block; padding: 0.25rem 0.75rem; '
-        f"background-color: {css_color}; color: white; border-radius: 1rem; "
-        f'font-size: 0.75rem; font-weight: 500; margin-bottom: 0.5rem;">{category_label}</span>',
-        unsafe_allow_html=True,
-    )
+    badge_html = get_category_badge_html(category_label, category)
+    st.markdown(badge_html, unsafe_allow_html=True)
 
 
 def render_stats_card(value: int, label: str, style_class: str = ""):
@@ -96,22 +77,9 @@ def render_header(title: str, subtitle: str, lang: str, on_language_change: Call
             ):
                 on_language_change()
 
-        # Titre et sous-titre centrés
-        st.markdown(
-            f"""
-            <div style="text-align: center;">
-                <h1 style="font-family: -apple-system, BlinkMacSystemFont,
-                    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                    font-size: 2.5rem; font-weight: 300; color: #78350f;
-                    margin: 0;">{title}</h1>
-                <p style="font-family: -apple-system, BlinkMacSystemFont,
-                    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                    color: #d97706; font-size: 1.125rem; font-weight: 300;
-                    margin-top: 0.25rem; margin-bottom: 2rem;">{subtitle}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        # Titre et sous-titre centrés avec styles
+        header_html = get_header_style(title, subtitle)
+        st.markdown(header_html, unsafe_allow_html=True)
 
 
 def render_quote_list_item(
@@ -127,18 +95,8 @@ def render_quote_list_item(
 
     with col1:
         render_category_badge(quote.category, lang)
-        st.markdown(
-            f'<p style="font-family: -apple-system, BlinkMacSystemFont, \n'
-            f"'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; \n"
-            f"font-weight: 300; margin: 0.5rem 0; color: #78350f; \n"
-            f'font-size: 0.875rem;">'
-            f'"{quote_text}"</p>'
-            f'<p style="font-family: -apple-system, BlinkMacSystemFont, \n'
-            f"'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; \n"
-            f"font-weight: 500; margin: 0; color: rgba(180, 83, 9, 0.7); \n"
-            f'font-size: 0.75rem;">— {quote_author}</p>',
-            unsafe_allow_html=True,
-        )
+        quote_html = get_quote_list_item_html(quote_text, quote_author)
+        st.markdown(quote_html, unsafe_allow_html=True)
 
     with col2:
         button_col1, button_col2 = st.columns(2)
