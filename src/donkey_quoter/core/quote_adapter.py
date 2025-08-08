@@ -18,9 +18,12 @@ class QuoteAdapter:
         self.service = QuoteService()
         # Initialiser le state si nécessaire (comme le faisait QuoteManager)
         if "quotes" not in st.session_state:
-            from ..data import CLASSIC_QUOTES
+            from ..core.data_loader import DataLoader
 
-            st.session_state.quotes = [Quote(**q) for q in CLASSIC_QUOTES]
+            data_loader = DataLoader()
+            st.session_state.quotes = data_loader.load_quotes(
+                data_loader.get_default_quotes_path()
+            )
         if "saved_quotes" not in st.session_state:
             st.session_state.saved_quotes = []
         if "saved_poems" not in st.session_state:

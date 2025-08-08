@@ -7,6 +7,8 @@ from typing import Any
 
 import streamlit as st
 
+from ..config.settings import settings
+
 
 class ProgressBarManager:
     """Gestionnaire des barres de progression."""
@@ -42,7 +44,7 @@ class ProgressBarManager:
             progress_bar: La barre de progression à animer
         """
         for i in range(100):
-            time.sleep(0.015)
+            time.sleep(settings.ui.progress_bar_delay)
             progress_bar.progress(i + 1)
 
     @staticmethod

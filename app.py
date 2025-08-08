@@ -7,7 +7,7 @@ from pathlib import Path
 import streamlit as st
 
 from src.donkey_quoter import __version__
-from src.donkey_quoter.config import PAGE_CONFIG, STYLES_CSS_PATH
+from src.donkey_quoter.config.settings import settings
 from src.donkey_quoter.core.haiku_adapter import HaikuAdapter
 from src.donkey_quoter.core.quote_adapter import QuoteAdapter
 from src.donkey_quoter.state_manager import StateManager
@@ -23,8 +23,8 @@ from src.donkey_quoter.ui_components import render_header
 
 def load_css():
     """Charge les fichiers CSS personnalisés."""
-    if STYLES_CSS_PATH.exists():
-        with open(STYLES_CSS_PATH) as f:
+    if settings.paths.styles_css_path.exists():
+        with open(settings.paths.styles_css_path) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
@@ -55,7 +55,13 @@ def handle_session_refresh():
 def main():
     """Point d'entrée principal de l'application."""
     # Configuration
-    st.set_page_config(**PAGE_CONFIG)
+    page_config = {
+        "page_title": settings.app.page_title,
+        "page_icon": settings.app.page_icon,
+        "layout": settings.app.layout,
+        "initial_sidebar_state": settings.app.initial_sidebar_state,
+    }
+    st.set_page_config(**page_config)
     handle_session_refresh()
     StateManager.initialize()
     load_css()

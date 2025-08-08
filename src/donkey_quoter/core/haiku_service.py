@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from typing import Optional
 
-from ..config.model_mapping import get_author_for_model
+from ..config.settings import settings
 from ..prompts.haiku_prompts import build_haiku_prompt
 from .models import Quote
 
@@ -165,8 +165,8 @@ class HaikuService:
             Un objet Quote représentant le haïku
         """
         author_name = {
-            "fr": get_author_for_model(model, "fr"),
-            "en": get_author_for_model(model, "en"),
+            "fr": settings.models.get_author_for_model(model, "fr"),
+            "en": settings.models.get_author_for_model(model, "en"),
         }
 
         quote_id = f"poem_{int(datetime.now().timestamp())}"

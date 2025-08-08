@@ -2,6 +2,8 @@
 Constantes et utilitaires pour les styles CSS de l'application.
 """
 
+from ..config.settings import settings
+
 # Palette de couleurs principale
 COLORS = {
     "primary": "#d97706",  # Orange principal
@@ -18,14 +20,21 @@ FONTS = {
     "main": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
 }
 
-# Styles pour les catégories
-CATEGORY_COLORS = {
-    "classic": "#f97316",  # orange
-    "personal": "#f97316",  # orange
-    "poem": "#ef4444",  # red
-    "humor": "#eab308",  # yellow
-    "default": "#6b7280",  # gray
+# Mapper les couleurs textuelles vers les codes hexadécimaux
+CATEGORY_COLOR_MAP = {
+    "orange": "#f97316",
+    "red": "#ef4444",
+    "yellow": "#eab308",
+    "default": "#6b7280",
 }
+
+
+def get_category_colors() -> dict:
+    """Récupère les couleurs de catégories depuis la configuration centralisée."""
+    return {
+        category: CATEGORY_COLOR_MAP.get(color, CATEGORY_COLOR_MAP["default"])
+        for category, color in settings.ui.category_colors.items()
+    }
 
 
 def get_quote_container_style() -> str:
@@ -127,7 +136,8 @@ def get_original_quote_html(
 
 def get_category_badge_html(category_label: str, category: str) -> str:
     """Retourne le HTML stylisé pour un badge de catégorie."""
-    color = CATEGORY_COLORS.get(category, CATEGORY_COLORS["default"])
+    category_colors = get_category_colors()
+    color = category_colors.get(category, CATEGORY_COLOR_MAP["default"])
 
     return f"""
     <span style="display: inline-block; padding: 0.25rem 0.75rem;

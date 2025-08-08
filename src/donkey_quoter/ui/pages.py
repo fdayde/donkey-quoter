@@ -6,11 +6,7 @@ from datetime import datetime
 
 import streamlit as st
 
-from ..config import (
-    EXPORT_DATE_FORMAT,
-    EXPORT_FILE_PREFIX,
-    QUOTE_LIST_HEIGHT,
-)
+from ..config.settings import settings
 from ..core.haiku_adapter import HaikuAdapter
 from ..core.quote_adapter import QuoteAdapter
 from ..state_manager import StateManager
@@ -238,7 +234,7 @@ def render_action_buttons(
             st.download_button(
                 label=f"📥 {t['export']} ({total_saved})",
                 data=export_data,
-                file_name=f"{EXPORT_FILE_PREFIX}-{datetime.now().strftime(EXPORT_DATE_FORMAT)}.json",
+                file_name=f"{settings.export.file_prefix}-{datetime.now().strftime(settings.export.date_format)}.json",
                 mime="application/json",
                 key="export",
                 use_container_width=True,
@@ -252,7 +248,7 @@ def render_all_quotes_list(quote_manager: QuoteAdapter, lang: str, t: dict):
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    container = st.container(height=QUOTE_LIST_HEIGHT)
+    container = st.container(height=settings.ui.quote_list_height)
     with container:
         for quote in quote_manager.quotes:
             quote_text = quote_manager.get_text(quote.text, lang)
