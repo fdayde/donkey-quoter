@@ -9,10 +9,11 @@ from pathlib import Path
 # Ajouter le répertoire parent au path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.donkey_quoter.claude_api import ClaudeAPIClient
+from src.donkey_quoter.core.models import Quote
+from src.donkey_quoter.core.storage import DataStorage
 from src.donkey_quoter.data.quotes import CLASSIC_QUOTES
-from src.donkey_quoter.haiku_storage import HaikuStorage
-from src.donkey_quoter.models import Quote
+from src.donkey_quoter.infrastructure.anthropic_client import AnthropicClient
+from src.donkey_quoter.prompts.haiku_prompts import build_haiku_prompt
 
 
 def generate_missing_haikus(languages=None, limit=None):
@@ -28,10 +29,10 @@ def generate_missing_haikus(languages=None, limit=None):
         languages = ["fr", "en"]
 
     # Initialiser les composants
-    storage = HaikuStorage(Path("data"))
+    storage = DataStorage(Path("data"))
 
     try:
-        api_client = ClaudeAPIClient()
+        api_client = AnthropicClient()
     except ValueError as e:
         print(f"Erreur : {e}")
         print("Veuillez configurer ANTHROPIC_API_KEY dans le fichier .env")
@@ -69,7 +70,11 @@ def generate_missing_haikus(languages=None, limit=None):
         print(f"  Citation : {quote_text[:50]}...")
 
         try:
-            haiku = api_client.generate_haiku(quote_text, quote_author, lang)
+            # Construire le prompt avec le module dédié
+            prompt = build_haiku_prompt(quote_text, quote_author, lang)
+
+            # Appel générique à l'API
+            haiku = api_client.call_claude(prompt)
 
             if haiku:
                 storage.add_haiku(quote.id, haiku, lang)

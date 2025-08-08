@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Optional
 
 from ..config.model_mapping import get_author_for_model
+from ..prompts.haiku_prompts import build_haiku_prompt
 from .models import Quote
 
 
@@ -54,9 +55,53 @@ class HaikuService:
             return None
 
         try:
-            return self.api_client.generate_haiku(quote_text, quote_author, language)
+            # Construire le prompt avec le module dédié
+            prompt = build_haiku_prompt(quote_text, quote_author, language)
+
+            # Limiter la longueur du prompt si nécessaire
+            max_chars = getattr(self.api_client, "max_tokens_input", 200) * 4
+            if len(prompt) > max_chars:
+                prompt = prompt[:max_chars]
+
+            # Appel générique à l'API
+            haiku_raw = self.api_client.call_claude(prompt)
+
+            # Vérifier et formater le haïku
+            return self._format_haiku(haiku_raw)
+
         except Exception:
             return None
+
+    def _format_haiku(self, haiku_text: str) -> str:
+        """
+        Formate et valide un haïku généré.
+
+        Args:
+            haiku_text: Texte brut du haïku
+
+        Returns:
+            Haïku formaté
+        """
+        haiku = haiku_text.strip()
+
+        # Vérifier que c'est bien un haïku (3 lignes)
+        lines = haiku.split("\n")
+        if len(lines) == 3:
+            return haiku
+        else:
+            # Essayer de reformater si nécessaire
+            words = haiku.split()
+            if len(words) >= 10:
+                # Approximation pour découper en 3 lignes
+                third = len(words) // 3
+                return "\n".join(
+                    [
+                        " ".join(words[:third]),
+                        " ".join(words[third : 2 * third]),
+                        " ".join(words[2 * third :]),
+                    ]
+                )
+            return haiku
 
     def get_stored_haiku(self, quote_id: str, language: str) -> Optional[str]:
         """

@@ -16,11 +16,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from dotenv import load_dotenv
 
-from src.donkey_quoter.claude_api import ClaudeAPIClient
 from src.donkey_quoter.config.api_pricing import CLAUDE_PRICING, TOKEN_ESTIMATION
+from src.donkey_quoter.core.models import Quote
+from src.donkey_quoter.core.storage import DataStorage
 from src.donkey_quoter.data.quotes import CLASSIC_QUOTES
-from src.donkey_quoter.haiku_storage import HaikuStorage
-from src.donkey_quoter.models import Quote
+from src.donkey_quoter.infrastructure.anthropic_client import AnthropicClient
 
 
 class OptimizedHaikuRegenerator:
@@ -31,7 +31,7 @@ class OptimizedHaikuRegenerator:
     def __init__(self, dry_run: bool = False):
         """Initialise le régénérateur optimisé."""
         self.dry_run = dry_run
-        self.storage = HaikuStorage()
+        self.storage = DataStorage()
         self.api_client = None
         self.model = os.getenv("CLAUDE_MODEL_HAIKU", "claude-3-5-haiku-20241022")
 
@@ -45,15 +45,8 @@ class OptimizedHaikuRegenerator:
 
         if not dry_run:
             try:
-                # Utiliser temporairement le modèle Haiku 3.5
-                original_model = os.getenv("CLAUDE_MODEL")
-                os.environ["CLAUDE_MODEL"] = self.model
-                self.api_client = ClaudeAPIClient()
-                # Restaurer le modèle original
-                if original_model:
-                    os.environ["CLAUDE_MODEL"] = original_model
-                else:
-                    del os.environ["CLAUDE_MODEL"]
+                # Créer le client avec le modèle Haiku 3.5
+                self.api_client = AnthropicClient(model=self.model)
             except ValueError as e:
                 print(f"❌ Erreur : {e}")
                 sys.exit(1)
@@ -319,12 +312,18 @@ class OptimizedHaikuRegenerator:
         prompt = self.create_batch_prompt(quotes)
 
         # Appel API avec le prompt optimisé et retry automatique
-        response = self.api_client._make_api_call(
-            messages=[{"role": "user", "content": prompt}],
-            model=self.model,
-            max_tokens=TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes),
-            temperature=0.7,
+        max_tokens = TOKEN_ESTIMATION["haiku_output_tokens"] * 2 * len(quotes)
+        response_text = self.api_client.call_claude(
+            prompt, max_tokens=max_tokens, temperature=0.7, model=self.model
         )
+
+        # Créer un objet response mock pour la compatibilité
+        class MockResponse:
+            def __init__(self, text, usage_metrics):
+                self.content = [type("obj", (), {"text": text})]
+                self.usage = usage_metrics
+
+        response = MockResponse(response_text, self.api_client.last_usage_metrics)
 
         # Capturer les métriques d'utilisation
         if hasattr(response, "usage"):

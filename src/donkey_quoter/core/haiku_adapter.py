@@ -7,7 +7,7 @@ from typing import Optional
 
 import streamlit as st
 
-from ..claude_api import ClaudeAPIClient
+from ..infrastructure.anthropic_client import AnthropicClient
 from .haiku_service import HaikuService
 from .models import Quote
 from .storage import DataStorage
@@ -25,7 +25,7 @@ class HaikuAdapter:
         # Initialiser le client API
         self.api_client = None
         try:
-            self.api_client = ClaudeAPIClient()
+            self.api_client = AnthropicClient()
             self.haiku_service.api_client = self.api_client
             self.haiku_service.storage = self.storage
         except Exception as e:
