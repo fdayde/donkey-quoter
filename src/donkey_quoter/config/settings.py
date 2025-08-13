@@ -21,7 +21,7 @@ class PathSettings:
     """Configuration des chemins de fichiers."""
 
     base_dir: Path = Path(__file__).parent.parent
-    styles_css_path: Path = base_dir / "styles.css"
+    styles_css_path: Path = base_dir / "ui" / "styles.css"
 
 
 @dataclass
