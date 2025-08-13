@@ -74,12 +74,6 @@ def main():
     StateManager.initialize()
     load_css()
 
-    # TEST: Vérifier que le service unifié fonctionne
-    from src.donkey_quoter.core.services import DonkeyQuoterService
-
-    DonkeyQuoterService()
-    print("Service unifie charge OK")
-
     # Initialisation
     quote_manager, haiku_generator = init_services()
     lang = StateManager.get_language()
