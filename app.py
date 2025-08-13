@@ -1,5 +1,5 @@
 """
-Donkey Quoter - Application Streamlit principale (version refactorisée).
+Donkey Quoter - Application Streamlit principale avec composants unifiés.
 """
 
 from pathlib import Path
@@ -12,20 +12,28 @@ from src.donkey_quoter.core.haiku_adapter import HaikuAdapter
 from src.donkey_quoter.core.quote_adapter import QuoteAdapter
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
-from src.donkey_quoter.ui.pages import (
-    render_action_buttons,
-    render_all_quotes_list,
-    render_current_quote,
+
+# Unified Components - Composants UI consolidés
+from src.donkey_quoter.ui.unified_components import (
+    render_action_bar,
+    render_app_footer,
+    render_app_header,
+    render_quote_card,
+    render_quote_list,
 )
-from src.donkey_quoter.ui.styles import get_footer_html
-from src.donkey_quoter.ui_components import render_header
 
 
 def load_css():
-    """Charge les fichiers CSS personnalisés."""
+    """Charge les fichiers CSS personnalisés et les styles unifiés."""
+    # CSS personnalisé existant
     if settings.paths.styles_css_path.exists():
         with open(settings.paths.styles_css_path) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+    # CSS des composants unifiés - toujours chargé
+    from src.donkey_quoter.ui.unified_components import CSS_STYLES
+
+    st.markdown(CSS_STYLES, unsafe_allow_html=True)
 
 
 def init_services() -> tuple[QuoteAdapter, HaikuAdapter]:
@@ -53,7 +61,7 @@ def handle_session_refresh():
 
 
 def main():
-    """Point d'entrée principal de l'application."""
+    """Point d'entrée principal de l'application avec composants unifiés."""
     # Configuration
     page_config = {
         "page_title": settings.app.page_title,
@@ -77,31 +85,38 @@ def main():
     lang = StateManager.get_language()
     t = TRANSLATIONS[lang]
 
-    # Header
-    render_header(
+    # Header avec composants unifiés
+    render_app_header(
         title=t["title"],
         subtitle=t["subtitle"],
         lang=lang,
         on_language_change=lambda: (StateManager.toggle_language(), st.rerun()),
     )
 
-    # Corps principal
-    render_current_quote(quote_manager, lang, t)
-    render_action_buttons(quote_manager, haiku_generator, lang, t)
+    # Corps principal avec composants unifiés
+    if quote_manager.current_quote:
+        render_quote_card(
+            quote=quote_manager.current_quote,
+            quote_manager=quote_manager,
+            lang=lang,
+            t=t,
+            with_actions=True,
+            with_category_badge=True,
+        )
 
-    if StateManager.get_show_all_quotes():
-        render_all_quotes_list(quote_manager, lang, t)
+    render_action_bar(quote_manager, haiku_generator, lang, t)
 
-    # Footer
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    # Liste des citations avec composants unifiés
+    render_quote_list(quote_manager.quotes, quote_manager, lang, t)
+
+    # Footer avec composants unifiés
     contribute_message = t.get(
         "contribute_message",
         "Venez ajouter vos propres citations"
         if lang == "fr"
         else "Come add your own quotes",
     )
-    footer_html = get_footer_html(__version__, contribute_message)
-    st.markdown(footer_html, unsafe_allow_html=True)
+    render_app_footer(__version__, contribute_message)
 
 
 if __name__ == "__main__":

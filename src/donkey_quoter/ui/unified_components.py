@@ -99,6 +99,7 @@ CSS_STYLES = """
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         line-height: 0.5;
         margin-bottom: -1.5rem;
+        text-align: center;
     }
 
     .quote-text {
@@ -188,9 +189,18 @@ CSS_STYLES = """
     }
 
     .github-link {
-        color: #d97706;
+        color: #d97706 !important;
         text-decoration: none;
         font-size: 0.875rem;
+    }
+
+    .github-link:visited {
+        color: #d97706 !important;
+    }
+
+    .github-link:hover {
+        color: #b45309 !important;
+        text-decoration: underline;
     }
 
     .github-icon {
@@ -281,10 +291,11 @@ def render_spacer(size: str = "medium"):
 
 
 def ensure_styles_loaded():
-    """Ensure CSS styles are loaded once per session."""
-    if "unified_styles_loaded" not in st.session_state:
-        st.markdown(CSS_STYLES, unsafe_allow_html=True)
-        st.session_state.unified_styles_loaded = True
+    """
+    DEPRECATED: Styles are now loaded centrally in app.py load_css().
+    This function is kept for compatibility but does nothing.
+    """
+    pass
 
 
 # =============================================================================
