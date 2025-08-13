@@ -9,8 +9,8 @@ import streamlit as st
 
 from ..infrastructure.anthropic_client import AnthropicClient
 from .models import Quote
+from .services import DonkeyQuoterService
 from .storage import DataStorage
-from .unified_service import DonkeyQuoterService
 
 
 class HaikuAdapter:

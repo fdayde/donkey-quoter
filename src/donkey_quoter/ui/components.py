@@ -1,13 +1,13 @@
 """
-Unified UI Components - Consolidated UI module for Donkey Quoter.
+UI Components - Consolidated UI module for Donkey Quoter.
 
-This module consolidates all UI rendering functions from:
-- ui/pages.py
-- ui/styles.py
-- ui_components.py
-- ui/layouts.py (unused patterns)
+This module consolidates all UI rendering functions from legacy modules:
+- ui/pages.py (deleted)
+- ui/styles.py (HTML functions moved here)
+- ui_components.py (deleted)
+- ui/layouts.py (deleted)
 
-Goal: Reduce duplication and provide clean, reusable components.
+Provides clean, reusable UI components with centralized CSS.
 """
 
 from datetime import datetime
@@ -808,12 +808,12 @@ def test_unified_components() -> bool:
 def get_unified_components_info() -> dict:
     """Return information about the unified components module."""
     return {
-        "module": "unified_components.py",
+        "module": "components.py",
         "consolidates": [
-            "ui/pages.py - render_current_quote, render_action_buttons, render_all_quotes_list",
-            "ui/styles.py - get_quote_display_html, get_original_quote_html, get_category_badge_html",
-            "ui_components.py - render_header, render_category_badge, render_quote_list_item",
-            "ui/layouts.py - layout utilities (previously unused)",
+            "ui/pages.py - render_current_quote, render_action_buttons, render_all_quotes_list (deleted)",
+            "ui/styles.py - get_quote_display_html, get_original_quote_html, get_category_badge_html (moved)",
+            "ui_components.py - render_header, render_category_badge, render_quote_list_item (deleted)",
+            "ui/layouts.py - layout utilities (deleted)",
         ],
         "templates_count": len(TEMPLATES),
         "functions_count": 12,

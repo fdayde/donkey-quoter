@@ -7,7 +7,7 @@ from typing import Optional
 import streamlit as st
 
 from .models import Quote, QuoteInput
-from .unified_service import DonkeyQuoterService
+from .services import DonkeyQuoterService
 
 
 class QuoteAdapter:

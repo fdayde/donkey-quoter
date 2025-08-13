@@ -13,8 +13,8 @@ from src.donkey_quoter.core.quote_adapter import QuoteAdapter
 from src.donkey_quoter.state_manager import StateManager
 from src.donkey_quoter.translations import TRANSLATIONS
 
-# Unified Components - Composants UI consolidés
-from src.donkey_quoter.ui.unified_components import (
+# UI Components - Composants UI consolidés
+from src.donkey_quoter.ui.components import (
     render_action_bar,
     render_app_footer,
     render_app_header,
@@ -30,8 +30,8 @@ def load_css():
         with open(settings.paths.styles_css_path) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-    # CSS des composants unifiés - toujours chargé
-    from src.donkey_quoter.ui.unified_components import CSS_STYLES
+    # CSS des composants UI - toujours chargé
+    from src.donkey_quoter.ui.components import CSS_STYLES
 
     st.markdown(CSS_STYLES, unsafe_allow_html=True)
 
@@ -74,8 +74,8 @@ def main():
     StateManager.initialize()
     load_css()
 
-    # TEST: Vérifier que le nouveau service fonctionne
-    from src.donkey_quoter.core.unified_service import DonkeyQuoterService
+    # TEST: Vérifier que le service unifié fonctionne
+    from src.donkey_quoter.core.services import DonkeyQuoterService
 
     DonkeyQuoterService()
     print("Service unifie charge OK")
