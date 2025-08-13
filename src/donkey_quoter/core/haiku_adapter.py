@@ -8,19 +8,19 @@ from typing import Optional
 import streamlit as st
 
 from ..infrastructure.anthropic_client import AnthropicClient
-from .haiku_service import HaikuService
 from .models import Quote
 from .storage import DataStorage
+from .unified_service import DonkeyQuoterService
 
 
 class HaikuAdapter:
-    """Adaptateur qui utilise les services core mais maintient l'interface de HaikuGenerator."""
+    """Adaptateur qui utilise DonkeyQuoterService et DataStorage avec l'interface existante."""
 
     def __init__(self, data_dir: Path = None):
         """Initialise l'adaptateur avec les services."""
         # Initialiser les services
         self.storage = DataStorage(data_dir)
-        self.haiku_service = HaikuService()
+        self.haiku_service = DonkeyQuoterService()
 
         # Initialiser le client API
         self.api_client = None

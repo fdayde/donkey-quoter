@@ -7,15 +7,15 @@ from typing import Optional
 import streamlit as st
 
 from .models import Quote, QuoteInput
-from .quote_service import QuoteService
+from .unified_service import DonkeyQuoterService
 
 
 class QuoteAdapter:
-    """Adaptateur qui utilise QuoteService mais maintient l'interface de QuoteManager."""
+    """Adaptateur qui utilise DonkeyQuoterService mais maintient l'interface de QuoteManager."""
 
     def __init__(self):
         """Initialise l'adaptateur avec le service."""
-        self.service = QuoteService()
+        self.service = DonkeyQuoterService()
         # Initialiser le state si nécessaire (comme le faisait QuoteManager)
         if "quotes" not in st.session_state:
             from ..core.data_loader import DataLoader
