@@ -178,7 +178,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     margin: 1rem 0;
 }
 
-/* ===== Boutons ===== */
+/* ===== Boutons - Style Ghost ===== */
 .stButton > button,
 .stDownloadButton > button {
     font-family: var(--font-family) !important;
@@ -187,9 +187,22 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     transition: all 0.3s ease !important;
-    border: 1px solid transparent !important;
-    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid #d97706 !important; /* bordure amber-600 */
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #d97706 !important; /* texte amber-600 */
+    box-shadow: none !important;
     background-image: none !important;
+}
+
+/* Boutons - Hover Ghost */
+.stButton > button:hover,
+.stDownloadButton > button:hover {
+    background: rgba(217, 119, 6, 0.1) !important; /* léger background amber au hover */
+    background-color: rgba(217, 119, 6, 0.1) !important;
+    border-color: #d97706 !important; /* maintien de la bordure */
+    color: #d97706 !important; /* maintien de la couleur du texte */
+    transform: none !important; /* pas de transformation */
 }
 
 /* Boutons - Limitation Streamlit */
@@ -205,10 +218,14 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     padding: 0.5rem 1rem !important;
 }
 
-/* Boutons désactivés */
+/* Boutons désactivés - Style Ghost */
 .stButton > button:disabled {
-    opacity: 0.6 !important;
+    opacity: 0.4 !important;
     cursor: not-allowed !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: rgba(217, 119, 6, 0.4) !important;
+    color: rgba(217, 119, 6, 0.4) !important;
 }
 
 /* ===== Formulaires ===== */
