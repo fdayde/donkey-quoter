@@ -161,7 +161,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 
 .quote-text {
     font-family: var(--font-family);
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: #78350f; /* amber-900 */
     line-height: 1.8;
     font-weight: 300;
