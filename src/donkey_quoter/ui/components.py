@@ -43,8 +43,8 @@ TEMPLATES = {
     <div class="usage-counter">{usage_text}</div>
     """,
     "header": """
-    <div class="app-header">
-        <h1 class="app-title">{title}</h1>
+    <div class="app-header" style="text-align: left;">
+        <h1 class="app-title" style="text-align: left; margin-left: 0;">{title}</h1>
     </div>
     """,
     "footer": """
