@@ -108,9 +108,8 @@ CSS_STYLES = """
     }
 
     .quote-author {
-        text-align: right;
-        margin-right: 2rem;
-        margin-top: 1rem;
+        text-align: center;
+        margin: 1rem 0;
         color: #b45309;
         font-size: 0.75rem;
         font-weight: 500;
