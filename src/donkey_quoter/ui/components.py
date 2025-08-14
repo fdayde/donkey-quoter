@@ -96,7 +96,7 @@ CSS_STYLES = """
     }
 
     .quote-text {
-        font-size: 1.25rem;
+        font-size: 2.5rem;
         color: #78350f;
         line-height: 1.8;
         font-weight: 300;
@@ -149,7 +149,7 @@ CSS_STYLES = """
 
     .app-title {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        font-size: 2.5rem;
+        font-size: 1rem;
         font-weight: 300;
         color: #78350f;
         margin: 0;
