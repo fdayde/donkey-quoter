@@ -51,7 +51,6 @@ TEMPLATES = {
     "header": """
     <div class="app-header">
         <h1 class="app-title">{title}</h1>
-        <p class="app-subtitle">{subtitle}</p>
     </div>
     """,
     "footer": """
@@ -172,14 +171,6 @@ CSS_STYLES = """
         margin: 0;
     }
 
-    .app-subtitle {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        color: #d97706;
-        font-size: 1.125rem;
-        font-weight: 300;
-        margin-top: 0.25rem;
-        margin-bottom: 2rem;
-    }
 
     .app-footer {
         text-align: center;
@@ -661,9 +652,7 @@ def render_quote_list_item(
 # =============================================================================
 
 
-def render_app_header(
-    title: str, subtitle: str, lang: str, on_language_change: Callable
-):
+def render_app_header(title: str, lang: str, on_language_change: Callable):
     """
     Unified header rendering.
 
@@ -692,8 +681,8 @@ def render_app_header(
         ):
             on_language_change()
 
-    # Title and subtitle using template
-    header_html = TEMPLATES["header"].format(title=title, subtitle=subtitle)
+    # Title using template
+    header_html = TEMPLATES["header"].format(title=title)
     st.markdown(header_html, unsafe_allow_html=True)
 
 

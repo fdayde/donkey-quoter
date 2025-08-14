@@ -5,7 +5,6 @@ Module de traductions pour l'interface.
 TRANSLATIONS = {
     "fr": {
         "title": "Donkey Quoter",
-        "subtitle": "Sagesse & Poésie",
         "new_quote": "Nouvelle citation",
         "create_poem": "Créer un haïku",
         "regenerate_poem": "Régénérer",
@@ -49,7 +48,6 @@ TRANSLATIONS = {
     },
     "en": {
         "title": "Donkey Quoter",
-        "subtitle": "Wisdom & Poetry",
         "new_quote": "New quote",
         "create_poem": "Create haiku",
         "regenerate_poem": "Regenerate",

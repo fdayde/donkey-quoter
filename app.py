@@ -82,7 +82,6 @@ def main():
     # Header avec composants unifiés
     render_app_header(
         title=t["title"],
-        subtitle=t["subtitle"],
         lang=lang,
         on_language_change=lambda: (StateManager.toggle_language(), st.rerun()),
     )
