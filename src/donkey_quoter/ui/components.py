@@ -10,7 +10,6 @@ This module consolidates all UI rendering functions from legacy modules:
 Provides clean, reusable UI components with centralized CSS.
 """
 
-from datetime import datetime
 from typing import Any, Callable, Optional
 
 import streamlit as st
@@ -310,31 +309,6 @@ def render_quote_card(
         )
         st.markdown(quote_html, unsafe_allow_html=True)
 
-        # Save button section
-        if with_actions:
-            render_spacer("medium")
-            col1, col2, col3 = st.columns([1, 3, 1])
-
-            with col2:
-                save_list = (
-                    quote_manager.saved_poems
-                    if quote.category == "poem"
-                    else quote_manager.saved_quotes
-                )
-                is_saved = quote in save_list
-
-                if st.button(
-                    f"{t['saved'] if is_saved else t['save']}",
-                    disabled=is_saved,
-                    key=f"save_{'poem' if quote.category == 'poem' else 'quote'}",
-                    use_container_width=True,
-                ):
-                    if quote.category == "poem":
-                        quote_manager.save_current_poem()
-                    else:
-                        quote_manager.save_current_quote()
-                    st.rerun()
-
     # Original quote display for haikus
     if quote.category == "poem" and quote_manager.original_quote:
         original = quote_manager.original_quote
@@ -414,22 +388,6 @@ def render_action_bar(
                 "🐝 Les haïkus sont plus savoureux avec modération. Revenez demain pour 5 nouvelles créations !",
             )
         )
-
-    # Export button (if saved quotes exist)
-    total_saved = len(quote_manager.saved_quotes) + len(quote_manager.saved_poems)
-    if total_saved > 0:
-        render_spacer("medium")
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            export_data = quote_manager.export_saved_data()
-            st.download_button(
-                label=f"📥 {t['export']} ({total_saved})",
-                data=export_data,
-                file_name=f"{settings.export.file_prefix}-{datetime.now().strftime(settings.export.date_format)}.json",
-                mime="application/json",
-                key="export",
-                use_container_width=True,
-            )
 
 
 def _render_haiku_button(

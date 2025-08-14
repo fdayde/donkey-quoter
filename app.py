@@ -93,7 +93,7 @@ def main():
             quote_manager=quote_manager,
             lang=lang,
             t=t,
-            with_actions=True,
+            with_actions=False,
             with_category_badge=False,
         )
 
