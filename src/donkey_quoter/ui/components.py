@@ -424,22 +424,22 @@ def render_app_header(title: str, lang: str, on_language_change: Callable):
     """
     ensure_styles_loaded()
 
-    # Header container with emoji and language button
-    col1, col2, col3 = st.columns([2, 6, 2])
+    # Header container with title and language button
+    col1, col2 = st.columns([8, 2])
+
+    # Title aligned left
+    with col1:
+        header_html = TEMPLATES["header"].format(title=title)
+        st.markdown(header_html, unsafe_allow_html=True)
 
     # Language button aligned right
-    with col3:
-        render_spacer("medium")
+    with col2:
         if st.button(
             f"🌐 {'EN' if lang == 'fr' else 'FR'}",
             key="lang_switch",
             use_container_width=False,
         ):
             on_language_change()
-
-    # Title using template
-    header_html = TEMPLATES["header"].format(title=title)
-    st.markdown(header_html, unsafe_allow_html=True)
 
 
 def render_app_footer(version: str, contribute_message: str):
