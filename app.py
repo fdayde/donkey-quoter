@@ -30,11 +30,6 @@ def load_css():
         with open(settings.paths.styles_css_path) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-    # CSS des composants UI - toujours chargé
-    from src.donkey_quoter.ui.components import CSS_STYLES
-
-    st.markdown(CSS_STYLES, unsafe_allow_html=True)
-
 
 def init_services() -> tuple[QuoteAdapter, HaikuAdapter]:
     """Initialize core services."""

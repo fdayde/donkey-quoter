@@ -187,10 +187,10 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     transition: all 0.3s ease !important;
-    border: 1px solid #d97706 !important; /* bordure amber-600 */
+    border: 1px solid var(--amber-600) !important;
     background: transparent !important;
     background-color: transparent !important;
-    color: #d97706 !important; /* texte amber-600 */
+    color: var(--amber-600) !important;
     box-shadow: none !important;
     background-image: none !important;
 }
@@ -198,10 +198,10 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 /* Boutons - Hover Ghost */
 .stButton > button:hover,
 .stDownloadButton > button:hover {
-    background: rgba(217, 119, 6, 0.1) !important; /* léger background amber au hover */
-    background-color: rgba(217, 119, 6, 0.1) !important;
-    border-color: #d97706 !important; /* maintien de la bordure */
-    color: #d97706 !important; /* maintien de la couleur du texte */
+    background: color-mix(in srgb, var(--amber-600) 10%, transparent) !important;
+    background-color: color-mix(in srgb, var(--amber-600) 10%, transparent) !important;
+    border-color: var(--amber-600) !important;
+    color: var(--amber-600) !important;
     transform: none !important; /* pas de transformation */
 }
 
@@ -211,11 +211,11 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 /* Utiliser type="primary" dans le code Python pour les boutons principaux */
 
 /* Style pour le bouton de changement de langue uniquement */
-.stButton:has(button[key="lang_switch"]) > button {
+div.stButton:has(button[key="lang_switch"]) > button[key="lang_switch"] {
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.6125rem !important;
 }
 
 /* Boutons désactivés - Style Ghost */
@@ -224,8 +224,8 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     cursor: not-allowed !important;
     background: transparent !important;
     background-color: transparent !important;
-    border-color: rgba(217, 119, 6, 0.4) !important;
-    color: rgba(217, 119, 6, 0.4) !important;
+    border-color: color-mix(in srgb, var(--amber-600) 40%, transparent) !important;
+    color: color-mix(in srgb, var(--amber-600) 40%, transparent) !important;
 }
 
 /* ===== Formulaires ===== */
@@ -336,4 +336,141 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
         padding-left: var(--spacing-md);
         padding-right: var(--spacing-md);
     }
+
+    .app-title {
+        font-size: 2.5rem;
+    }
+
+    .quote-opening {
+        font-size: 3rem;
+    }
+}
+
+/* ===== Styles supplémentaires consolidés ===== */
+
+/* Conteneur de citation */
+.quote-container {
+    padding: 2rem;
+    text-align: center;
+}
+
+.quote-opening {
+    font-size: 4rem;
+    color: var(--amber-600);
+    font-family: var(--font-family);
+    line-height: 0.5;
+    margin-bottom: -1.5rem;
+    text-align: center;
+}
+
+/* Citation originale pour haïkus */
+.original-quote-container {
+    text-align: center;
+    padding: 0.5rem;
+    background-color: color-mix(in srgb, var(--amber-100) 30%, transparent);
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.original-quote-label {
+    font-size: 0.75rem;
+    color: var(--amber-800);
+    font-style: italic;
+    margin: 0;
+}
+
+.original-quote-text {
+    font-size: 0.75rem;
+    color: var(--amber-900);
+    margin: 0.25rem 0 0 0;
+}
+
+/* Header de l'app */
+.app-header {
+    text-align: center;
+}
+
+.app-title {
+    font-family: var(--font-family);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--amber-900);
+    margin: 0;
+}
+
+/* Footer de l'app */
+.app-footer {
+    text-align: center;
+    padding: 2rem 0 1rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--amber-100) 50%, transparent);
+    margin-top: 3rem;
+}
+
+.github-link {
+    color: var(--amber-600) !important;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.github-link:visited {
+    color: var(--amber-600) !important;
+}
+
+.github-link:hover {
+    color: var(--amber-700) !important;
+    text-decoration: underline;
+}
+
+.github-icon {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.contribute-message {
+    font-size: 0.625rem;
+    font-style: italic;
+    color: var(--amber-600);
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.version-info {
+    font-size: 0.625rem;
+    color: #a3a3a3;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+
+/* Liste de citations */
+.quote-list-item {
+    padding: 0.5rem 0;
+}
+
+.quote-list-text {
+    font-family: var(--font-family);
+    font-weight: 300;
+    margin: 0.5rem 0;
+    color: var(--amber-900);
+    font-size: 0.875rem;
+}
+
+.quote-list-author {
+    font-family: var(--font-family);
+    font-weight: 500;
+    margin: 0;
+    color: color-mix(in srgb, var(--amber-700) 70%, transparent);
+    font-size: 0.75rem;
+}
+
+/* Espaceurs */
+.spacer {
+    margin-top: 1rem;
+}
+
+.spacer-small {
+    margin-top: 0.5rem;
+}
+
+.spacer-large {
+    margin-top: 2rem;
 }
