@@ -20,7 +20,7 @@ from ..core.haiku_adapter import HaikuAdapter
 from ..core.models import Quote
 from ..core.quote_adapter import QuoteAdapter
 from ..state_manager import StateManager
-from ..translations import CATEGORY_LABELS, TRANSLATIONS
+from ..translations import TRANSLATIONS
 
 # =============================================================================
 # HTML TEMPLATES - Centralized HTML with CSS classes
@@ -39,11 +39,6 @@ TEMPLATES = {
         <p class="original-quote-label">{label}:</p>
         <p class="original-quote-text">"{text}" — {author}</p>
     </div>
-    """,
-    "category_badge": """
-    <span class="category-badge category-{category}" style="background-color: {color};">
-        {label}
-    </span>
     """,
     "usage_display": """
     <div class="usage-counter">{usage_text}</div>
@@ -143,15 +138,6 @@ CSS_STYLES = """
         margin: 0.25rem 0 0 0;
     }
 
-    .category-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        color: white;
-        border-radius: 1rem;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
 
     .usage-counter {
         text-align: center;
@@ -308,7 +294,6 @@ def render_quote_card(
     Consolidates:
     - render_current_quote() from ui/pages.py
     - get_quote_display_html() from ui/styles.py
-    - render_category_badge() functionality
     """
     ensure_styles_loaded()
 
@@ -326,40 +311,30 @@ def render_quote_card(
         )
         st.markdown(quote_html, unsafe_allow_html=True)
 
-        # Category badge and save button section
-        if with_category_badge or with_actions:
+        # Save button section
+        if with_actions:
             render_spacer("medium")
             col1, col2, col3 = st.columns([1, 3, 1])
 
             with col2:
-                subcol1, subcol2 = st.columns(2)
+                save_list = (
+                    quote_manager.saved_poems
+                    if quote.category == "poem"
+                    else quote_manager.saved_quotes
+                )
+                is_saved = quote in save_list
 
-                # Category badge
-                if with_category_badge:
-                    with subcol1:
-                        render_category_badge(quote.category, lang)
-
-                # Save button
-                if with_actions:
-                    with subcol2:
-                        save_list = (
-                            quote_manager.saved_poems
-                            if quote.category == "poem"
-                            else quote_manager.saved_quotes
-                        )
-                        is_saved = quote in save_list
-
-                        if st.button(
-                            f"{t['saved'] if is_saved else t['save']}",
-                            disabled=is_saved,
-                            key=f"save_{'poem' if quote.category == 'poem' else 'quote'}",
-                            use_container_width=True,
-                        ):
-                            if quote.category == "poem":
-                                quote_manager.save_current_poem()
-                            else:
-                                quote_manager.save_current_quote()
-                            st.rerun()
+                if st.button(
+                    f"{t['saved'] if is_saved else t['save']}",
+                    disabled=is_saved,
+                    key=f"save_{'poem' if quote.category == 'poem' else 'quote'}",
+                    use_container_width=True,
+                ):
+                    if quote.category == "poem":
+                        quote_manager.save_current_poem()
+                    else:
+                        quote_manager.save_current_quote()
+                    st.rerun()
 
     # Original quote display for haikus
     if quote.category == "poem" and quote_manager.original_quote:
@@ -376,20 +351,6 @@ def render_quote_card(
             label=label, text=original_text, author=original_author
         )
         st.markdown(original_html, unsafe_allow_html=True)
-
-
-def render_category_badge(category: str, lang: str):
-    """Render category badge with consistent styling."""
-    ensure_styles_loaded()
-
-    category_label = CATEGORY_LABELS.get(category, {}).get(lang, category)
-    category_colors = get_category_colors()
-    color = category_colors.get(category, CATEGORY_COLOR_MAP["default"])
-
-    badge_html = TEMPLATES["category_badge"].format(
-        category=category, color=color, label=category_label
-    )
-    st.markdown(badge_html, unsafe_allow_html=True)
 
 
 # =============================================================================
@@ -625,7 +586,6 @@ def render_quote_list_item(
     col1, col2 = st.columns([5, 1])
 
     with col1:
-        render_category_badge(quote.category, lang)
         quote_html = TEMPLATES["quote_list_item"].format(
             text=quote_text, author=quote_author
         )
@@ -773,7 +733,6 @@ def test_unified_components() -> bool:
         # (We don't actually render in test, just check they exist)
         functions_to_test = [
             render_quote_card,
-            render_category_badge,
             render_action_bar,
             render_quote_list,
             render_quote_list_item,

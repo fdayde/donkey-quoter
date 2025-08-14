@@ -94,7 +94,7 @@ def main():
             lang=lang,
             t=t,
             with_actions=True,
-            with_category_badge=True,
+            with_category_badge=False,
         )
 
     render_action_bar(quote_manager, haiku_generator, lang, t)

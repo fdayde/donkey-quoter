@@ -281,12 +281,6 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     background: var(--amber-400);
 }
 
-/* ===== Badges/Tags ===== */
-div[data-testid="stBadge"] > div {
-    font-family: var(--font-family) !important;
-    font-weight: 500 !important;
-    font-size: 0.75rem !important;
-}
 
 /* ===== Animations ===== */
 @keyframes fadeIn {
