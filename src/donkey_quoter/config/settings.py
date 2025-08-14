@@ -10,7 +10,7 @@ from pathlib import Path
 class AppSettings:
     """Configuration générale de l'application."""
 
-    page_title: str = "Donkey Quoter"
+    page_title: str = "🫏"
     page_icon: str = "🫏"
     layout: str = "wide"
     initial_sidebar_state: str = "collapsed"

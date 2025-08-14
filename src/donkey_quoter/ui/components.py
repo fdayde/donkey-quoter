@@ -427,14 +427,6 @@ def render_app_header(title: str, lang: str, on_language_change: Callable):
     # Header container with emoji and language button
     col1, col2, col3 = st.columns([2, 6, 2])
 
-    # Donkey emoji centered
-    with col2:
-        st.markdown(
-            '<div style="text-align: center; font-size: 5rem; '
-            'margin-bottom: -2.5rem;">🫏</div>',
-            unsafe_allow_html=True,
-        )
-
     # Language button aligned right
     with col3:
         render_spacer("medium")

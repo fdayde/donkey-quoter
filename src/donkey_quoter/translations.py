@@ -4,7 +4,7 @@ Module de traductions pour l'interface.
 
 TRANSLATIONS = {
     "fr": {
-        "title": "Donkey Quoter",
+        "title": "🫏",
         "new_quote": "Nouvelle citation",
         "create_poem": "Créer un haïku",
         "regenerate_poem": "Régénérer",
@@ -40,7 +40,7 @@ TRANSLATIONS = {
         "api_fail_fallback": "⚠️ Erreur API. Affichage d'un haïku existant.",
     },
     "en": {
-        "title": "Donkey Quoter",
+        "title": "🫏",
         "new_quote": "New quote",
         "create_poem": "Create haiku",
         "regenerate_poem": "Regenerate",
