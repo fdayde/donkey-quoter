@@ -28,7 +28,6 @@ from ..translations import TRANSLATIONS
 TEMPLATES = {
     "quote_card": """
     <div class="quote-container">
-        <div class="quote-opening">"</div>
         <div class="quote-text">{text}</div>
         <div class="quote-author">— {author}</div>
     </div>
