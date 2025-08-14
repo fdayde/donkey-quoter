@@ -12,7 +12,7 @@ class AppSettings:
 
     page_title: str = "Donkey Quoter"
     page_icon: str = "🫏"
-    layout: str = "centered"
+    layout: str = "wide"
     initial_sidebar_state: str = "collapsed"
 
 
