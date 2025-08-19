@@ -1,8 +1,8 @@
-# Streamlit Theme Configuration - Source de vérité pour les couleurs principales
+# Streamlit Theme Configuration - Palette chaleureuse moderne 2025
 [theme]
 base = "light"
-primaryColor = "#d97706"                # Amber-600 - Couleur principale
-backgroundColor = "#fafaf9"             # Stone-50 - Fond principal
-secondaryBackgroundColor = "#fef3c7"    # Amber-100 - Fond secondaire
-textColor = "#78350f"                   # Amber-900 - Couleur du texte
+primaryColor = "#c2410c"                # Orange-700 - Couleur principale raffinée
+backgroundColor = "#fffef7"             # Amber-50/20 - Blanc cassé chaud
+secondaryBackgroundColor = "#fef3c7"    # Amber-100 - Fond secondaire (conservé)
+textColor = "#451a03"                   # Amber-950 - Texte principal profond
 font = "sans serif"

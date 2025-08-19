@@ -78,12 +78,12 @@ TEMPLATES = {
 }
 
 
-# Color configuration from settings
+# Color configuration from settings - palette chaleureuse cohérente
 CATEGORY_COLOR_MAP = {
-    "orange": "#f97316",
-    "red": "#ef4444",
-    "yellow": "#eab308",
-    "default": "#6b7280",
+    "orange": "#ea580c",  # Orange-600 - cohérent avec CSS
+    "red": "#dc2626",  # Red-600 moderne
+    "yellow": "#d97706",  # Amber-600 harmonieux
+    "default": "#78350f",  # Warm-dark par défaut
 }
 
 

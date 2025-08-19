@@ -8,23 +8,22 @@ Les couleurs étendues sont définies ici pour les besoins spécifiques.
 
 from ..config.settings import settings
 
-# Palette de couleurs étendue - Complémentaire au theme Streamlit
-# Ces couleurs ne sont pas supportées nativement par Streamlit
+# Palette de couleurs étendue - Cohérente avec la palette chaleureuse 2025
+# Ces couleurs complètent les couleurs principales définies dans .streamlit/config.toml
 EXTENDED_COLORS = {
-    # Seulement les couleurs réellement utilisées dans l'application
-    "amber_50": "#fffbeb",  # scrollbar background
-    "amber_700": "#b45309",  # texte auteur, stats number
-    "amber_800": "#92400e",  # original quote label
-    "orange_600": "#ea580c",  # catégorie orange
-    "yellow_700": "#a16207",  # catégorie yellow
+    # Couleurs chaudes harmonieuses
+    "warm_orange": "#ea580c",  # Orange-600 - accents vibrants
+    "warm_brown": "#a16207",  # Amber-700 - texte secondaire
+    "warm_dark": "#78350f",  # Amber-900 - texte foncé
+    "warm_cream": "#fef3c7",  # Amber-100 - backgrounds doux
 }
 
-# Mapping des couleurs de catégories
+# Mapping des couleurs de catégories - palette cohérente
 CATEGORY_COLOR_MAP = {
-    "orange": EXTENDED_COLORS["orange_600"],
-    "red": "#ef4444",
-    "yellow": EXTENDED_COLORS["yellow_700"],
-    "default": "#6b7280",
+    "orange": EXTENDED_COLORS["warm_orange"],
+    "red": "#dc2626",  # Red-600 moderne
+    "yellow": "#d97706",  # Amber-600 harmonieux
+    "default": EXTENDED_COLORS["warm_dark"],
 }
 
 
@@ -41,12 +40,12 @@ def get_extended_color(color_key: str) -> str:
     Retourne une couleur de la palette étendue.
 
     Args:
-        color_key: Clé de couleur ("amber_50", "rose_500", etc.)
+        color_key: Clé de couleur ("warm_orange", "warm_brown", etc.)
 
     Returns:
         Code couleur hexadécimal
     """
-    return EXTENDED_COLORS.get(color_key, EXTENDED_COLORS["amber_700"])
+    return EXTENDED_COLORS.get(color_key, EXTENDED_COLORS["warm_brown"])
 
 
 def get_streamlit_theme_color(color_type: str) -> str:
