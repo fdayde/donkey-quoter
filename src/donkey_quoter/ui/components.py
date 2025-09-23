@@ -42,8 +42,8 @@ TEMPLATES = {
     <div class="usage-counter">{usage_text}</div>
     """,
     "header": """
-    <div class="app-header" style="text-align: left;">
-        <h1 class="app-title" style="text-align: left; margin-left: 0;">{title}</h1>
+    <div class="app-header" style="text-align: center;">
+        <h1 class="app-title" style="text-align: center; margin: 0 auto;">{title}</h1>
     </div>
     """,
     "footer": """
@@ -423,22 +423,19 @@ def render_app_header(title: str, lang: str, on_language_change: Callable):
     """
     ensure_styles_loaded()
 
-    # Header container with title and language button
-    col1, col2 = st.columns([8, 2])
-
-    # Title aligned left
-    with col1:
-        header_html = TEMPLATES["header"].format(title=title)
-        st.markdown(header_html, unsafe_allow_html=True)
-
-    # Language button aligned right
-    with col2:
+    # Language button in the top right corner
+    col1, col2, col3 = st.columns([4, 1, 1])
+    with col3:
         if st.button(
             f"🌐 {'EN' if lang == 'fr' else 'FR'}",
             key="lang_switch",
-            use_container_width=False,
+            use_container_width=True,
         ):
             on_language_change()
+
+    # Title centered on its own line
+    header_html = TEMPLATES["header"].format(title=title)
+    st.markdown(header_html, unsafe_allow_html=True)
 
 
 def render_app_footer(version: str, contribute_message: str):
