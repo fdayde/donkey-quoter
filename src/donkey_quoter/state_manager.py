@@ -4,8 +4,8 @@ Gestionnaire d'état centralisé pour l'application.
 
 import streamlit as st
 
-from .data import CLASSIC_QUOTES
-from .models import Quote
+from .core.data_loader import DataLoader
+from .core.models import Quote
 
 
 class StateManager:
@@ -17,7 +17,10 @@ class StateManager:
         import random
 
         if "quotes" not in st.session_state:
-            st.session_state.quotes = [Quote(**q) for q in CLASSIC_QUOTES]
+            data_loader = DataLoader()
+            st.session_state.quotes = data_loader.load_quotes(
+                data_loader.get_default_quotes_path()
+            )
 
         # Toujours choisir une citation aléatoire si current_quote n'existe pas
         # Cela permet d'avoir une nouvelle citation à chaque refresh complet (F5)

@@ -22,6 +22,26 @@ pre-commit install
 pre-commit run --all-files
 ```
 
+### Haiku Management CLI
+```bash
+# CLI unifié - mode batch bilingue automatique (FR + EN simultanément)
+
+# Générer les haïkus manquants
+python scripts/haiku_cli.py generate
+
+# Régénérer tous les haïkus
+python scripts/haiku_cli.py generate --all
+
+# Avec limite et simulation
+python scripts/haiku_cli.py --dry-run generate --limit 10
+
+# Statistiques
+python scripts/haiku_cli.py stats
+
+# Export (JSON/CSV)
+python scripts/haiku_cli.py export --format csv
+```
+
 ### Testing
 ```bash
 # Run tests (when implemented)
@@ -41,7 +61,7 @@ donkey-quoter/
 │   ├── translations.py     # i18n FR/EN
 │   ├── state_manager.py    # Streamlit session state
 │   └── styles.css         # Custom CSS
-└── data/quotes.py          # Quote database
+└── data/quotes.json        # Quote database (JSON format)
 ```
 
 ## Key Technical Details

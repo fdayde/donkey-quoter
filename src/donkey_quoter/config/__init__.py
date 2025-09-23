@@ -1,31 +1,34 @@
-"""Package de configuration."""
+"""
+Package de configuration - DEPRECATED.
 
-from pathlib import Path
+Ce module est conservé pour la compatibilité mais toute la configuration
+a été migrée vers settings.py. Utilisez settings.py pour toute nouvelle configuration.
+"""
 
-# Configuration de la page
-PAGE_CONFIG = {
-    "page_title": "Donkey Quoter",
-    "page_icon": "🫏",
-    "layout": "centered",
-    "initial_sidebar_state": "collapsed",
-}
+from .settings import (
+    CATEGORY_COLORS,
+    CLAUDE_PRICING,
+    EXPORT_DATE_FORMAT,
+    EXPORT_FILE_PREFIX,
+    PAGE_CONFIG,
+    PROGRESS_BAR_DELAY,
+    QUOTE_LIST_HEIGHT,
+    STYLES_CSS_PATH,
+    TOKEN_ESTIMATION,
+    get_author_for_model,
+    settings,
+)
 
-# Chemins des fichiers
-BASE_DIR = Path(__file__).parent.parent
-STYLES_CSS_PATH = BASE_DIR / "styles.css"
-
-# Couleurs par catégorie
-CATEGORY_COLORS = {
-    "classic": "orange",
-    "personal": "orange",
-    "poem": "red",
-    "humor": "yellow",
-}
-
-# Configuration de l'export
-EXPORT_DATE_FORMAT = "%Y%m%d"
-EXPORT_FILE_PREFIX = "donkey-quoter"
-
-# Dimensions et styles
-QUOTE_LIST_HEIGHT = 400
-PROGRESS_BAR_DELAY = 0.015  # secondes
+__all__ = [
+    "PAGE_CONFIG",
+    "STYLES_CSS_PATH",
+    "CATEGORY_COLORS",
+    "EXPORT_DATE_FORMAT",
+    "EXPORT_FILE_PREFIX",
+    "QUOTE_LIST_HEIGHT",
+    "PROGRESS_BAR_DELAY",
+    "CLAUDE_PRICING",
+    "TOKEN_ESTIMATION",
+    "get_author_for_model",
+    "settings",
+]
