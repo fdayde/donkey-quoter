@@ -92,8 +92,7 @@ donkey-quoter/
 │   │   └── quotes.py      # Quote database
 │   └── styles.css        # Custom styles
 ├── scripts/
-│   ├── regenerate_haikus.py    # Batch haiku generation
-│   └── generate_missing_haikus.py # Generate missing haikus
+│   └── haiku_cli.py           # CLI unifié pour gestion des haïkus
 ├── data/
 │   └── haikus.json       # Generated haikus storage
 └── tests/                # Test suite
@@ -157,21 +156,43 @@ The application supports multiple Claude models for haiku generation:
 4. Save and restart your app
 5. **Note**: The app automatically uses Streamlit secrets when available, falling back to `.env` for local development
 
-**Batch Generation**:
+**Haiku Generation CLI**:
 ```bash
-# Generate missing haikus only
-python scripts/regenerate_haikus.py
+# CLI unifié pour la gestion des haïkus (mode batch bilingue optimisé)
 
-# Force regeneration of all haikus
-python scripts/regenerate_haikus.py --regenerate-all
+# Voir l'aide
+python scripts/haiku_cli.py --help
 
-# Test with a limited number of quotes
-python scripts/regenerate_haikus.py --limit 5 --dry-run
+# Générer les haïkus manquants (FR + EN simultanément)
+python scripts/haiku_cli.py generate
+
+# Régénérer tous les haïkus
+python scripts/haiku_cli.py generate --all
+
+# Limiter le nombre de citations
+python scripts/haiku_cli.py generate --limit 10
+
+# Simulation sans appel API
+python scripts/haiku_cli.py --dry-run generate --all --limit 3
+
+# Génération silencieuse (pas de confirmation)
+python scripts/haiku_cli.py generate --all -y
+
+# Statistiques complètes
+python scripts/haiku_cli.py stats
+
+# Export des données (JSON ou CSV)
+python scripts/haiku_cli.py export --format csv --output mes_haikus.csv
 ```
 
-**Features**:
-- Haikus stored with metadata (date, model) in `data/haikus.json`
-- Real-time generation limited to 5 per session
+**Key Features**:
+- **Batch processing**: Generate FR + EN haikus simultaneously (2x more efficient)
+- **Smart detection**: Only generates missing haikus by default
+- **Cost estimation**: Shows API usage cost before generation
+- **Progress tracking**: Real-time progress bar with batch status
+- **Flexible export**: JSON and CSV formats supported
+- **Dry-run mode**: Test without API calls
+- **Metadata storage**: Haikus saved with generation date and model info
 - Fallback to stored haikus when API unavailable
 
 ## 🏷️ Versioning

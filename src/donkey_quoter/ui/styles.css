@@ -2,46 +2,16 @@
 
 /* ===== Variables CSS ===== */
 :root {
-    /* Police principale */
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    /* Couleurs Amber */
-    --amber-50: #fffbeb;
-    --amber-100: #fef3c7;
-    --amber-200: #fde68a;
-    --amber-300: #fcd34d;
-    --amber-400: #fbbf24;
-    --amber-500: #f59e0b;
-    --amber-600: #d97706;
-    --amber-700: #b45309;
-    --amber-800: #92400e;
-    --amber-900: #78350f;
+    /* Police principale - hérite de Streamlit */
+    --font-family: var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
 
-    /* Couleurs Orange */
-    --orange-50: #fff7ed;
-    --orange-100: #ffedd5;
-    --orange-200: #fed7aa;
-    --orange-600: #ea580c;
-    --orange-700: #c2410c;
+    /* NOTE: Les couleurs principales sont définies dans .streamlit/config.toml */
+    /* Palette chaleureuse cohérente - Orange/Amber moderne */
 
-    /* Couleurs Rose */
-    --rose-50: #fff1f2;
-    --rose-100: #ffe4e6;
-    --rose-200: #fecdd3;
-    --rose-500: #f43f5e;
-    --rose-600: #e11d48;
-    --rose-700: #be123c;
-    --rose-800: #9f1239;
-
-    /* Couleurs Yellow */
-    --yellow-50: #fefce8;
-    --yellow-100: #fef9c3;
-    --yellow-200: #fef08a;
-    --yellow-700: #a16207;
-
-    /* Couleurs Stone */
-    --stone-50: #fafaf9;
-    --stone-200: #e7e5e4;
-    --stone-700: #44403c;
+    --warm-orange: #ea580c;   /* Orange-600 - accents vibrants */
+    --warm-brown: #a16207;    /* Amber-700 - texte secondaire */
+    --warm-dark: #78350f;     /* Amber-900 - texte foncé */
+    --warm-cream: #fef3c7;    /* Amber-100 - backgrounds doux */
 
     /* Espacements */
     --spacing-xs: 0.375rem;
@@ -66,7 +36,7 @@
 
 /* ===== Base et Layout ===== */
 .stApp > .main {
-    background: #fafaf9; /* stone-50 */
+    background: var(--background-color); /* Utilise la couleur de fond Streamlit */
     min-height: 100vh;
     font-family: var(--font-family);
 }
@@ -95,7 +65,7 @@
     backdrop-filter: blur(10px);
     border-radius: var(--radius-lg);
     padding: var(--spacing-2xl);
-    border: 1px solid rgba(254, 243, 199, 0.5);
+    border: 1px solid color-mix(in srgb, var(--secondary-background-color) 50%, transparent);
     box-shadow: var(--shadow-lg);
     margin-bottom: var(--spacing-xl);
     transition: all 0.3s ease;
@@ -111,10 +81,10 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .stats-card {
-    background: #fef3c7; /* amber-100 */
+    background: var(--secondary-background-color); /* Utilise la couleur secondaire Streamlit */
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
-    border: 1px solid rgba(254, 243, 199, 0.5); /* amber-100/50 */
+    border: 1px solid color-mix(in srgb, var(--secondary-background-color) 50%, transparent);
     text-align: center;
     transition: all 0.2s ease;
 }
@@ -128,18 +98,18 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     font-family: var(--font-family);
     font-size: 1.5rem;
     font-weight: 300;
-    color: #b45309; /* amber-700 */
+    color: var(--warm-brown);
 }
 
 .stats-card.rose .stats-number {
-    color: #f43f5e; /* rose-500 */
+    color: var(--warm-orange); /* Orange moderne pour stats spéciales */
 }
 
 .stats-label {
     font-family: var(--font-family);
     font-size: 0.875rem;
     font-weight: 500;
-    color: rgba(180, 83, 9, 0.7); /* amber-700/70 */
+    color: color-mix(in srgb, var(--warm-brown) 70%, transparent);
 }
 
 .stats-card.rose .stats-label {
@@ -153,7 +123,7 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 .quote-icon {
-    color: #d97706; /* amber-600 */
+    color: var(--primary-color); /* Utilise la couleur primaire Streamlit */
     font-size: 3rem;
     margin-bottom: var(--spacing-lg);
     line-height: 1;
@@ -161,8 +131,8 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 
 .quote-text {
     font-family: var(--font-family);
-    font-size: 1.5rem;
-    color: #78350f; /* amber-900 */
+    font-size: 2rem;
+    color: var(--text-color); /* Utilise la couleur de texte Streamlit */
     line-height: 1.8;
     font-weight: 300;
     white-space: pre-line;
@@ -171,12 +141,14 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 
 .quote-author {
     font-family: var(--font-family);
-    color: #b45309; /* amber-700 */
+    color: var(--warm-brown); /* Utilise la couleur amber foncée */
     font-size: 1rem;
     font-weight: 500;
+    text-align: center;
+    margin: 1rem 0;
 }
 
-/* ===== Boutons ===== */
+/* ===== Boutons - Style Ghost ===== */
 .stButton > button,
 .stDownloadButton > button {
     font-family: var(--font-family) !important;
@@ -185,9 +157,22 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     transition: all 0.3s ease !important;
-    border: 1px solid transparent !important;
-    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--primary-color) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--primary-color) !important;
+    box-shadow: none !important;
     background-image: none !important;
+}
+
+/* Boutons - Hover Ghost */
+.stButton > button:hover,
+.stDownloadButton > button:hover {
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent) !important;
+    background-color: color-mix(in srgb, var(--primary-color) 10%, transparent) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+    transform: none !important; /* pas de transformation */
 }
 
 /* Boutons - Limitation Streamlit */
@@ -196,17 +181,21 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 /* Utiliser type="primary" dans le code Python pour les boutons principaux */
 
 /* Style pour le bouton de changement de langue uniquement */
-.stButton:has(button[key="lang_switch"]) > button {
+div.stButton:has(button[key="lang_switch"]) > button[key="lang_switch"] {
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.6125rem !important;
 }
 
-/* Boutons désactivés */
+/* Boutons désactivés - Style Ghost */
 .stButton > button:disabled {
-    opacity: 0.6 !important;
+    opacity: 0.4 !important;
     cursor: not-allowed !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: color-mix(in srgb, var(--primary-color) 40%, transparent) !important;
+    color: color-mix(in srgb, var(--primary-color) 40%, transparent) !important;
 }
 
 /* ===== Formulaires ===== */
@@ -268,25 +257,19 @@ div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--amber-50);
+    background: var(--warm-cream);
     border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--amber-300);
+    background: color-mix(in srgb, var(--primary-color) 50%, transparent);
     border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--amber-400);
+    background: var(--primary-color);
 }
 
-/* ===== Badges/Tags ===== */
-div[data-testid="stBadge"] > div {
-    font-family: var(--font-family) !important;
-    font-weight: 500 !important;
-    font-size: 0.75rem !important;
-}
 
 /* ===== Animations ===== */
 @keyframes fadeIn {
@@ -323,4 +306,141 @@ div[data-testid="stBadge"] > div {
         padding-left: var(--spacing-md);
         padding-right: var(--spacing-md);
     }
+
+    .app-title {
+        font-size: 2.5rem;
+    }
+
+    .quote-opening {
+        font-size: 3rem;
+    }
+}
+
+/* ===== Styles supplémentaires consolidés ===== */
+
+/* Conteneur de citation */
+.quote-container {
+    padding: 2rem;
+    text-align: center;
+}
+
+.quote-opening {
+    font-size: 4rem;
+    color: var(--primary-color); /* Utilise la couleur primaire Streamlit */
+    font-family: var(--font-family);
+    line-height: 0.5;
+    margin-bottom: -1.5rem;
+    text-align: center;
+}
+
+/* Citation originale pour haïkus */
+.original-quote-container {
+    text-align: center;
+    padding: 0.5rem;
+    background-color: color-mix(in srgb, var(--secondary-background-color) 30%, transparent);
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.original-quote-label {
+    font-size: 0.75rem;
+    color: var(--warm-dark);
+    font-style: italic;
+    margin: 0;
+}
+
+.original-quote-text {
+    font-size: 0.75rem;
+    color: var(--text-color); /* Utilise la couleur de texte Streamlit */
+    margin: 0.25rem 0 0 0;
+}
+
+/* Header de l'app */
+.app-header {
+    text-align: center;
+}
+
+.app-title {
+    font-family: var(--font-family);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--text-color); /* Utilise la couleur de texte Streamlit */
+    margin: 0;
+}
+
+/* Footer de l'app */
+.app-footer {
+    text-align: center;
+    padding: 2rem 0 1rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--warm-cream) 50%, transparent);
+    margin-top: 3rem;
+}
+
+.github-link {
+    color: var(--primary-color) !important;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.github-link:visited {
+    color: var(--primary-color) !important;
+}
+
+.github-link:hover {
+    color: var(--amber-700) !important;
+    text-decoration: underline;
+}
+
+.github-icon {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.contribute-message {
+    font-size: 0.625rem;
+    font-style: italic;
+    color: var(--primary-color);
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.version-info {
+    font-size: 0.625rem;
+    color: color-mix(in srgb, var(--warm-brown) 40%, transparent);
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+
+/* Liste de citations */
+.quote-list-item {
+    padding: 0.5rem 0;
+}
+
+.quote-list-text {
+    font-family: var(--font-family);
+    font-weight: 300;
+    margin: 0.5rem 0;
+    color: var(--text-color); /* Utilise la couleur de texte Streamlit */
+    font-size: 0.875rem;
+}
+
+.quote-list-author {
+    font-family: var(--font-family);
+    font-weight: 500;
+    margin: 0;
+    color: color-mix(in srgb, var(--warm-brown) 70%, transparent);
+    font-size: 0.75rem;
+}
+
+/* Espaceurs */
+.spacer {
+    margin-top: 1rem;
+}
+
+.spacer-small {
+    margin-top: 0.5rem;
+}
+
+.spacer-large {
+    margin-top: 2rem;
 }
