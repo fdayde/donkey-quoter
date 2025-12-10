@@ -224,7 +224,7 @@ You can configure Streamlit to use the REST API instead of direct service calls:
 
 3. Start Streamlit:
    ```bash
-   streamlit run app.py
+   streamlit run app.py --server.port 8502
    ```
 
 This enables a true frontend/backend separation, useful for:
