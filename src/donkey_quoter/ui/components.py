@@ -219,7 +219,7 @@ def render_action_bar(
             st.rerun()
 
     # API usage display
-    if haiku_generator.api_client:
+    if haiku_generator.has_api_key:
         render_spacer("medium")
         usage_display = haiku_generator.get_usage_display(lang)
         usage_html = TEMPLATES["usage_display"].format(usage_text=usage_display)
@@ -281,7 +281,7 @@ def _handle_new_poem_creation(
         return
 
     with st.spinner(t["creating"]):
-        if not haiku_generator.api_client:
+        if not haiku_generator.has_api_key:
             st.error(
                 t.get(
                     "api_error",
