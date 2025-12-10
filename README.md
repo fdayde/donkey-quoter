@@ -86,15 +86,15 @@ Donkey Quoter includes a full REST API built with FastAPI, enabling programmatic
 
 ```bash
 # Start the API server
-uvicorn api:app --port 8000
+uvicorn api:app --port 8001
 
 # Or with auto-reload for development
-uvicorn api:app --reload --port 8000
+uvicorn api:app --reload --port 8001
 ```
 
 Access the interactive documentation at:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI**: http://localhost:8001/docs
+- **ReDoc**: http://localhost:8001/redoc
 
 ### API Endpoints
 
@@ -125,7 +125,7 @@ Haiku generation requires an API key for rate limiting. Add the key in the `X-AP
    ```
 3. Use it in requests:
    ```bash
-   curl -X POST http://localhost:8000/haikus/generate \
+   curl -X POST http://localhost:8001/haikus/generate \
      -H "Content-Type: application/json" \
      -H "X-API-Key: your-secret-api-key" \
      -d '{"quote_id": "c01", "force_new": true}'
@@ -166,22 +166,22 @@ DONKEY_QUOTER_DEV_MODE=true
 
 ```bash
 # Get a random quote in English
-curl "http://localhost:8000/quotes/random?lang=en"
+curl "http://localhost:8001/quotes/random?lang=en"
 
 # List quotes with pagination
-curl "http://localhost:8000/quotes?limit=10&offset=0&category=classic"
+curl "http://localhost:8001/quotes?limit=10&offset=0&category=classic"
 
 # Check if haiku exists
-curl "http://localhost:8000/haikus/c01/exists?lang=fr"
+curl "http://localhost:8001/haikus/c01/exists?lang=fr"
 
 # Generate haiku (requires API key)
-curl -X POST "http://localhost:8000/haikus/generate?lang=fr" \
+curl -X POST "http://localhost:8001/haikus/generate?lang=fr" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: your-api-key" \
   -d '{"quote_id": "c01", "force_new": false}'
 
 # Export all data
-curl "http://localhost:8000/export"
+curl "http://localhost:8001/export"
 ```
 
 ### Python Client Example
@@ -190,7 +190,7 @@ curl "http://localhost:8000/export"
 import httpx
 
 client = httpx.Client(
-    base_url="http://localhost:8000",
+    base_url="http://localhost:8001",
     headers={"X-API-Key": "your-api-key"}
 )
 
@@ -212,13 +212,13 @@ You can configure Streamlit to use the REST API instead of direct service calls:
 
 1. Start the API:
    ```bash
-   uvicorn api:app --port 8000
+   uvicorn api:app --port 8001
    ```
 
 2. Configure Streamlit to use the API (in `.env`):
    ```env
    USE_API_BACKEND=true
-   API_BASE_URL=http://localhost:8000
+   API_BASE_URL=http://localhost:8001
    DONKEY_QUOTER_API_KEY=your-api-key
    ```
 

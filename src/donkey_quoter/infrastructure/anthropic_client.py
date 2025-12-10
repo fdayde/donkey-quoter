@@ -25,7 +25,6 @@ from tenacity import (
     wait_exponential,
 )
 
-from ..api.exceptions import APIErrorHandler
 from ..token_counter import TokenCounter
 
 load_dotenv()
@@ -130,6 +129,9 @@ class AnthropicClient:
         try:
             yield self.client
         except Exception as e:
+            # Import local pour éviter import circulaire
+            from ..api.exceptions import APIErrorHandler
+
             raise APIErrorHandler.handle_api_error(e) from e
 
     @retry(
