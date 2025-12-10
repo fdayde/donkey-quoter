@@ -144,6 +144,18 @@ def render_quote_card(
     if not quote:
         return
 
+    # Afficher le message de fallback si nécessaire
+    if st.session_state.get("show_fallback_message", False):
+        st.info(
+            t.get(
+                "fallback_shown",
+                "ℹ️ Génération impossible. Affichage d'un haïku existant.",
+            )
+        )
+        # Reset les flags
+        st.session_state.show_fallback_message = False
+        st.session_state.last_haiku_was_fallback = False
+
     quote_text = quote_manager.get_text(quote.text, lang)
     quote_author = quote_manager.get_text(quote.author, lang)
 
@@ -301,14 +313,8 @@ def _handle_new_poem_creation(
             if poem:
                 # Vérifier si c'est un fallback (demandé génération mais reçu existant)
                 if st.session_state.get("last_haiku_was_fallback", False):
-                    st.info(
-                        t.get(
-                            "fallback_shown",
-                            "ℹ️ Génération impossible. Affichage d'un haïku existant.",
-                        )
-                    )
-                    # Reset le flag
-                    st.session_state.last_haiku_was_fallback = False
+                    # Stocker le message pour l'afficher après rerun
+                    st.session_state.show_fallback_message = True
                 quote_manager.current_quote = poem
                 st.rerun()
             else:
