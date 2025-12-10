@@ -4,11 +4,27 @@ Module API REST Donkey Quoter.
 Fournit une API FastAPI pour accéder aux citations et haïkus.
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import export_router, haikus_router, quotes_router
 from .schemas import HealthResponse
+
+
+def _get_cors_origins() -> list[str]:
+    """
+    Récupère les origines CORS autorisées depuis l'environnement.
+
+    En dev: ["*"] (tout autorisé)
+    En prod: liste d'origines spécifiques depuis CORS_ORIGINS
+    """
+    origins = os.getenv("CORS_ORIGINS", "")
+    if origins:
+        return [o.strip() for o in origins.split(",") if o.strip()]
+    # Fallback dev mode
+    return ["*"]
 
 
 def create_app() -> FastAPI:
@@ -27,10 +43,11 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
     )
 
-    # CORS middleware
+    # CORS middleware (configurable via CORS_ORIGINS env var)
+    cors_origins = _get_cors_origins()
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # À configurer pour la production
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+ENV
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Tests
+.pytest_cache
+.coverage
+htmlcov
+
+# Docs
+*.md
+!README.md
+
+# Local config
+.env
+.env.local
+*.local.json
+
+# Claude
+.claude
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db
+nul
