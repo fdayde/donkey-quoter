@@ -289,6 +289,13 @@ class HaikuAdapter:
             poem, was_generated_via_api = self.generate_haiku_for_quote(
                 quote, language, force_new
             )
+
+            # Stocker l'info pour l'UI (fallback si force_new mais pas généré)
+            st.session_state.last_haiku_was_generated = was_generated_via_api
+            st.session_state.last_haiku_was_fallback = (
+                force_new and not was_generated_via_api
+            )
+
             return poem
 
         except Exception as e:
