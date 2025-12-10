@@ -1,7 +1,12 @@
 """
 Adaptateur pour utiliser HaikuService et DataStorage avec l'interface existante.
+
+Supporte deux modes:
+- Mode direct: appelle DonkeyQuoterService et AnthropicClient directement
+- Mode API: appelle l'API REST via HTTP (USE_API_BACKEND=true)
 """
 
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -12,24 +17,38 @@ from .models import Quote
 from .services import DonkeyQuoterService
 from .storage import DataStorage
 
+# Détermine si on utilise le backend API ou les services directs
+USE_API_BACKEND = os.getenv("USE_API_BACKEND", "false").lower() == "true"
+
 
 class HaikuAdapter:
     """Adaptateur qui utilise DonkeyQuoterService et DataStorage avec l'interface existante."""
 
     def __init__(self, data_dir: Path = None):
-        """Initialise l'adaptateur avec les services."""
-        # Initialiser les services
-        self.storage = DataStorage(data_dir)
-        self.haiku_service = DonkeyQuoterService()
+        """Initialise l'adaptateur avec les services ou le client API."""
+        self._http_client = None
 
-        # Initialiser le client API
-        self.api_client = None
-        try:
-            self.api_client = AnthropicClient()
-            self.haiku_service.api_client = self.api_client
-            self.haiku_service.storage = self.storage
-        except Exception as e:
-            print(f"Client API non disponible : {e}")
+        if USE_API_BACKEND:
+            # Mode API: utiliser le client HTTP
+            from ..api.client import get_api_client
+
+            self._http_client = get_api_client()
+            self.storage = None
+            self.haiku_service = None
+            self.api_client = None  # Pas besoin du client Anthropic direct
+        else:
+            # Mode direct: utiliser les services locaux
+            self.storage = DataStorage(data_dir)
+            self.haiku_service = DonkeyQuoterService()
+
+            # Initialiser le client API Anthropic
+            self.api_client = None
+            try:
+                self.api_client = AnthropicClient()
+                self.haiku_service.api_client = self.api_client
+                self.haiku_service.storage = self.storage
+            except Exception as e:
+                print(f"Client API non disponible : {e}")
 
         # Initialiser le compteur de session pour les haïkus
         if "haiku_generation_count" not in st.session_state:
@@ -38,10 +57,17 @@ class HaikuAdapter:
     @property
     def has_api_key(self) -> bool:
         """Vérifie si une clé API est disponible."""
+        if USE_API_BACKEND:
+            # En mode API, on a toujours une "clé" (c'est l'API qui gère)
+            return self._http_client is not None
         return self.api_client is not None
 
     def can_generate_haiku(self) -> bool:
         """Vérifie si on peut générer un nouveau haïku."""
+        if USE_API_BACKEND and self._http_client:
+            # En mode API, vérifier le rate limit distant
+            status = self._http_client.get_rate_limit_status()
+            return status.get("remaining", 0) > 0
         return self.haiku_service.can_generate_new_haiku(
             st.session_state.haiku_generation_count
         )
@@ -60,7 +86,42 @@ class HaikuAdapter:
         Returns:
             Tuple (quote_haiku, was_generated_via_api)
         """
-        # Utiliser le service pour déterminer la stratégie
+        if USE_API_BACKEND and self._http_client:
+            # Mode API: appeler l'endpoint /haikus/generate
+            result = self._http_client.generate_haiku(
+                quote_id=quote.id,
+                language=language,
+                force_new=force_new,
+            )
+
+            if result is None:
+                return None, False
+
+            if result.get("error") == "rate_limit":
+                return None, False
+
+            haiku_text = result.get("haiku_text", "")
+            model_used = result.get("model", "unknown")
+            was_generated = result.get("was_generated", False)
+
+            # Créer l'objet Quote pour le haïku
+            from datetime import datetime
+
+            quote_id = f"poem_{quote.id}_{int(datetime.now().timestamp())}"
+            poem_quote = Quote(
+                id=quote_id,
+                text={
+                    language: haiku_text,
+                    "fr" if language == "en" else "en": haiku_text,
+                },
+                author={"fr": "Claude", "en": "Claude"},
+                category="poem",
+                type="generated",
+            )
+
+            return poem_quote, was_generated
+
+        # Mode direct: utiliser le service local
         haiku_text, model_used, was_generated_via_api = (
             self.haiku_service.generate_haiku_strategy(
                 quote, language, force_new, st.session_state.haiku_generation_count
@@ -103,6 +164,27 @@ class HaikuAdapter:
         Returns:
             Quote représentant le haïku ou None
         """
+        if USE_API_BACKEND and self._http_client:
+            # Mode API
+            result = self._http_client.get_haiku(quote.id, language)
+            if result:
+                haiku_text = result.get("haiku_text", "")
+                from datetime import datetime
+
+                quote_id = f"poem_{quote.id}_{int(datetime.now().timestamp())}"
+                return Quote(
+                    id=quote_id,
+                    text={
+                        language: haiku_text,
+                        "fr" if language == "en" else "en": haiku_text,
+                    },
+                    author={"fr": "Claude", "en": "Claude"},
+                    category="poem",
+                    type="generated",
+                )
+            return None
+
+        # Mode direct
         haiku_text = self.storage.get_haiku(quote.id, language)
         if haiku_text:
             poem_quote = self.haiku_service.create_haiku_quote(
@@ -122,14 +204,22 @@ class HaikuAdapter:
         Returns:
             True si un haïku stocké existe
         """
+        if USE_API_BACKEND and self._http_client:
+            return self._http_client.haiku_exists(quote.id, language)
         return self.storage.has_haiku(quote.id, language)
 
     def get_generation_count(self) -> int:
         """Retourne le nombre de haïkus générés dans cette session."""
+        if USE_API_BACKEND and self._http_client:
+            status = self._http_client.get_rate_limit_status()
+            return status.get("limit", 5) - status.get("remaining", 5)
         return st.session_state.haiku_generation_count
 
     def get_remaining_generations(self) -> int:
         """Retourne le nombre de générations restantes."""
+        if USE_API_BACKEND and self._http_client:
+            status = self._http_client.get_rate_limit_status()
+            return status.get("remaining", 0)
         return max(0, 5 - st.session_state.haiku_generation_count)
 
     def reset_generation_count(self):
@@ -157,7 +247,11 @@ class HaikuAdapter:
         Returns:
             Un objet Quote contenant le haïku ou None si aucun n'existe
         """
-        # Utiliser notre storage pour récupérer le haïku avec métadonnées
+        if USE_API_BACKEND and self._http_client:
+            # Mode API
+            return self.get_stored_haiku_for_quote(quote, language)
+
+        # Mode direct - utiliser notre storage pour récupérer le haïku avec métadonnées
         haiku_data = self.storage.get_haiku_with_metadata(quote.id, language)
 
         if not haiku_data:

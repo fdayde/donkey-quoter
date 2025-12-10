@@ -4,11 +4,20 @@ Client API Anthropic pour l'infrastructure (séparé de la logique métier).
 
 import os
 from contextlib import contextmanager
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
-import streamlit as st
 from anthropic import Anthropic, RateLimitError
 from dotenv import load_dotenv
+
+# Import conditionnel de Streamlit (évite l'erreur en mode API)
+if TYPE_CHECKING:
+    import streamlit as st
+else:
+    try:
+        import streamlit as st
+    except ImportError:
+        st = None  # type: ignore
+
 from tenacity import (
     retry,
     retry_if_not_exception_type,
@@ -25,39 +34,38 @@ load_dotenv()
 class AnthropicClient:
     """Client API pur pour Anthropic Claude (infrastructure uniquement)."""
 
-    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        model: Optional[str] = None,
+        config_source: str = "auto",
+    ):
         """
         Initialise le client Anthropic.
 
         Args:
             api_key: Clé API Anthropic (optionnel, utilise les secrets/env par défaut)
             model: Modèle à utiliser (optionnel, utilise les secrets/env par défaut)
+            config_source: Source de configuration:
+                - "auto": Streamlit secrets puis .env (comportement par défaut)
+                - "streamlit": Uniquement Streamlit secrets
+                - "env": Uniquement variables d'environnement (pour API REST)
         """
-        # Priorité aux secrets Streamlit, fallback vers .env
+        self.config_source = config_source
+
+        # Charger la configuration selon la source
         if api_key:
             self.api_key = api_key
         else:
-            try:
-                self.api_key = st.secrets.get("ANTHROPIC_API_KEY")
-            except (AttributeError, FileNotFoundError):
-                self.api_key = os.getenv("ANTHROPIC_API_KEY")
+            self.api_key = self._get_config("ANTHROPIC_API_KEY")
 
-        # Configuration du modèle
         if model:
             self.model = model
         else:
-            try:
-                self.model = st.secrets.get("CLAUDE_MODEL", "claude-3-haiku-20240307")
-            except (AttributeError, FileNotFoundError):
-                self.model = os.getenv("CLAUDE_MODEL", "claude-3-haiku-20240307")
+            self.model = self._get_config("CLAUDE_MODEL", "claude-3-haiku-20240307")
 
-        # Configuration des tokens
-        try:
-            self.max_tokens_input = int(st.secrets.get("MAX_TOKENS_INPUT", "200"))
-            self.max_tokens_output = int(st.secrets.get("MAX_TOKENS_OUTPUT", "100"))
-        except (AttributeError, FileNotFoundError):
-            self.max_tokens_input = int(os.getenv("MAX_TOKENS_INPUT", "200"))
-            self.max_tokens_output = int(os.getenv("MAX_TOKENS_OUTPUT", "100"))
+        self.max_tokens_input = int(self._get_config("MAX_TOKENS_INPUT", "200"))
+        self.max_tokens_output = int(self._get_config("MAX_TOKENS_OUTPUT", "100"))
 
         if not self.api_key:
             raise ValueError(
@@ -72,6 +80,42 @@ class AnthropicClient:
 
         # Compteur pour count_tokens
         self.token_counter = TokenCounter()
+
+    def _get_config(self, key: str, default: Optional[str] = None) -> Optional[str]:
+        """
+        Récupère une valeur de configuration selon la source configurée.
+
+        Args:
+            key: Nom de la variable
+            default: Valeur par défaut
+
+        Returns:
+            Valeur de configuration ou default
+        """
+        if self.config_source == "env":
+            # Mode API: uniquement .env
+            return os.getenv(key, default)
+
+        # Si Streamlit n'est pas disponible, fallback vers .env
+        if st is None:
+            return os.getenv(key, default)
+
+        if self.config_source == "streamlit":
+            # Mode Streamlit uniquement
+            try:
+                return st.secrets.get(key, default)
+            except (AttributeError, FileNotFoundError):
+                return default
+
+        # Mode auto: Streamlit d'abord, puis .env
+        try:
+            value = st.secrets.get(key)
+            if value is not None:
+                return value
+        except (AttributeError, FileNotFoundError):
+            pass
+
+        return os.getenv(key, default)
 
     @property
     def client(self) -> Anthropic:

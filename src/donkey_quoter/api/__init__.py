@@ -1,3 +1,58 @@
 """
-Module de gestion des clients API.
+Module API REST Donkey Quoter.
+
+Fournit une API FastAPI pour accéder aux citations et haïkus.
 """
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from .routers import export_router, haikus_router, quotes_router
+from .schemas import HealthResponse
+
+
+def create_app() -> FastAPI:
+    """
+    Factory pour créer l'application FastAPI.
+
+    Returns:
+        Instance FastAPI configurée
+    """
+    app = FastAPI(
+        title="Donkey Quoter API",
+        description="API REST pour découvrir des citations et générer des haïkus",
+        version="1.0.0",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
+    )
+
+    # CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # À configurer pour la production
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Inclure les routers
+    app.include_router(quotes_router)
+    app.include_router(haikus_router)
+    app.include_router(export_router)
+
+    @app.get("/", response_model=HealthResponse, tags=["health"])
+    async def root():
+        """Health check - endpoint racine."""
+        return HealthResponse()
+
+    @app.get("/health", response_model=HealthResponse, tags=["health"])
+    async def health():
+        """Health check détaillé."""
+        return HealthResponse(status="healthy")
+
+    return app
+
+
+# Instance de l'application pour uvicorn
+app = create_app()

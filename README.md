@@ -59,10 +59,15 @@ pip install -r requirements.txt
 - **streamlit** >= 1.31.0: Web application framework
 - **pydantic** >= 2.5.0: Data validation and models
 - **anthropic** >= 0.18.0: Claude API integration for haiku generation
+- **fastapi** >= 0.109.0: REST API framework
+- **uvicorn** >= 0.27.0: ASGI server
+- **httpx** >= 0.27.0: HTTP client
 - **python-dotenv**: Environment variables management
 - **python** >= 3.9: Required Python version
 
 ## 🎮 Usage
+
+### Streamlit App (default)
 
 ```bash
 # Launch the application
@@ -71,31 +76,201 @@ streamlit run app.py
 
 The application will automatically open in your default browser at `http://localhost:8501`.
 
+---
+
+## 🔌 REST API
+
+Donkey Quoter includes a full REST API built with FastAPI, enabling programmatic access to quotes and haiku generation.
+
+### Quick Start
+
+```bash
+# Start the API server
+uvicorn api:app --port 8000
+
+# Or with auto-reload for development
+uvicorn api:app --reload --port 8000
+```
+
+Access the interactive documentation at:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### API Endpoints
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/health` | Health check | No |
+| `GET` | `/quotes` | List all quotes (with pagination) | No |
+| `GET` | `/quotes/random` | Get a random quote | No |
+| `GET` | `/quotes/{id}` | Get a specific quote | No |
+| `POST` | `/quotes` | Create a new quote | No |
+| `GET` | `/haikus/{quote_id}` | Get stored haiku for a quote | No |
+| `GET` | `/haikus/{quote_id}/exists` | Check if haiku exists | No |
+| `POST` | `/haikus/generate` | Generate a new haiku | **Yes** |
+| `GET` | `/haikus/rate-limit` | Check rate limit status | No |
+| `GET` | `/export` | Export all data | No |
+| `GET` | `/export/download` | Download data as JSON file | No |
+
+### Authentication (API Key)
+
+Haiku generation requires an API key for rate limiting. Add the key in the `X-API-Key` header.
+
+**Setup:**
+
+1. Generate a secure API key (any string you choose)
+2. Add it to your `.env` file:
+   ```env
+   DONKEY_QUOTER_API_KEY=your-secret-api-key
+   ```
+3. Use it in requests:
+   ```bash
+   curl -X POST http://localhost:8000/haikus/generate \
+     -H "Content-Type: application/json" \
+     -H "X-API-Key: your-secret-api-key" \
+     -d '{"quote_id": "c01", "force_new": true}'
+   ```
+
+**Multiple API keys** (optional):
+```env
+DONKEY_QUOTER_API_KEYS=key1,key2,key3
+```
+
+**Development mode** (adds a test key `dev-key-for-testing`):
+```env
+DONKEY_QUOTER_DEV_MODE=true
+```
+
+### Rate Limiting
+
+- **Limit**: 5 haiku generations per API key per 24 hours
+- Check status: `GET /haikus/rate-limit`
+- Response headers include `X-RateLimit-Remaining`
+
+### Query Parameters
+
+**Language** (all endpoints):
+- Query param: `?lang=fr` or `?lang=en`
+- Header: `Accept-Language: fr` or `Accept-Language: en`
+- Default: `fr`
+
+**Pagination** (`GET /quotes`):
+- `?limit=50` (max 100)
+- `?offset=0`
+
+**Filtering** (`GET /quotes`, `GET /quotes/random`):
+- `?category=classic|personal|humor|poem`
+- `?type=preset|user|generated`
+
+### Example Requests
+
+```bash
+# Get a random quote in English
+curl "http://localhost:8000/quotes/random?lang=en"
+
+# List quotes with pagination
+curl "http://localhost:8000/quotes?limit=10&offset=0&category=classic"
+
+# Check if haiku exists
+curl "http://localhost:8000/haikus/c01/exists?lang=fr"
+
+# Generate haiku (requires API key)
+curl -X POST "http://localhost:8000/haikus/generate?lang=fr" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your-api-key" \
+  -d '{"quote_id": "c01", "force_new": false}'
+
+# Export all data
+curl "http://localhost:8000/export"
+```
+
+### Python Client Example
+
+```python
+import httpx
+
+client = httpx.Client(
+    base_url="http://localhost:8000",
+    headers={"X-API-Key": "your-api-key"}
+)
+
+# Get random quote
+quote = client.get("/quotes/random?lang=fr").json()
+print(quote["data"]["text"]["fr"])
+
+# Generate haiku
+response = client.post("/haikus/generate", json={
+    "quote_id": quote["data"]["id"],
+    "force_new": True
+})
+print(response.json()["haiku_text"])
+```
+
+### Running Streamlit with API Backend
+
+You can configure Streamlit to use the REST API instead of direct service calls:
+
+1. Start the API:
+   ```bash
+   uvicorn api:app --port 8000
+   ```
+
+2. Configure Streamlit to use the API (in `.env`):
+   ```env
+   USE_API_BACKEND=true
+   API_BASE_URL=http://localhost:8000
+   DONKEY_QUOTER_API_KEY=your-api-key
+   ```
+
+3. Start Streamlit:
+   ```bash
+   streamlit run app.py
+   ```
+
+This enables a true frontend/backend separation, useful for:
+- Scaling the API independently
+- Using the same API for multiple clients (web, mobile, CLI)
+- Deploying frontend and backend on different services
+
 ## 🛠️ Project Structure
 
 ```
 donkey-quoter/
-├── app.py                  # Main entry point
+├── app.py                  # Streamlit entry point
+├── api.py                  # FastAPI entry point
 ├── src/donkey_quoter/      # Main package
-│   ├── models.py          # Data models (Quote)
-│   ├── quote_manager.py   # Quote management
-│   ├── haiku_generator.py # AI haiku generation
-│   ├── haiku_storage.py   # Haiku persistence
-│   ├── claude_api.py      # Claude API integration
-│   ├── ui_components.py   # Reusable UI components
-│   ├── translations.py    # FR/EN translations
-│   ├── state_manager.py   # Session state management
+│   ├── core/              # Business logic
+│   │   ├── models.py      # Data models (Quote, QuoteInput)
+│   │   ├── services.py    # Unified service (DonkeyQuoterService)
+│   │   ├── quote_adapter.py   # Quote adapter for Streamlit
+│   │   ├── haiku_adapter.py   # Haiku adapter for Streamlit
+│   │   ├── storage.py     # Haiku persistence (JSON)
+│   │   └── data_loader.py # Quote loading
+│   ├── api/               # REST API module
+│   │   ├── __init__.py    # FastAPI app factory
+│   │   ├── schemas.py     # Request/Response models
+│   │   ├── dependencies.py # Dependency injection
+│   │   ├── auth.py        # API key auth & rate limiting
+│   │   ├── client.py      # HTTP client for Streamlit
+│   │   └── routers/       # API endpoints
+│   │       ├── quotes.py  # /quotes endpoints
+│   │       ├── haikus.py  # /haikus endpoints
+│   │       └── export.py  # /export endpoints
+│   ├── infrastructure/    # External integrations
+│   │   └── anthropic_client.py # Claude API client
+│   ├── ui/                # Streamlit UI components
+│   │   └── components.py  # Reusable UI components
 │   ├── config/            # Configuration modules
-│   │   ├── model_mapping.py # Claude model mappings
-│   │   └── api_pricing.py   # API pricing config
+│   │   └── settings.py    # App settings
 │   ├── data/
-│   │   └── quotes.py      # Quote database
-│   └── styles.css        # Custom styles
+│   │   └── quotes.json    # Quote database
+│   ├── translations.py    # FR/EN translations
+│   └── state_manager.py   # Session state management
 ├── scripts/
-│   └── haiku_cli.py           # CLI unifié pour gestion des haïkus
+│   └── haiku_cli.py       # CLI for batch haiku generation
 ├── data/
-│   └── haikus.json       # Generated haikus storage
-└── tests/                # Test suite
+│   └── haikus.json        # Generated haikus storage
+└── tests/                 # Test suite
 ```
 
 ## 🎨 Customization
