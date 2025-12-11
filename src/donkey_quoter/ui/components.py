@@ -144,6 +144,18 @@ def render_quote_card(
     if not quote:
         return
 
+    # Afficher le message de fallback si nécessaire
+    if st.session_state.get("show_fallback_message", False):
+        st.info(
+            t.get(
+                "fallback_shown",
+                "ℹ️ Génération impossible. Affichage d'un haïku existant.",
+            )
+        )
+        # Reset les flags
+        st.session_state.show_fallback_message = False
+        st.session_state.last_haiku_was_fallback = False
+
     quote_text = quote_manager.get_text(quote.text, lang)
     quote_author = quote_manager.get_text(quote.author, lang)
 
@@ -219,7 +231,7 @@ def render_action_bar(
             st.rerun()
 
     # API usage display
-    if haiku_generator.api_client:
+    if haiku_generator.has_api_key:
         render_spacer("medium")
         usage_display = haiku_generator.get_usage_display(lang)
         usage_html = TEMPLATES["usage_display"].format(usage_text=usage_display)
@@ -280,39 +292,60 @@ def _handle_new_poem_creation(
         st.error("Erreur: citation originale non trouvée")
         return
 
-    with st.spinner(t["creating"]):
-        if not haiku_generator.api_client:
-            st.error(
-                t.get(
-                    "api_error",
-                    "❌ Clé API non configurée. Impossible de générer de nouveaux haïkus.",
-                )
+    # 1. Vérifier d'abord si on a une clé API
+    if not haiku_generator.has_api_key:
+        st.error(
+            t.get(
+                "api_error",
+                "❌ Clé API non configurée. Impossible de générer de nouveaux haïkus.",
             )
-            # Fallback to existing haiku
+        )
+        # Fallback to existing haiku
+        existing_poem = haiku_generator.get_existing_haiku(source_quote, lang)
+        if existing_poem:
+            quote_manager.current_quote = existing_poem
+            st.rerun()
+        return
+
+    # 2. Vérifier le quota AVANT de tenter la génération
+    # Utilise get_remaining_generations() qui gère les deux modes (direct et API backend)
+    if haiku_generator.get_remaining_generations() <= 0:
+        st.info(
+            t.get(
+                "limit_message",
+                "🫏 Même l'âne le plus têtu doit s'arrêter pour se reposer. "
+                "Revenez plus tard pour 5 nouveaux haïkus !",
+            )
+        )
+        # Fallback to existing haiku
+        existing_poem = haiku_generator.get_existing_haiku(source_quote, lang)
+        if existing_poem:
+            quote_manager.current_quote = existing_poem
+            st.rerun()
+        return
+
+    # 3. Générer le haïku
+    with st.spinner(t["creating"]):
+        poem = haiku_generator.generate_from_quote(source_quote, lang, force_new=True)
+        if poem:
+            # Vérifier si c'est un fallback (demandé génération mais reçu existant)
+            if st.session_state.get("last_haiku_was_fallback", False):
+                # Stocker le message pour l'afficher après rerun
+                st.session_state.show_fallback_message = True
+            quote_manager.current_quote = poem
+            st.rerun()
+        else:
+            # Fallback to existing
             existing_poem = haiku_generator.get_existing_haiku(source_quote, lang)
             if existing_poem:
+                st.warning(
+                    t.get(
+                        "api_fail_fallback",
+                        "⚠️ Erreur API. Affichage d'un haïku existant.",
+                    )
+                )
                 quote_manager.current_quote = existing_poem
                 st.rerun()
-        else:
-            # Generate new haiku
-            poem = haiku_generator.generate_from_quote(
-                source_quote, lang, force_new=True
-            )
-            if poem:
-                quote_manager.current_quote = poem
-                st.rerun()
-            else:
-                # Fallback to existing
-                existing_poem = haiku_generator.get_existing_haiku(source_quote, lang)
-                if existing_poem:
-                    st.warning(
-                        t.get(
-                            "api_fail_fallback",
-                            "⚠️ Erreur API. Affichage d'un haïku existant.",
-                        )
-                    )
-                    quote_manager.current_quote = existing_poem
-                    st.rerun()
 
 
 def _handle_view_haiku(
