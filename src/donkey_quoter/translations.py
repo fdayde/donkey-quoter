@@ -38,6 +38,7 @@ TRANSLATIONS = {
         "contribute_message": "Venez ajouter vos propres citations",
         "api_error": "❌ Clé API non configurée. Impossible de générer de nouveaux haïkus.",
         "api_fail_fallback": "⚠️ Erreur API. Affichage d'un haïku existant.",
+        "fallback_shown": "ℹ️ Génération impossible. Affichage d'un haïku existant.",
     },
     "en": {
         "title": "🫏",
@@ -74,6 +75,7 @@ TRANSLATIONS = {
         "contribute_message": "Come add your own quotes",
         "api_error": "❌ API key not configured. Cannot generate new haikus.",
         "api_fail_fallback": "⚠️ API error. Showing existing haiku.",
+        "fallback_shown": "ℹ️ Generation impossible. Showing existing haiku.",
     },
 }
 

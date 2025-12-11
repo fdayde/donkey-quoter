@@ -53,15 +53,31 @@ pytest --cov=src
 ```
 donkey-quoter/
 ├── app.py                    # Streamlit entry point
-├── src/donkey_quoter/       # Main package
-│   ├── models.py           # Pydantic models (Quote)
-│   ├── quote_manager.py    # Quote business logic
-│   ├── haiku_generator.py  # Haiku generation
-│   ├── ui_components.py    # Reusable UI components
-│   ├── translations.py     # i18n FR/EN
-│   ├── state_manager.py    # Streamlit session state
-│   └── styles.css         # Custom CSS
-└── data/quotes.json        # Quote database (JSON format)
+├── api.py                    # FastAPI entry point
+├── Dockerfile                # Docker config for API deployment
+├── render.yaml               # Render deployment config
+├── src/donkey_quoter/        # Main package
+│   ├── core/                 # Business logic
+│   │   ├── models.py         # Pydantic models (Quote)
+│   │   ├── services.py       # Unified service (DonkeyQuoterService)
+│   │   ├── quote_adapter.py  # Quote adapter for Streamlit
+│   │   ├── haiku_adapter.py  # Haiku adapter for Streamlit
+│   │   └── storage.py        # Haiku persistence (JSON)
+│   ├── api/                  # REST API module
+│   │   ├── routers/          # API endpoints (quotes, haikus, export)
+│   │   ├── auth.py           # API key auth & rate limiting
+│   │   └── client.py         # HTTP client for Streamlit
+│   ├── infrastructure/       # External integrations
+│   │   └── anthropic_client.py  # Claude API client
+│   ├── ui/                   # Streamlit UI components
+│   │   ├── components.py     # Reusable UI components
+│   │   └── styles.css        # Custom CSS
+│   ├── config/settings.py    # App settings
+│   ├── translations.py       # i18n FR/EN
+│   ├── state_manager.py      # Streamlit session state
+│   └── data/quotes.json      # Quote database (JSON)
+├── scripts/haiku_cli.py      # CLI for batch haiku generation
+└── data/haikus.json          # Generated haikus storage
 ```
 
 ## Key Technical Details
@@ -78,26 +94,26 @@ donkey-quoter/
 
 ### Main Features
 1. Quote discovery (classic, personal, humorous)
-2. Haiku generation from quotes
-3. Favorites management with JSON export
-4. Bilingual interface (FR/EN)
+2. Haiku generation from quotes (Claude API)
+3. Bilingual interface (FR/EN)
+4. REST API (FastAPI) for backend separation
 
 ## Common Tasks
 
 ### Add New Quotes
-Edit `src/donkey_quoter/data/quotes.py`:
-```python
-Quote(
-    id="custom_001",
-    text={"fr": "Citation française", "en": "English quote"},
-    author={"fr": "Auteur", "en": "Author"},
-    category="personal"
-)
+Edit `src/donkey_quoter/data/quotes.json`:
+```json
+{
+    "id": "custom_001",
+    "text": {"fr": "Citation française", "en": "English quote"},
+    "author": {"fr": "Auteur", "en": "Author"},
+    "category": "personal"
+}
 ```
 
 ### Modify UI Theme
-- Colors: Edit `src/donkey_quoter/styles.css`
-- Layout: Modify `ui_components.py`
+- Colors: Edit `src/donkey_quoter/ui/styles.css`
+- Layout: Modify `src/donkey_quoter/ui/components.py`
 - Streamlit theme: `.streamlit/config.toml`
 
 ### Add New Language
@@ -106,7 +122,6 @@ Quote(
 3. Update language selector in `app.py`
 
 ## Git Workflow
-- Branch: `feature/improvements`
 - Main branch: `main`
 - Follow conventional commits
 - Run formatters before commit

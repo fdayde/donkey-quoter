@@ -1,0 +1,27 @@
+# Configuration Render pour Donkey Quoter
+# https://render.com/docs/blueprint-spec
+
+services:
+  # API REST FastAPI
+  - type: web
+    name: donkey-quoter-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free  # ou starter, standard selon tes besoins
+    healthCheckPath: /health
+    envVars:
+      # Clé API Anthropic (à configurer dans le dashboard Render)
+      - key: ANTHROPIC_API_KEY
+        sync: false  # Secret à définir manuellement
+      # Modèle Claude à utiliser
+      - key: CLAUDE_MODEL
+        value: claude-3-5-haiku-20241022
+      # Clé API pour l'authentification
+      - key: DONKEY_QUOTER_API_KEY
+        generateValue: true  # Render génère une clé aléatoire
+      # CORS - origines autorisées (à ajuster après déploiement)
+      - key: CORS_ORIGINS
+        value: https://donkey-quoter-api.onrender.com
+      # Port (Render utilise la variable PORT)
+      - key: PORT
+        value: 8001

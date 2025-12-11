@@ -68,14 +68,17 @@ ANTHROPIC_TIER=1
 Pour générer des haïkus pour toutes les citations :
 
 ```bash
-# Générer pour toutes les langues
-python scripts/generate_missing_haikus.py
+# CLI unifié - génère les haïkus manquants (FR + EN simultanément)
+python scripts/haiku_cli.py generate
 
 # Limiter à 5 générations
-python scripts/generate_missing_haikus.py --limit 5
+python scripts/haiku_cli.py generate --limit 5
 
-# Générer uniquement en français
-python scripts/generate_missing_haikus.py --languages fr
+# Régénérer tous les haïkus
+python scripts/haiku_cli.py generate --all
+
+# Simulation sans appel API
+python scripts/haiku_cli.py --dry-run generate
 ```
 
 ## Données
