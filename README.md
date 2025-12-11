@@ -14,8 +14,6 @@
 Donkey Quoter is a minimalist web application that allows you to:
 - 🎲 Discover random quotes (classic, humorous, personal)
 - ✨ Generate poetic haikus inspired by quotes
-- 💾 Save your favorite quotes and haikus
-- 📥 Export your collection in JSON format
 - 🌐 Switch between French and English
 
 ## 📸 Screenshots
