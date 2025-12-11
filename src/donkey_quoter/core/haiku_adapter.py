@@ -12,10 +12,19 @@ from typing import Optional
 
 import streamlit as st
 
+from ..config.settings import MODEL_TO_AUTHOR
 from ..infrastructure.anthropic_client import AnthropicClient
 from .models import Quote
 from .services import DonkeyQuoterService
 from .storage import DataStorage
+
+
+def get_author_dict(model: str) -> dict[str, str]:
+    """Retourne le dict auteur {fr: ..., en: ...} pour un modèle donné."""
+    if model in MODEL_TO_AUTHOR:
+        return MODEL_TO_AUTHOR[model]
+    return MODEL_TO_AUTHOR.get("default", {"fr": "Claude Haiku", "en": "Claude Haiku"})
+
 
 # Détermine si on utilise le backend API ou les services directs
 USE_API_BACKEND = os.getenv("USE_API_BACKEND", "false").lower() == "true"
@@ -114,7 +123,7 @@ class HaikuAdapter:
                     language: haiku_text,
                     "fr" if language == "en" else "en": haiku_text,
                 },
-                author={"fr": "Claude", "en": "Claude"},
+                author=get_author_dict(model_used),
                 category="poem",
                 type="generated",
             )
@@ -169,6 +178,7 @@ class HaikuAdapter:
             result = self._http_client.get_haiku(quote.id, language)
             if result:
                 haiku_text = result.get("haiku_text", "")
+                model_used = result.get("model", "unknown")
                 from datetime import datetime
 
                 quote_id = f"poem_{quote.id}_{int(datetime.now().timestamp())}"
@@ -178,7 +188,7 @@ class HaikuAdapter:
                         language: haiku_text,
                         "fr" if language == "en" else "en": haiku_text,
                     },
-                    author={"fr": "Claude", "en": "Claude"},
+                    author=get_author_dict(model_used),
                     category="poem",
                     type="generated",
                 )
