@@ -6,6 +6,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Optional
 
+from dotenv import load_dotenv
 from fastapi import Depends, Header, Query
 
 from ..core.data_loader import DataLoader
@@ -59,24 +60,36 @@ def get_storage() -> DataStorage:
     return DataStorage(Path("data"))
 
 
-@lru_cache
+_anthropic_client: Optional[AnthropicClient] = None
+
+
 def get_anthropic_client() -> Optional[AnthropicClient]:
     """
     Retourne le client Anthropic s'il est configuré.
 
     Retourne None si la clé API n'est pas disponible.
     """
-    try:
-        return AnthropicClient(config_source="env")
-    except ValueError:
-        return None
+    global _anthropic_client
+    if _anthropic_client is None:
+        # Charger les variables d'environnement avant de créer le client
+        load_dotenv()
+        try:
+            _anthropic_client = AnthropicClient(config_source="env")
+            print(
+                f"[API] AnthropicClient initialized with model: {_anthropic_client.model}"
+            )
+        except ValueError as e:
+            print(f"[API] AnthropicClient initialization failed: {e}")
+            return None
+    return _anthropic_client
 
 
 def get_service(
     storage: Annotated[DataStorage, Depends(get_storage)],
+    api_client: Annotated[Optional[AnthropicClient], Depends(get_anthropic_client)],
 ) -> DonkeyQuoterService:
-    """Retourne le service métier."""
-    return DonkeyQuoterService(storage=storage)
+    """Retourne le service métier avec le client API."""
+    return DonkeyQuoterService(storage=storage, api_client=api_client)
 
 
 def get_language(

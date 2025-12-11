@@ -228,13 +228,21 @@ class HaikuAdapter:
 
     def get_usage_display(self, language: str = "fr") -> str:
         """Retourne l'affichage du compteur d'usage."""
-        count = st.session_state.haiku_generation_count
-        remaining = max(0, 5 - count)
+        if USE_API_BACKEND and self._http_client:
+            # En mode API, récupérer le vrai compteur depuis l'API
+            status = self._http_client.get_rate_limit_status()
+            remaining = status.get("remaining", 5)
+            limit = status.get("limit", 5)
+        else:
+            # Mode local: utiliser le compteur de session
+            count = st.session_state.haiku_generation_count
+            remaining = max(0, 5 - count)
+            limit = 5
 
         if language == "fr":
-            return f"Haïkus restants : {remaining}/5"
+            return f"Haïkus restants : {remaining}/{limit}"
         else:
-            return f"Haikus remaining: {remaining}/5"
+            return f"Haikus remaining: {remaining}/{limit}"
 
     def get_existing_haiku(self, quote: Quote, language: str) -> Optional[Quote]:
         """

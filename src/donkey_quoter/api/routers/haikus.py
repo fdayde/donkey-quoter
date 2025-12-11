@@ -3,7 +3,6 @@ Router pour les endpoints /haikus.
 """
 
 import os
-from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Path
 
@@ -12,7 +11,7 @@ from ..auth import (
     RateLimitedAPIKey,
     get_rate_limiter,
 )
-from ..dependencies import APIClient, Language, QuoteRepo, Service, Storage
+from ..dependencies import Language, QuoteRepo, Service, Storage
 from ..schemas import (
     ErrorResponse,
     HaikuExistsResponse,
@@ -38,7 +37,6 @@ async def generate_haiku(
     repo: QuoteRepo,
     service: Service,
     storage: Storage,
-    api_client: APIClient,
     lang: Language,
     api_key: RateLimitedAPIKey,
 ):
@@ -71,7 +69,7 @@ async def generate_haiku(
             )
 
     # Vérifier si l'API client est disponible
-    if not api_client:
+    if not service.api_client:
         # Fallback vers un haïku existant ou par défaut
         stored = storage.get_haiku_with_metadata(request.quote_id, lang)
         if stored:
@@ -134,7 +132,7 @@ async def generate_haiku(
     summary="Obtenir le statut du rate limit",
 )
 async def get_rate_limit_status(
-    api_key: Optional[str] = None,
+    api_key: OptionalAPIKey = None,
 ):
     """
     Retourne le statut du rate limit pour l'API key fournie.
