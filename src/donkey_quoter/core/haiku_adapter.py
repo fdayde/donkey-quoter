@@ -297,9 +297,9 @@ class HaikuAdapter:
         Returns:
             Un objet Quote contenant le haïku ou None en cas d'erreur
         """
-        # Vérifier les limites avant de commencer
-        generation_count = st.session_state.haiku_generation_count
-        if force_new and generation_count >= 5:
+        # Vérifier les limites avant de commencer (utilise get_remaining_generations
+        # qui fonctionne en mode direct ET API backend)
+        if force_new and self.get_remaining_generations() <= 0:
             return None
 
         try:
